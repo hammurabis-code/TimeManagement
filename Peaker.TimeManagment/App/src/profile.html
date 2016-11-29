@@ -1,0 +1,51 @@
+<template>
+    <div class="container">
+        <div class="mt-1">
+            <div>
+                <h2>${heading}</h2>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="username">Username</span>
+                <input class="form-control" aria-describedby="username" value.bind="CurrentUser.Username" type="text" disabled>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="accounting">Accounting Name</span>
+                <input class="form-control" aria-describedby="accounting" value.bind="CurrentUser.Username" type="text" disabled>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="departments">Department(s)</span>
+                <input class="form-control" aria-describedby="departments" value.bind="userDepartments" type="text" disabled>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="defaultentries">Entries per Submission</span>
+                <input class="form-control" aria-describedby="defaultentries" value.bind="CurrentUser.DefaultJobEntries" type="text">
+            </div>
+
+            <div class='mt-1'>
+                <div class="form-group">
+                    <input type="button" value='Cancel' class="form-control btn btn-primary" click.delegate='resetModel()' />
+                    <input type="button" value='Save Changes' class="form-control btn btn-primary" click.delegate='saveProfile()' />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class='mt-1'>
+        <input type="button" value.bind='showCodeSelectionText' class="form-control btn btn-primary" click.delegate='showHideCodeSelection()'
+        />
+    </div>
+    <div class='container mt-2'>
+        <div class="${showCodeSelection ? 'collapseView' : 'expandView'}">
+            <div>
+                <h3>${subheading}</h3>
+            </div>
+            <div>
+                <ul>
+                    <li repeat.for="department of CurrentUser.UserDepartments">
+                        <input type="checkbox" checked.bind="department.IsSelected" value.one-way="department.Id" change.delegate="departmentCheckChanged($index)"
+                        /> ${department.Description}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,22 @@
+<template>
+    <div class="container">
+        <form class="form-signin">
+            <div>
+                <!--<button class="btn btn-block btn-google-plus" click.delegate="loginGoogle()">
+                    <span class="ion-social-googleplus"></span>Sign in with Google
+                </button>-->
+            </div>
+            <div>
+                <h2 class="form-signin-heading">Please sign in</h2>
+                <label for="inputEmail2" class="sr-only">Email address</label>
+                <input id="inputEmail2" class="form-control ${usernameError ? 'alert-danger' : ''}" placeholder="Email address" required=""
+                    autofocus="" type="email" value.bind='username'>
+                <label for="inputPassword" class="sr-only">Password</label>
+                <input id="inputPassword" class="form-control ${passwordError ? 'alert-danger' : ''}" placeholder="Password" required=""
+                    type="password" value.bind='password'>
+                </label>
+                <button class="btn btn-lg btn-primary btn-block" type="submit" click.delegate='login()'>Login</button>
+            </div>
+        </form>
+    </div>
+</template>

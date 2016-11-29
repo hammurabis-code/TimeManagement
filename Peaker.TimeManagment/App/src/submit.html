@@ -1,0 +1,29 @@
+<template>
+	<div class="container">
+		<h2>${heading}</h2>
+	</div>
+	<div class="container">
+		<div class="form-group">
+			<div repeat.for="timeEntry of timeEntries">
+				<div class="entryContainer">
+					<div>
+						<label>${timeEntry.date.toLocaleDateString()}, ${timeEntry.jobNumber}, ${timeEntry.workCode}</label><span>${timeEntry.hours} Hours</span>
+					</div>
+					<div>
+						<label>${timeEntry.comments}</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="totalContainer">
+				<span id="total">Total</span>
+				<label model.bind="total">${total} Hours</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<input type="button" value='Edit' class="form-control btn btn-primary" click.delegate='returnToEdit()'>
+			<input type="button" value='Submit' class="form-control btn btn-primary" click.delegate='submit()'>
+		</div>
+	</div>
+</template>
