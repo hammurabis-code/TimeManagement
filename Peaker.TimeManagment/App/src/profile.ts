@@ -1,6 +1,6 @@
 import { autoinject } from 'aurelia-dependency-injection';
 import { ApplicationState } from './application-state';
-import { Constants, Department, WorkCode, User } from './Models/Models';
+import { Constants, Department, UserWorkCode, User } from './Models/Models';
 import { AccountService } from './Services/Services';
 import * as toastr from 'toastr';
 
@@ -8,29 +8,36 @@ import * as toastr from 'toastr';
 export class profile {
     heading: string;
     subheading: string;
-    CurrentUser: User;
+    subheading2: string;
+    currentUser: User;
     currentAccountingName: string;
     currentEntryCount: number;
     showCodeSelection: boolean;
     showCodeSelectionText: string;
     codeSelectionIsDirty: boolean;
     profileIsDirty: boolean;
+    originalDepartments: Department[];
+    originalWorkCodes: UserWorkCode[];
 
     constructor(private appState: ApplicationState, private accountService: AccountService) {
         this.heading = 'Profile';
         this.subheading = 'Departments';
-        this.CurrentUser = appState.currentUser;
-        this.currentAccountingName = this.CurrentUser.Username;
-        this.currentEntryCount = this.CurrentUser.DefaultJobEntries;
+        this.subheading = 'Work Codes';
+        this.currentUser = appState.currentUser;
+        this.currentAccountingName = this.currentUser.Username;
+        this.currentEntryCount = this.currentUser.DefaultJobEntries;
         this.showCodeSelection = true;
         this.showCodeSelectionText = Constants.codeSelectionTextShow;
         this.codeSelectionIsDirty = false;
         this.profileIsDirty = false;
+        this.originalDepartments = this.currentUser.UserDepartments;
+        this.originalWorkCodes = this.currentUser.UserWorkCodes;
+
     }
 
     get userDepartments(): string {
         let result = '';
-        this.CurrentUser.UserDepartments.forEach(dept => {
+        this.currentUser.UserDepartments.forEach(dept => {
             if (dept.IsSelected) {
                 result += dept.BaseCode + ', ';
             }
@@ -39,16 +46,18 @@ export class profile {
     }
 
     departmentCheckChanged(index: number) {
-        console.log(this.CurrentUser.UserDepartments);
-        var department = this.CurrentUser.UserDepartments[index];
+        console.log(this.currentUser.UserDepartments);
+        var department = this.currentUser.UserDepartments[index];
         department.IsSelected = !department.IsSelected;
-        this.CurrentUser.UserDepartments[index] = department;
-        console.log(this.CurrentUser.UserDepartments);
+        this.currentUser.UserDepartments[index] = department;
+        console.log(this.currentUser.UserDepartments);
         this.codeSelectionIsDirty = true;
     }
 
     resetModel() {
-        this.CurrentUser.DefaultJobEntries = this.currentEntryCount;
+        this.currentUser.DefaultJobEntries = this.currentEntryCount;
+        this.currentUser.UserDepartments = this.originalDepartments;
+        this.currentUser.UserWorkCodes = this.originalWorkCodes;
         this.profileIsDirty = false;
     }
 
@@ -60,6 +69,23 @@ export class profile {
         else {
             this.showCodeSelectionText = Constants.codeSelectionTextHide;
         }
+    }
+
+    resetCodes() { }
+
+    saveProfile() {
+        console.log('UserId: ' + this.currentUser.UserId);
+        this.accountService.updateUserProfile(this.currentUser)
+            .then(response => {
+                if (response) {
+                    this.appState.currentUser = this.currentUser;
+                    toastr.success("Time entries submitted.");
+                }
+            })
+            .catch(err => {
+                toastr.error("An error occured updating your profile.");
+                console.log("Profile update error: " + err);
+            });
     }
 
 }

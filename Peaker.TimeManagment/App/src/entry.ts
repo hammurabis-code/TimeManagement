@@ -58,7 +58,6 @@ export class entry {
             return;
         }
         let entriesValid = true;
-        let timeValid: Boolean = true;
         for (let index = 0; index < this.timeEntries.length; index++) {
             let entry = this.timeEntries[index];
             if (!entry.isValid()) {
@@ -67,11 +66,12 @@ export class entry {
             }
         }
         if (entriesValid) {
-            timeValid = this.validateTotalTimeForDate();
-            if (!timeValid) {
-                toastr.error("Total time exceeds 24 hours.", "Duration Error");
-                return;
-            }
+            this.validateTotalTimeForDate().then(result => {
+                if (!result) {
+                    toastr.error("Total time exceeds 24 hours.", "Duration Error");
+                    return;
+                }
+            });
         }
         if (entriesValid) {
             //this.appState.addPendingTimeEntries(this.timeEntries, this.entryDate);
@@ -79,26 +79,27 @@ export class entry {
             this.timeEntries.length = 0;
             this.router.navigate('submit');
         }
-        else {
-            this.entryDate = new Date(2015, 12, 1, 0, 0, 0, 0);
-        }
+        // else {
+        //     this.entryDate = new Date(2015, 12, 1, 0, 0, 0, 0);
+        // }
     }
 
-    validateTotalTimeForDate(): boolean {
+    validateTotalTimeForDate(): Promise<boolean> {
         let result = true;
-        this.timeEntryService.get(new EntryFilter(this.appState.currentUser.UserId, null, this.entryDate, this.entryDate, null))
+        return this.timeEntryService.get(new EntryFilter(this.appState.currentUser.UserId, null, this.entryDate, this.entryDate, null))
             .then(entries => {
                 let testEntries = new Array<TimeEntry>();
                 testEntries = this.timeEntries.concat(entries);
                 let total: number = 0;
-                for (let count = 0; count < this.timeEntries.length; count++) {
-                    total += +this.timeEntries[count].hours;
+                for (let count = 0; count < testEntries.length; count++) {
+                    total += +testEntries[count].hours;
                 }
                 if (total > 24) {
                     result = false;
                 }
+                return result;
             });
-        return result;
+
     }
 
     delete(entry: TimeEntry) {

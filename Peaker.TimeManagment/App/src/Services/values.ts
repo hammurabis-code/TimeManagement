@@ -5,7 +5,9 @@ import { WorkCode, Constants, Helper } from '../Models/Models';
 @autoinject
 export class ValuesService {
     constructor(private client: HttpClient) {
-
+        client.configure(config => {
+            config.useStandardConfiguration();
+        });
     }
 
     getWorkCodes(): Promise<Array<WorkCode>> {

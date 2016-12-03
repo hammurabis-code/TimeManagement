@@ -1,5 +1,5 @@
 export class Department {
-    Id: number;
+    DepartmentId: number;
     Description: string;
     BaseCode: string;
     IsSelected: boolean;

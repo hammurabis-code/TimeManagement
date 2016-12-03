@@ -7,6 +7,7 @@
         public string description { get; set; }
         public string area { get; set; }
         public string sub { get; set; }
+        public bool IsJobNumberRequired { get; set; }
         public bool IsSelected { get; set; }
     }
 }

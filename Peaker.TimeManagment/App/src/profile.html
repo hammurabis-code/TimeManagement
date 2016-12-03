@@ -6,11 +6,11 @@
             </div>
             <div class="input-group">
                 <span class="input-group-addon" id="username">Username</span>
-                <input class="form-control" aria-describedby="username" value.bind="CurrentUser.Username" type="text" disabled>
+                <input class="form-control" aria-describedby="username" value.bind="currentUser.Username" type="text" disabled>
             </div>
             <div class="input-group">
                 <span class="input-group-addon" id="accounting">Accounting Name</span>
-                <input class="form-control" aria-describedby="accounting" value.bind="CurrentUser.Username" type="text" disabled>
+                <input class="form-control" aria-describedby="accounting" value.bind="currentUser.Username" type="text" disabled>
             </div>
             <div class="input-group">
                 <span class="input-group-addon" id="departments">Department(s)</span>
@@ -18,9 +18,8 @@
             </div>
             <div class="input-group">
                 <span class="input-group-addon" id="defaultentries">Entries per Submission</span>
-                <input class="form-control" aria-describedby="defaultentries" value.bind="CurrentUser.DefaultJobEntries" type="text">
+                <input class="form-control" aria-describedby="defaultentries" value.bind="currentUser.DefaultJobEntries" type="text">
             </div>
-
             <div class='mt-1'>
                 <div class="form-group">
                     <input type="button" value='Cancel' class="form-control btn btn-primary" click.delegate='resetModel()' />
@@ -35,16 +34,41 @@
     </div>
     <div class='container mt-2'>
         <div class="${showCodeSelection ? 'collapseView' : 'expandView'}">
-            <div>
+            <div class='hidden'>
                 <h3>${subheading}</h3>
             </div>
-            <div>
-                <ul>
-                    <li repeat.for="department of CurrentUser.UserDepartments">
-                        <input type="checkbox" checked.bind="department.IsSelected" value.one-way="department.Id" change.delegate="departmentCheckChanged($index)"
-                        /> ${department.Description}
+            <div class='hidden'>
+                <ul class='clean-list'>
+                    <li repeat.for="department of currentUser.UserDepartments">
+                        <div class="inline form-label content-left">
+                            <label>${department.Description}</label>
+                        </div>
+                        <div class="inline form=content content-right">
+                            <input type="checkbox" checked.bind="department.IsSelected" value.one-way="department.Id" />
+                        </div>
                     </li>
                 </ul>
+            </div>
+            <div>
+                <h3>${subheading2}</h3>
+            </div>
+            <div>
+                <ul class='clean-list'>
+                    <li repeat.for="workCode of currentUser.UserWorkCodes">
+                        <div class="inline form-label content-left">
+                            <label>${workCode.baseCode} - ${workCode.description}</label>
+                        </div>
+                        <div class="inline form=content content-right">
+                            <input type="checkbox" checked.bind="workCode.IsSelected" value.one-way="workCode.Id" />
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class='mt-1'>
+                <div class="form-group">
+                    <input type="button" value='Cancel Preferences' class="form-control btn btn-primary" click.delegate='resetModel()' />
+                    <input type="button" value='Save Preferences' class="form-control btn btn-primary" click.delegate='saveProfile()' />
+                </div>
             </div>
         </div>
     </div>

@@ -107,5 +107,18 @@ namespace Peaker.TimeManagment.Data
                 }).ToList();
             }
         }
+
+        public static bool DeleteEntry(int entryId) {
+            using (var context = new PeakerContext())
+            {
+                var entry = context.TimeEntries.FirstOrDefault(e => e.Id == entryId);
+                if (entry != null) {
+                    context.TimeEntries.Remove(entry);
+                    context.SaveChanges();
+                    return true;
+                }
+            }
+            return false; ;
+        }
     }
 }

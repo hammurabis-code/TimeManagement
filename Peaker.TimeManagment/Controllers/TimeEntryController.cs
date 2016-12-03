@@ -1,8 +1,6 @@
 ﻿using Peaker.TimeManagment.Data;
-using Peaker.TimeManagment.Models;
 using Peaker.TimeManagment.Models.Filters;
 using Peaker.TimeManagment.Models.View;
-using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
@@ -12,38 +10,46 @@ namespace Peaker.TimeManagment.Controllers
     [RoutePrefix("api/TimeEntry")]
     [EnableCors(origins: "*", headers: "*", methods: "*", SupportsCredentials = true)]
     public class TimeEntryController : ApiController
-    {
-
-
-        
-        [AcceptVerbs("POST")]
-        [System.Web.Http.HttpPost]
-        public int SaveAnEntry([FromBody] TimeEntryView entryToSave) {            
-            if (User.Identity != null)
-            {
-                return TimeEntryAccess.AddUpdateEntry(entryToSave);
-            }
-            else return -1;
-        }
+    {        
+        //[AcceptVerbs("POST")]
+        //[HttpPost]
+        //public IHttpActionResult SaveAnEntry([FromBody] TimeEntryView entryToSave) {            
+        //    if (User.Identity != null)
+        //    {
+        //        return Ok(TimeEntryAccess.AddUpdateEntry(entryToSave));
+        //    }
+        //    else return Unauthorized();
+        //}
 
         [AcceptVerbs("GET")]
         [Route("GetEntries")]
-        public IEnumerable<TimeEntryView> GetEntries([FromUri]EntryFilter filter)
+        public IHttpActionResult GetEntries([FromUri]EntryFilter filter)
         {
             if (User.Identity != null)
             {
-                return TimeEntryAccess.GetEntries(filter);
+                return Ok(TimeEntryAccess.GetEntries(filter));
             }
-            else return null;
+            else return Unauthorized();
         }
 
         [Route("SaveEntry")]
-        public int Post([FromBody] TimeEntryView entryToSave) {
+        public IHttpActionResult Post([FromBody] TimeEntryView entryToSave) {
             if (User.Identity != null)
             {
-                return TimeEntryAccess.AddUpdateEntry(entryToSave);
+                return Ok(TimeEntryAccess.AddUpdateEntry(entryToSave));
             }
-            else return -1;
+            else return Unauthorized();
+        }
+
+        [Route("DeleteEntry")]
+        [HttpDelete]
+        public IHttpActionResult Delete(int entryId)
+        {
+            if (User.Identity != null)
+            {
+                return Ok(TimeEntryAccess.DeleteEntry(entryId));
+            }
+            else return Unauthorized();
         }
 
     }

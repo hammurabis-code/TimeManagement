@@ -1,11 +1,13 @@
 import { autoinject } from 'aurelia-dependency-injection';
-import { HttpClient } from 'aurelia-fetch-client';
-import { Constants, Login, User, Helper } from '../Models/Models';
+import { HttpClient, json } from 'aurelia-fetch-client';
+import { Constants, Login, User, Helper, UserInfoViewModel } from '../Models/Models';
 
 @autoinject
 export class AccountService {
     constructor(private client: HttpClient) {
-
+        client.configure(config => {
+            config.useStandardConfiguration();
+        });
     }
 
     login(data: Login): Promise<boolean> {
@@ -46,7 +48,7 @@ export class AccountService {
                 .then(resp => {
                     resp.json().then(data => {
                         //console.log(data);
-                        let user = new User(data.Id, data.Username, data.DefaultJobEntries, data.UserDepartments, data.UserWorkCodes, data.UsedJobNumbers);
+                        let user = new User(data.UserId, data.Username, data.AccountingName, data.DefaultJobEntries, data.UserDepartments, data.UserWorkCodes, data.UsedJobNumbers);
                         resolve(user);
                     })
                 }).catch(err => {
@@ -76,5 +78,20 @@ export class AccountService {
             }
         });
     }
-
+    updateUserProfile(user: User): Promise<boolean> {
+        return this.client.fetch(
+            Constants.accountApi + 'UpdateUserProfile',
+            {
+                body: json(new UserInfoViewModel(user)),
+                headers: {
+                    'Authorization': Helper.getAuthHeader(),
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                },
+                method: 'POST'
+            })
+            .then(response => {
+                return response;
+            });
+    }
 }

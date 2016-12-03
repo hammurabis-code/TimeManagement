@@ -235,3 +235,6 @@ div.au-stagger {
 .form-signin div:first-of-type{
   padding-bottom: 10px;
 }
+.hidden{
+  display:none;
+}

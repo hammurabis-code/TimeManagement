@@ -1,3 +1,4 @@
+import { Router } from 'aurelia-router';
 import { HttpClient, json } from 'aurelia-fetch-client';
 import { autoinject } from 'aurelia-dependency-injection';
 import { TimeEntry, Constants, EntryFilter, Helper } from '../Models/Models';
@@ -6,7 +7,11 @@ import { TimeEntry, Constants, EntryFilter, Helper } from '../Models/Models';
 export class TimeEntryService {
     isRequesting = false;
 
-    constructor(private client: HttpClient) { }
+    constructor(private client: HttpClient, private router: Router) {
+        client.configure(config => {
+            config.useStandardConfiguration();
+        });
+    }
 
     saveEntries(entries: TimeEntry[], userId: string): Promise<boolean> {
         this.isRequesting = true;
@@ -31,9 +36,9 @@ export class TimeEntryService {
                     },
                     method: 'POST'
                 })
-                .then(resp => resp.json())
-                .then(id => {
-                    if (id != -1) {
+                .then(response => response.json())
+                .then(response => {
+                    if (response != -1) {
                         resolve(true);
                     }
                     resolve(false);
@@ -45,53 +50,54 @@ export class TimeEntryService {
     }
 
     get(entryFilter: EntryFilter): Promise<Array<TimeEntry>> {
+        this.router.isNavigating = true;
         this.isRequesting = true;
-        return new Promise(resolve => {
-            this.client.fetch(Constants.timeEntryApi + 'GetEntries?' + $.param(entryFilter),
-                {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': Helper.getAuthHeader(),
-                    }
-                })
-                .then(response => response.json())
-                .then(entries => {
-                    let returnEntries = new Array<TimeEntry>();
-                    entries.forEach(element => {
-                        let entry = new TimeEntry(element.Date, element.UserId, 0);
-                        entry.comments = element.comments;
-                        entry.exported = element.exported;
-                        console.log(element.hours);
-                        entry.hours = +element.hours;
-                        entry.id = element.id;
-                        entry.jobNumber = element.jobnumber;
-                        entry.date = new Date(element.date);
-                        returnEntries.push(entry);
-                    });
-                    resolve(returnEntries)
-                }).catch(err => {
-                    console.log("Error retrieving entries.");
-                    resolve(new Array<TimeEntry>());
+        return this.client.fetch(Constants.timeEntryApi + 'GetEntries?' + $.param(entryFilter),
+            {
+                method: 'GET',
+                headers: {
+                    'Authorization': Helper.getAuthHeader(),
+                }
+            })
+            .then(response => response.json())
+            .then(response => {
+                let returnEntries = new Array<TimeEntry>();
+                response.forEach(element => {
+                    let entry = new TimeEntry(element.Date, element.UserId, 0);
+                    entry.comments = element.comments;
+                    entry.exported = element.exported;
+                    console.log(element.hours);
+                    entry.hours = +element.hours;
+                    entry.id = element.id;
+                    entry.jobNumber = element.jobnumber;
+                    entry.date = new Date(element.date);
+                    this.router.isNavigating = false;
+                    returnEntries.push(entry);
                 });
-        });
+                return returnEntries;
+            }).catch(err => {
+                console.log("Error retrieving entries.");
+                this.router.isNavigating = false;
+                return new Array<TimeEntry>();
+            });
     }
 
-    // delete(entry: TimeEntry): Promise<Array<TimeEntry>> {
-    //     this.isRequesting = true;
-    //     return new Promise(resolve => {
-    //         setTimeout(() => {
-    //             this.isRequesting = false;
-    //             let index = 0;
-    //             let itemIndex = 0;
-    //             this.model.savedEntries.forEach(element => {
-    //                 if (element.id === entry.id) {
-    //                     itemIndex = index;
-    //                 }
-    //                 index++;
-    //             });
-    //             this.model.savedEntries.splice(itemIndex, 1);
-    //             resolve(this.model.savedEntries.filter(x => x.userId === entry.userId));
-    //         }, latency);
-    //     });
-    // }
+    delete(entry: TimeEntry): Promise<boolean> {
+        this.router.isNavigating = true;
+        return this.client.fetch(
+            Constants.timeEntryApi + 'GetEntries' + $.param(entry.id),
+            {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': Helper.getAuthHeader(),
+                }
+            })
+            .then(response => response.json())
+            .then(response => {
+                return response;
+            }).catch(err => {
+                console.log('Error deleting entry.');
+                return false;
+            });
+    }
 }

@@ -30,9 +30,11 @@ namespace Peaker.TimeManagment.Models.View
     public class UserInfoViewModel
     {
 
-        public string Id { get; set; }
+        public string UserId { get; set; }
 
         public string Username { get; set; }
+
+        public string AccountingName { get; set; }
         
         public int DefaultJobEntries { get; set; }
 
@@ -43,7 +45,7 @@ namespace Peaker.TimeManagment.Models.View
         public List<WorkCodeView> UserWorkCodes { get; set; }
 
         public UserInfoViewModel(string id,string username) {
-            Id = id;
+            UserId = id;
             Username = username;
             UsedJobNumbers = new List<JobNumber>();
             UserDepartments = new List<DepartmentView>();

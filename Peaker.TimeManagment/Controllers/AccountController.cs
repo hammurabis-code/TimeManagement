@@ -142,6 +142,17 @@ namespace Peaker.TimeManagment.Controllers
             else return null;            
         }
 
+        [Route("UpdateUserProfile")]
+        public IHttpActionResult UpdateProfile(UserInfoViewModel userInfo)
+        {
+            var user = UserManager.FindById(User.Identity.GetUserId());
+            if (User.Identity != null && user != null)
+            {
+                return Ok(UserAccess.UpdateUserInfo(userInfo));
+            }
+            else return BadRequest("Error updating user.");
+        }
+
         [HttpGet]
         public async Task<bool> IsAuthenticated() {
             IdentityUser user = await UserManager.FindByIdAsync(User.Identity.GetUserId());

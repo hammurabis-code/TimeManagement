@@ -5,7 +5,10 @@ export class UserWorkCode {
     description: string;
     area: string;
     sub: string;
-    fullCode: string;
+    isJobCodeRequired: boolean;
     IsSelected: boolean;
 
+    get fullCode(): string {
+        return this.baseCode + ' - ' + this.description;
+    }
 }

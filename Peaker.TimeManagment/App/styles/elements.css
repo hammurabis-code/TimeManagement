@@ -1,0 +1,15 @@
+.mt-1{
+    margin-top: 1em;
+}
+ul.clean-list {
+    list-style: none;
+}
+ul.clean-list li {
+    display: flex;
+}
+.form-label {
+    width: 30%;
+}
+.form-content {
+    width: 70%;
+}

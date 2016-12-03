@@ -6,6 +6,7 @@ import { UserRole } from './UserRole'
 export class User {
     UserId: string;
     Username: string;
+    AccountingName: string;
     UserRoles: UserRole[];
     DefaultJobEntries: number;
     UserJobNumbers: JobNumber[];
@@ -14,9 +15,10 @@ export class User {
     pendingTimeEntries: TimeEntry[];
 
 
-    constructor(userId: string, username: string, defaultJobEntries: number, userDepartments: Department[], userWorkCodes: UserWorkCode[], userJobNumbers: JobNumber[]) {
+    constructor(userId: string, username: string, accountingName: string, defaultJobEntries: number, userDepartments: Department[], userWorkCodes: UserWorkCode[], userJobNumbers: JobNumber[]) {
         this.UserId = userId;
         this.Username = username;
+        this.AccountingName = accountingName;
         this.DefaultJobEntries = defaultJobEntries;
         this.UserDepartments = userDepartments;
         this.UserRoles = new Array<UserRole>();

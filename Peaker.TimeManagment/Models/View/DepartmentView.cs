@@ -2,7 +2,7 @@
 {
     public class DepartmentView
     {
-        public int Id { get; set; }
+        public int DepartmentId { get; set; }
         public string Description { get; set; }
         public string BaseCode { get; set; }
         public bool IsSelected { get; set; }

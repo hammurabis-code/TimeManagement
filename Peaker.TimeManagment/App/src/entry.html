@@ -25,7 +25,7 @@
                     <span class="input-group-addon" id="workCode">Code</span>
                     <select class="form-control ${timeEntry.workCodeError ? 'alert-danger' : ''}" id="selectWorkCode" value.two-way="timeEntry.workCode"
                         aria-describedby="workCode">
-                        <option repeat.for="workcode of workCodes" if.bind='workcode.IsSelected' >${workcode.fullCode}</option>
+                        <option repeat.for="workcode of workCodes" if.bind='workcode.IsSelected' >${workcode.baseCode} ${workcode.description}</option>
                     </select>
                 </div>
                 <div class="input-group">
