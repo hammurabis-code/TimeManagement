@@ -1,0 +1,77 @@
+<template>
+    <div class="container">
+        <div if.bind="activeWorkCode" class="workcode-entry">
+            <div class="inline slide">
+                <div class="input-group">
+                    <span class="input-group-addon" id="baseCode">Base Code</span>
+                    <input class="form-control" placeholder="ADR" aria-describedby="baseCode" value.two-way="activeWorkCode.BaseCode" type="text">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon" id="description">Description</span>
+                    <input class="form-control" placeholder="AIRDUCT REPAIR RIGHT" aria-describedby="description" value.two-way="activeWorkCode.Description"
+                        type="text">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon" id="area">Area</span>
+                    <input class="form-control" placeholder="" aria-describedby="area" value.two-way="activeWorkCode.Area" type="text">
+                </div>
+                <!--<div class="input-group">
+                    <span class="input-group-addon" id="sub">Sub</span>
+                    <input class="form-control" placeholder="" aria-describedby="area" value.two-way="activeWorkCode.Sub" type="text">
+                </div>-->
+            </div>
+            <div class="inline slide">
+                <div class="form-inline">
+                    <label class="input-group-addon" id="isJobNumberRequired">Job Number Required?</label>
+                    <div class="input-group">
+                        <input type="checkbox" checked.bind="activeWorkCode.isJobNumberRequired" value.one-way="activeWorkCode.IsJobNumberRequired"
+                            aria-describedby="isJobNumberRequired" />
+                    </div>
+                </div>
+                <div class="form-inline">
+                    <label class="input-group-addon" id="isEngineeringCode">Engineering Code</label>
+                    <div class="input-group">
+                        <input type="checkbox" checked.bind="activeWorkCode.isEngineeringCode" value.one-way="activeWorkCode.IsEngineeringCode" aria-describedby="isEngineeringCode"
+                        />
+                    </div>
+                </div>
+                <div class="form-inline">
+                    <label class="input-group-addon" id="isFieldServiceCode">Field Service Code</label>
+                    <div class="input-group">
+                        <input type="checkbox" checked.bind="activeWorkCode.isFieldServiceCode" value.one-way="activeWorkCode.IsFieldServiceCode"
+                            aria-describedby="isFieldServiceCode" />
+                    </div>
+                </div>
+                <div class="form-inline">
+                    <label class="input-group-addon" id="isGovernmentCode">Government Code</label>
+                    <div class="input-group">
+                        <input type="checkbox" checked.bind="activeWorkCode.isGovernmentCode" value.one-way="activeWorkCode.IsGovernmentCode" aria-describedby="isGovernmentCode"
+                        />
+                    </div>
+                </div>
+                <div class="form-inline">
+                    <label class="input-group-addon" id="isOfficeCode">Office Code</label>
+                    <div class="input-group">
+                        <input type="checkbox" checked.bind="activeWorkCode.isOfficeCode" value.one-way="activeWorkCode.IsOfficeCode" aria-describedby="isOfficeCode"
+                        />
+                    </div>
+                </div>
+                <div class="form-inline">
+                    <label class="input-group-addon" id="isShopCode">Shop Code</label>
+                    <div class="input-group">
+                        <input type="checkbox" checked.bind="activeWorkCode.isShopCode" value.one-way="activeWorkCode.IsShopCode" aria-describedby="isShopCode"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="workcode-select">
+            <div class="input-group">
+                <span class="input-group-addon" id="workCode">Code</span>
+                <select class="form-control" id="selectWorkCode" change.delegate="selectedCodeChanged($index)" value.bind="selectedId" aria-describedby="workCode">
+                        <option repeat.for="workcode of workCodes" value.bind="workCode.Id" >${workcode.BaseCode} ${workcode.Description}</option>
+                    </select>
+            </div>
+        </div>
+    </div>
+</template>

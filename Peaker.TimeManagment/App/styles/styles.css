@@ -197,6 +197,7 @@ div.au-stagger {
     border: 1px solid #EEE;
     padding: 10px;
     border-radius: 5px;
+    margin-top: 15px;
 }
 
 .deleteIcn{
@@ -227,6 +228,7 @@ div.au-stagger {
   visibility: hidden;
   opacity: 0;
   transition: visibility 0s, opacity 0.5s linear;
+  display: none;
 }
 .expandView{
   visibility: visible;

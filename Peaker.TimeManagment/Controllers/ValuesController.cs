@@ -19,7 +19,7 @@ namespace Peaker.TimeManagment.Controllers
         [HttpGet]
         public List<WorkCode> GetCodes()
         {
-            return ValuesAccess.GetAllWorkCodes();
+            return WorkCodeAccess.GetAllWorkCodes();
         }
 
         // GET api/values/5

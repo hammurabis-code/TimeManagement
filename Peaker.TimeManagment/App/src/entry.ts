@@ -1,4 +1,4 @@
-import { autoinject } from 'aurelia-dependency-injection';
+import { autoinject, bindable } from 'aurelia-framework';
 import { UserWorkCode, TimeEntry, EntryFilter } from './models/models';
 import { ApplicationState } from './application-state';
 import { Router } from 'aurelia-router';
@@ -9,7 +9,7 @@ import * as toastr from 'toastr';
 export class entry {
     heading: string;
     entryDate: Date;
-    timeEntries: TimeEntry[];
+    @bindable timeEntries: TimeEntry[];
     workCodes: UserWorkCode[];
 
     constructor(private appState: ApplicationState, private router: Router, private timeEntryService: TimeEntryService) {
@@ -52,7 +52,6 @@ export class entry {
     }
 
     review() {
-        console.log(this.entryDate);
         if (this.entryDate === undefined) {
             toastr.error("You must select an entry date.", "Date Error");
             return;
@@ -60,39 +59,35 @@ export class entry {
         let entriesValid = true;
         for (let index = 0; index < this.timeEntries.length; index++) {
             let entry = this.timeEntries[index];
-            if (!entry.isValid()) {
+            if (!entry.isValid(this.appState.currentUser)) {
                 entriesValid = false;
-                //this.timeEntries.splice(index, 1, entry);
             }
         }
         if (entriesValid) {
-            this.validateTotalTimeForDate().then(result => {
-                if (!result) {
-                    toastr.error("Total time exceeds 24 hours.", "Duration Error");
-                    return;
-                }
-            });
+            this.validateTotalTimeForDate()
+                .then(result => {
+                    if (!result) {
+                        toastr.error("Total time exceeds 24 hours.", "Duration Error");
+                        return;
+                    }
+                })
+                .then(r => {
+                    if (entriesValid) {
+                        this.appState.addPendingTimeEntries(this.timeEntries, this.entryDate);
+                        this.timeEntries.length = 0;
+                        this.router.navigate('submit');
+                    }
+                });
         }
-        if (entriesValid) {
-            //this.appState.addPendingTimeEntries(this.timeEntries, this.entryDate);
-            this.appState.addPendingTimeEntries(this.timeEntries, this.entryDate);
-            this.timeEntries.length = 0;
-            this.router.navigate('submit');
-        }
-        // else {
-        //     this.entryDate = new Date(2015, 12, 1, 0, 0, 0, 0);
-        // }
     }
 
     validateTotalTimeForDate(): Promise<boolean> {
         let result = true;
-        return this.timeEntryService.get(new EntryFilter(this.appState.currentUser.UserId, null, this.entryDate, this.entryDate, null))
-            .then(entries => {
-                let testEntries = new Array<TimeEntry>();
-                testEntries = this.timeEntries.concat(entries);
-                let total: number = 0;
-                for (let count = 0; count < testEntries.length; count++) {
-                    total += +testEntries[count].hours;
+        return this.timeEntryService.getTotalHours(new EntryFilter(null, null, null, this.entryDate, this.entryDate, null))
+            .then(hours => {
+                let total: number = hours;
+                for (let count = 0; count < this.timeEntries.length; count++) {
+                    total += +this.timeEntries[count].hours;
                 }
                 if (total > 24) {
                     result = false;

@@ -79,7 +79,7 @@ export class profile {
             .then(response => {
                 if (response) {
                     this.appState.currentUser = this.currentUser;
-                    toastr.success("Time entries submitted.");
+                    toastr.success("Profile Updated.");
                 }
             })
             .catch(err => {

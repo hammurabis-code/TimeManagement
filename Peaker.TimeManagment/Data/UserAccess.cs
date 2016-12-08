@@ -3,6 +3,8 @@ using System.Linq;
 using Peaker.TimeManagment.Models.View;
 using Peaker.TimeManagment.Models.Data;
 using System;
+using System.Security.Principal;
+using Microsoft.AspNet.Identity;
 
 namespace Peaker.TimeManagment.Data
 {
@@ -56,7 +58,15 @@ namespace Peaker.TimeManagment.Data
             }
 
             return userInfo;
-        }        
+        }
+
+        public static bool IsUserAdmin(IPrincipal user) {
+            return IsUserInRole(user, "Administrator");
+        }
+
+        private static bool IsUserInRole(IPrincipal user, string roleName) {
+            return user.IsInRole(roleName);
+        }
 
         private static UserDetail CreateDetails(string userId, string userName, PeakerContext context)
         {

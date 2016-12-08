@@ -1,27 +1,30 @@
 <template>
 	<require from="./custom-elements/delete"></require>
+	<require from="./Views/partials/entry-filter-form"></require>
 	<div class="container">
 		<h2>${heading}</h2>
-	</div>
-	<div class="container">
-		<div class="form-group">
-			<div repeat.for="timeEntry of timeEntries">
-				<div class="entryContainer">
-					<div class='reviewEntry'>
-						<a route-href="route: edit; params.bind: { id: timeEntry.id}">
-							<span class="${timeEntry.exported ? 'glyphicon glyphicon-lock' : ''}"></span>
-							<delete msg="Are you sure you want to remove this entry?" action.call="$parent.delete(timeEntry)" if.bind="!timeEntry.exported"></delete>
-							<label>${timeEntry.date.toLocaleDateString()}, ${timeEntry.jobNumber}, ${timeEntry.workCode}</label><span>${timeEntry.hours} Hours</span></a>
+		<entry-filter-form filter-criteria.two-way="filterCriteria" time-entries.two-way="timeEntries" total.two-way="total" show-exported-filter.bind="true"
+			show-export-type-filter.bind="false"></entry-filter-form>
+		<div class="container">
+			<div class="form-group">
+				<div repeat.for="timeEntry of timeEntries">
+					<div class="entryContainer">
+						<div class='reviewEntry'>
+							<a route-href="route: edit; params.bind: { id: timeEntry.id}">
+								<span class="${timeEntry.exported ? 'glyphicon glyphicon-lock' : ''}"></span>
+								<delete msg="Are you sure you want to remove this entry?" action.call="$parent.delete(timeEntry)" if.bind="!timeEntry.exported"></delete>
+								<label>${timeEntry.date.toLocaleDateString()}, ${timeEntry.jobNumber}, ${timeEntry.workCode}</label><span>${timeEntry.hours} Hours</span></a>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="container">
-		<div class="form-group">
-			<div class="totalContainer">
-				<span id="total">Total</span>
-				<label model.bind="total">${total} Hours</label>
+		<div class="container">
+			<div class="form-group">
+				<div class="totalContainer">
+					<span id="total">Total</span>
+					<label model.bind="total">${total} Hours</label>
+				</div>
 			</div>
 		</div>
 	</div>

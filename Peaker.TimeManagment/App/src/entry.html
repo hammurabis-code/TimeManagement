@@ -3,6 +3,7 @@
     <require from="./custom-attributes/datepicker"></require>
     <require from="./custom-attributes/jobnumberinput"></require>
     <require from="./value-converters/date"></require>
+    <require from="./value-converters/hour"></require>
     <div class="container">
         <h2>${heading}</h2>
         <div class="input-group date" datepicker.two-way="entryDate">
@@ -19,7 +20,7 @@
                 <div class="input-group">
                     <span class="input-group-addon" id="entryHours">Hours</span>
                     <input class="form-control ${timeEntry.hoursError ? 'alert-danger' : ''}" placeholder="Hours" aria-describedby="entryHours"
-                        value.two-way="timeEntry.hours" type="number" step=".25">
+                        value.bind="timeEntry.hours | hour & updateTrigger:'blur'" type="number" step=".25">
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon" id="workCode">Code</span>

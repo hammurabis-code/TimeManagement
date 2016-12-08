@@ -1,0 +1,43 @@
+<template>
+    <require from="../../custom-attributes/datepicker"></require>
+    <require from="../../value-converters/date"></require>
+    <div>
+        <h3>Filter Entries</h3>
+    </div>
+    <div>
+        <div class="form-inline">
+            <label class="input-group-addon" id="exportFor">Export For</label>
+            <select id="selectExportType" value.bind="timeEntry.workCode" aria-describedby="exportFor">
+                        <option repeat.for="exportype of exportTypes">${exportType}</option>
+                    </select>
+        </div>
+        <div class="form-inline">
+            <label class="input-group-addon" id="startDate">Start Date</label>
+            <div class="input-group date" datepicker.two-way="filterCriteria.FilterStartDate">
+                <input type="text" class="form-control" value.bind="filterCriteria.FilterStartDate | date">
+                <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-inline">
+            <label class="input-group-addon" id="endDate">End Date</label>
+            <div class="input-group date" datepicker.two-way="filterCriteria.FilterEndDate">
+                <input type="text" class="form-control" value.bind="filterCriteria.FilterEndDate | date">
+                <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-inline" if.bind="showExportedFilter">
+            <label class="input-group-addon" id="exported">Exported</label>
+            <div class="input-group">
+                <input type="checkbox" checked.bind="filterCriteria.Exported" value.one-way="filterCriteria.Exported" aria-describedby="exported"
+                />
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="button" value='Find Entries' class="form-control btn btn-primary" click.delegate='getEntries()' />
+        </div>
+    </div>
+</template>

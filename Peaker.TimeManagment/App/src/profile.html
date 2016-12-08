@@ -40,11 +40,11 @@
             <div class='hidden'>
                 <ul class='clean-list'>
                     <li repeat.for="department of currentUser.UserDepartments">
-                        <div class="inline form-label content-left">
-                            <label>${department.Description}</label>
-                        </div>
                         <div class="inline form=content content-right">
                             <input type="checkbox" checked.bind="department.IsSelected" value.one-way="department.Id" />
+                        </div>
+                        <div class="inline content-left">
+                            <label>${department.Description}</label>
                         </div>
                     </li>
                 </ul>
@@ -55,11 +55,11 @@
             <div>
                 <ul class='clean-list'>
                     <li repeat.for="workCode of currentUser.UserWorkCodes">
-                        <div class="inline form-label content-left">
-                            <label>${workCode.baseCode} - ${workCode.description}</label>
-                        </div>
                         <div class="inline form=content content-right">
                             <input type="checkbox" checked.bind="workCode.IsSelected" value.one-way="workCode.Id" />
+                        </div>
+                        <div class="inline content-left">
+                            <label>${workCode.baseCode} - ${workCode.description}</label>
                         </div>
                     </li>
                 </ul>

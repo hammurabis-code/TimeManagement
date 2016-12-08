@@ -1,6 +1,7 @@
 ﻿using MySql.Data.Entity;
 using System.Data.Entity;
 using Peaker.TimeManagment.Models.Data;
+using System.Data.Entity.ModelConfiguration;
 
 namespace Peaker.TimeManagment.Data
 {
@@ -63,6 +64,16 @@ namespace Peaker.TimeManagment.Data
                .HasRequired(t => t.TimeEntry)
                .WithMany(t => t.Hours)
                .HasForeignKey(t => t.TimeEntryId);
+
+            modelBuilder.Configurations.Add(new HourEntryConfiguration());
+        }
+    }
+
+    public class HourEntryConfiguration : EntityTypeConfiguration<HourEntry>
+    {
+        public HourEntryConfiguration()
+        {
+            Property(h => h.Duration).HasPrecision(precision: 4, scale: 2);
         }
     }
 }

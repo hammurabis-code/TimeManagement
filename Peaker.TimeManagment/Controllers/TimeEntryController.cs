@@ -1,4 +1,5 @@
-﻿using Peaker.TimeManagment.Data;
+﻿using Microsoft.AspNet.Identity;
+using Peaker.TimeManagment.Data;
 using Peaker.TimeManagment.Models.Filters;
 using Peaker.TimeManagment.Models.View;
 using System.Web.Http;
@@ -10,10 +11,11 @@ namespace Peaker.TimeManagment.Controllers
     [RoutePrefix("api/TimeEntry")]
     [EnableCors(origins: "*", headers: "*", methods: "*", SupportsCredentials = true)]
     public class TimeEntryController : ApiController
-    {        
+    {
         //[AcceptVerbs("POST")]
         //[HttpPost]
-        //public IHttpActionResult SaveAnEntry([FromBody] TimeEntryView entryToSave) {            
+        //public IHttpActionResult SaveAnEntry([FromBody] TimeEntryView entryToSave)
+        //{
         //    if (User.Identity != null)
         //    {
         //        return Ok(TimeEntryAccess.AddUpdateEntry(entryToSave));
@@ -21,13 +23,13 @@ namespace Peaker.TimeManagment.Controllers
         //    else return Unauthorized();
         //}
 
-        [AcceptVerbs("GET")]
         [Route("GetEntries")]
-        public IHttpActionResult GetEntries([FromUri]EntryFilter filter)
+        [HttpPost]
+        public IHttpActionResult GetEntries([FromBody]EntryFilter filter)
         {
             if (User.Identity != null)
             {
-                return Ok(TimeEntryAccess.GetEntries(filter));
+                return Ok(TimeEntryAccess.GetEntries(filter, User));
             }
             else return Unauthorized();
         }
@@ -41,13 +43,22 @@ namespace Peaker.TimeManagment.Controllers
             else return Unauthorized();
         }
 
+        [HttpPost]
+        public IHttpActionResult GetTotalHoursForDate([FromBody]EntryFilter filter) {
+            if (User.Identity != null)
+            {
+                return Ok(TimeEntryAccess.GetTotalHours(filter,User));
+            }
+            else return Unauthorized();
+        }
+
         [Route("DeleteEntry")]
-        [HttpDelete]
-        public IHttpActionResult Delete(int entryId)
+        [HttpPost]
+        public IHttpActionResult Delete([FromBody] TimeEntryView entryToDelete)
         {
             if (User.Identity != null)
             {
-                return Ok(TimeEntryAccess.DeleteEntry(entryId));
+                return Ok(TimeEntryAccess.DeleteEntry(entryToDelete));
             }
             else return Unauthorized();
         }

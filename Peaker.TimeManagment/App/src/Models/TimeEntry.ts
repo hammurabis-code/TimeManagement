@@ -1,12 +1,14 @@
 import { bindable, bindingMode, autoinject } from 'aurelia-framework';
+import { User } from '../models/user';
+import { WorkCode } from '../models/workcode'
 
 @autoinject
 export class TimeEntry {
     id: number;
     userId: string;
     date: Date;
-    hours: number;
-    workCode: string;
+    @bindable hours: number;
+    workCode: WorkCode;
     jobNumber: string;
     comments: string;
     hoursError: boolean;
@@ -20,7 +22,7 @@ export class TimeEntry {
         this.userId = userId;
         this.date = entryDate;
         this.hours = 0;
-        this.workCode = '';
+        this.workCode = null;
         this.jobNumber = '';
         this.comments = '';
         this.hoursError = false;
@@ -30,19 +32,47 @@ export class TimeEntry {
         this.index = index;
     }
 
-    isValid(): boolean {
+    isValid(currentUser: User): boolean {
         if (this.hours <= 0) {
             this.hoursError = true;
         }
         else {
             this.hoursError = false;
         }
-        if (this.jobNumber.length < 5) {
-            this.jobNumberError = true;
+        if (this.workCode === undefined) {
+            this.workCodeError = true;
+            return false;
+        }
+        else {
+            this.workCodeError = false;
+        }
+        console.log(currentUser.UserWorkCodes[0].description);
+        console.log(currentUser.UserWorkCodes[0].baseCode);
+        console.log(this.workCode.toString());
+        let targetWorkCode = currentUser.UserWorkCodes.find(w =>
+            (w.baseCode + ' ' + w.description) === this.workCode.toString()
+        );
+        console.log(targetWorkCode);
+        if (targetWorkCode.IsJobNumberRequired) {
+            if (this.jobNumber.length < 5) {
+                this.jobNumberError = true;
+            }
+            else {
+                this.jobNumberError = false;
+            }
         }
         else {
             this.jobNumberError = false;
         }
-        return (!this.jobNumberError && !this.hoursError);
+        return (!this.jobNumberError && !this.hoursError && !this.workCodeError);
+
     }
+
+    hoursChanged(newValue, oldValue) {
+        if ((+newValue).toFixed(2) != (Math.round(newValue * 4) / 4).toFixed(2)) {
+            this.hours = +(Math.round(newValue * 4) / 4).toFixed(2);
+        }
+    }
+
+
 }

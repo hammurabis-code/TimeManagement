@@ -66,6 +66,22 @@ export class App {
         title: 'Profile',
         name: "Profile"
       },
+      {
+        route: 'admin',
+        moduleId: './views/admin',
+        nav: true,
+        auth: true,
+        title: 'Admin',
+        name: "Admin"
+      },
+      {
+        route: 'workCodeEdit',
+        moduleId: './views/work-code-edit',
+        nav: true,
+        auth: true,
+        title: 'Edit Work Codes',
+        name: "editWorkCodes"
+      },
       //{ route: 'admin', moduleId: './Views/admin', nav: true, auth: true, title: 'Administration' }, //this.appState.isLoggedIn
     ]);
 

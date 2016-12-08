@@ -14,66 +14,69 @@ export class TimeEntryService {
     }
 
     saveEntries(entries: TimeEntry[], userId: string): Promise<boolean> {
-        this.isRequesting = true;
+        this.router.isNavigating = true;
         return new Promise(resolve => {
             entries.forEach(entry => {
                 this.saveEntry(entry);
             });
-            this.isRequesting = false;
+            this.router.isNavigating = false;
             resolve(true);
         });
     }
 
     saveEntry(entry: TimeEntry): Promise<boolean> {
-        return new Promise(resolve => {
-            this.client.fetch(Constants.timeEntryApi + 'SaveEntry',
-                {
-                    body: JSON.stringify(entry),
-                    headers: {
-                        'Authorization': Helper.getAuthHeader(),
-                        'Content-Type': 'application/json',
-                        'Accept': '*/*',
-                    },
-                    method: 'POST'
-                })
-                .then(response => response.json())
-                .then(response => {
-                    if (response != -1) {
-                        resolve(true);
-                    }
-                    resolve(false);
-                }).catch(err => {
-                    console.log("Error saving entry.");
-                    resolve(false);
-                });
-        });
+        this.router.isNavigating = true;
+        return this.client.fetch(Constants.timeEntryApi + 'SaveEntry',
+            {
+                body: JSON.stringify(entry),
+                headers: {
+                    'Authorization': Helper.getAuthHeader(),
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                },
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(response => {
+                this.router.isNavigating = false;
+                if (response != -1) {
+                    return true;
+                }
+                return false;
+            }).catch(err => {
+                this.router.isNavigating = false;
+                console.log("Error saving entry.");
+                return false;
+            });
     }
 
     get(entryFilter: EntryFilter): Promise<Array<TimeEntry>> {
         this.router.isNavigating = true;
         this.isRequesting = true;
-        return this.client.fetch(Constants.timeEntryApi + 'GetEntries?' + $.param(entryFilter),
+        return this.client.fetch(Constants.timeEntryApi + 'GetEntries',
             {
-                method: 'GET',
+                body: JSON.stringify(entryFilter),
                 headers: {
                     'Authorization': Helper.getAuthHeader(),
-                }
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                },
+                method: 'POST'
             })
             .then(response => response.json())
             .then(response => {
                 let returnEntries = new Array<TimeEntry>();
                 response.forEach(element => {
-                    let entry = new TimeEntry(element.Date, element.UserId, 0);
+                    let entry = new TimeEntry(element.Date, element.userId, 0);
                     entry.comments = element.comments;
                     entry.exported = element.exported;
-                    console.log(element.hours);
                     entry.hours = +element.hours;
                     entry.id = element.id;
                     entry.jobNumber = element.jobnumber;
                     entry.date = new Date(element.date);
-                    this.router.isNavigating = false;
                     returnEntries.push(entry);
                 });
+                this.router.isNavigating = false;
                 return returnEntries;
             }).catch(err => {
                 console.log("Error retrieving entries.");
@@ -82,20 +85,48 @@ export class TimeEntryService {
             });
     }
 
-    delete(entry: TimeEntry): Promise<boolean> {
+    getTotalHours(entryFilter: EntryFilter): Promise<number> {
         this.router.isNavigating = true;
-        return this.client.fetch(
-            Constants.timeEntryApi + 'GetEntries' + $.param(entry.id),
+        return this.client.fetch(Constants.timeEntryApi + 'GetTotalHoursForDate',
             {
-                method: 'DELETE',
+                body: JSON.stringify(entryFilter),
                 headers: {
                     'Authorization': Helper.getAuthHeader(),
-                }
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                },
+                method: 'POST'
             })
             .then(response => response.json())
             .then(response => {
+                this.router.isNavigating = false;
                 return response;
             }).catch(err => {
+                console.log("Error retrieving entries.");
+                this.router.isNavigating = false;
+                return 24;
+            });
+    }
+
+    delete(entry: TimeEntry): Promise<boolean> {
+        this.router.isNavigating = true;
+        return this.client.fetch(
+            Constants.timeEntryApi + 'DeleteEntry',
+            {
+                body: JSON.stringify(entry),
+                headers: {
+                    'Authorization': Helper.getAuthHeader(),
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                },
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(response => {
+                this.router.isNavigating = false;
+                return response;
+            }).catch(err => {
+                this.router.isNavigating = false;
                 console.log('Error deleting entry.');
                 return false;
             });

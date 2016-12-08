@@ -19,7 +19,7 @@ export class editEntries {
 
     activate(params) {
         console.log(params.id);
-        this.timeEntryService.get(new EntryFilter(this.appState.currentUser.UserId, params.id, null, null, null))
+        this.timeEntryService.get(new EntryFilter(null, params.id, null, null, null))
             .then(entries => {
                 this.timeEntry = entries[0];
                 this.entryDate = this.timeEntry.date;

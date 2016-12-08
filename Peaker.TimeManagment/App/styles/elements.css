@@ -13,3 +13,20 @@ ul.clean-list li {
 .form-content {
     width: 70%;
 }
+
+.input-group{
+    width: 100%;
+}
+.input-group-addon{
+    width: 45%;
+    text-align: left;
+}
+.form-control {
+    width: 55%;
+}
+.reviewEntry a {
+    width: 100%;
+}
+.reviewEntry {
+    display: flex;
+}
