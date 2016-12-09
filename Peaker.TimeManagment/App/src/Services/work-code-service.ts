@@ -43,7 +43,7 @@ export class WorkCodeService {
                 },
                 method: 'POST'
             })
-            .then(response => response.json())
+            .then(response => response.json<number>())
             .then(response => {
                 this.router.isNavigating = false;
                 if (response != -1) {

@@ -89,9 +89,9 @@ export class AccountService {
                     'Accept': '*/*',
                 },
                 method: 'POST'
-            })
+            })           
             .then(response => {
-                return response;
+                return response.ok;
             });
     }
 }

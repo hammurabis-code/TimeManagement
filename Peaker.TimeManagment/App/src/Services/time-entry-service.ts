@@ -36,7 +36,7 @@ export class TimeEntryService {
                 },
                 method: 'POST'
             })
-            .then(response => response.json())
+            .then(response => response.json<number>())
             .then(response => {
                 this.router.isNavigating = false;
                 if (response != -1) {
@@ -63,21 +63,21 @@ export class TimeEntryService {
                 },
                 method: 'POST'
             })
-            .then(response => response.json())
+            .then(response => response.json<TimeEntry[]>())
             .then(response => {
-                let returnEntries = new Array<TimeEntry>();
-                response.forEach(element => {
-                    let entry = new TimeEntry(element.Date, element.userId, 0);
-                    entry.comments = element.comments;
-                    entry.exported = element.exported;
-                    entry.hours = +element.hours;
-                    entry.id = element.id;
-                    entry.jobNumber = element.jobnumber;
-                    entry.date = new Date(element.date);
-                    returnEntries.push(entry);
-                });
+                //let returnEntries = new Array<TimeEntry>();
+                // response.forEach(element => {
+                //     let entry = new TimeEntry(element.Date, element.userId, 0);
+                //     entry.comments = element.comments;
+                //     entry.exported = element.exported;
+                //     entry.hours = +element.hours;
+                //     entry.id = element.id;
+                //     entry.jobNumber = element.jobnumber;
+                //     entry.date = new Date(element.date);
+                //     returnEntries.push(entry);
+                //});
                 this.router.isNavigating = false;
-                return returnEntries;
+                return response;
             }).catch(err => {
                 console.log("Error retrieving entries.");
                 this.router.isNavigating = false;
