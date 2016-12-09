@@ -4,21 +4,17 @@ import { WorkCode } from '../Models/models';
 
 @autoinject
 export class WorkCodeEdit {
-    private selectedId: number;
-    private workCodes: WorkCode[];
-    private activeWorkCode: WorkCode;
+    workCodes: WorkCode[];
+    selectedWorkCode: WorkCode;
 
-
-    constructor(private workCodeService: WorkCodeService) { }
+    constructor(private workCodeService: WorkCodeService) { 
+        this.selectedWorkCode = null;
+    }
 
     activate() {
         this.workCodeService.getWorkCodes()
-            .then(response => {
-                this.workCodes = response;
+            .then(codes => {
+                this.workCodes = codes;
             });
-    }
-
-    selectedCodeChanged() {
-        this.activeWorkCode = this.workCodes.find(w => w.Id == this.selectedId);
     }
 }

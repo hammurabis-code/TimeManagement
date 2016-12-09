@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div if.bind="activeWorkCode" class="workcode-entry">
+        <div class="workcode-entry">
             <div class="inline slide">
                 <div class="input-group">
                     <span class="input-group-addon" id="baseCode">Base Code</span>
@@ -15,10 +15,10 @@
                     <span class="input-group-addon" id="area">Area</span>
                     <input class="form-control" placeholder="" aria-describedby="area" value.two-way="activeWorkCode.Area" type="text">
                 </div>
-                <!--<div class="input-group">
+                <div class="input-group">
                     <span class="input-group-addon" id="sub">Sub</span>
                     <input class="form-control" placeholder="" aria-describedby="area" value.two-way="activeWorkCode.Sub" type="text">
-                </div>-->
+                </div>
             </div>
             <div class="inline slide">
                 <div class="form-inline">
@@ -65,11 +65,14 @@
                 </div>
             </div>
         </div>
+        <div>
+            ${activeWorkCode.Description}
+        </div>
         <div class="workcode-select">
             <div class="input-group">
                 <span class="input-group-addon" id="workCode">Code</span>
-                <select class="form-control" id="selectWorkCode" change.delegate="selectedCodeChanged($index)" value.bind="selectedId" aria-describedby="workCode">
-                        <option repeat.for="workcode of workCodes" value.bind="workCode.Id" >${workcode.BaseCode} ${workcode.Description}</option>
+                <select class="form-control" id="selectWorkCode" value.bind="selectedWorkCode" aria-describedby="workCode">
+                        <option repeat.for="workcode of workCodes" model.bind='workcode' >${workcode.BaseCode} ${workcode.Description}</option>
                     </select>
             </div>
         </div>
