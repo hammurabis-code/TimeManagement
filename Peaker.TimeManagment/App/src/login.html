@@ -6,7 +6,7 @@
                     <span class="ion-social-googleplus"></span>Sign in with Google
                 </button>-->
             </div>
-            <div>
+            <div if.bind='!appState.loggedIn'>
                 <h2 class="form-signin-heading">Please sign in</h2>
                 <label for="inputEmail2" class="sr-only">Email address</label>
                 <input id="inputEmail2" class="form-control ${usernameError ? 'alert-danger' : ''}" placeholder="Email address" required=""
@@ -16,6 +16,10 @@
                     type="password" value.bind='password'>
                 </label>
                 <button class="btn btn-lg btn-primary btn-block" type="submit" click.delegate='login()'>Login</button>
+            </div>
+            <div if.bind='appState.loggedIn'>
+                <h2>Logged in as: ${appState.currentUser.Username}</h2>
+                <button class="btn btn-lg btn-primary btn-block" type="submit" click.delegate='logout()'>Log Out</button>
             </div>
         </form>
     </div>

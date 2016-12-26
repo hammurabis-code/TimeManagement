@@ -33,7 +33,7 @@ export class entry {
             for (let count = 0; count < this.appState.currentUser.pendingTimeEntries.length; count++) {
                 this.timeEntries.push(this.appState.currentUser.pendingTimeEntries[count]);
                 if (!dateSet) {
-                    this.entryDate == new Date(this.appState.currentUser.pendingTimeEntries[count].date);
+                    this.entryDate == new Date(this.appState.currentUser.pendingTimeEntries[count].entryDate);
                 }
             }
             this.appState.clearPendingEntries();
@@ -42,13 +42,13 @@ export class entry {
             this.entryDate = new Date();
             let entryCount = this.appState.currentUser.DefaultJobEntries;
             for (let count = 0; count < entryCount; count++) {
-                this.timeEntries.push(new TimeEntry(this.entryDate, this.appState.currentUser.UserId, count))
+                this.timeEntries.push(new TimeEntry(this.entryDate, this.appState.currentUser.UserDetailId, count))
             }
         }
     }
 
     addJob() {
-        this.timeEntries.push(new TimeEntry(this.entryDate, this.appState.currentUser.UserId, this.timeEntries.length));
+        this.timeEntries.push(new TimeEntry(this.entryDate, this.appState.currentUser.UserDetailId, this.timeEntries.length));
     }
 
     review() {
@@ -70,24 +70,24 @@ export class entry {
                         toastr.error("Total time exceeds 24 hours.", "Duration Error");
                         return;
                     }
-                })
-                .then(r => {
-                    if (entriesValid) {
-                        this.appState.addPendingTimeEntries(this.timeEntries, this.entryDate);
-                        this.timeEntries.length = 0;
-                        this.router.navigate('submit');
+                    else {
+                        if (entriesValid) {
+                            this.appState.addPendingTimeEntries(this.timeEntries, this.entryDate);
+                            this.timeEntries.length = 0;
+                            this.router.navigate('submit');
+                        }
                     }
-                });
+                })
         }
     }
 
     validateTotalTimeForDate(): Promise<boolean> {
         let result = true;
-        return this.timeEntryService.getTotalHours(new EntryFilter(null, null, null, this.entryDate, this.entryDate, null))
+        return this.timeEntryService.getTotalHours(new EntryFilter(this.appState.currentUser.UserDetailId, null, null, null, this.entryDate, this.entryDate, null))
             .then(hours => {
                 let total: number = hours;
                 for (let count = 0; count < this.timeEntries.length; count++) {
-                    total += +this.timeEntries[count].hours;
+                    total += +this.timeEntries[count].userHours;
                 }
                 if (total > 24) {
                     result = false;

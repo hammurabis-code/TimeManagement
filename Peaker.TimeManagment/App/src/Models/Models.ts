@@ -11,4 +11,5 @@ export { EntryFilter } from './EntryFilter';
 export { UserWorkCode } from './UserWorkCode';
 export { Helper } from './Helper';
 export { UserInfoViewModel } from './UserInfoViewModel';
+export { Week } from './Weeks';
 

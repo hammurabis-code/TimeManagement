@@ -3,6 +3,7 @@ import { HttpClient } from 'aurelia-fetch-client';
 import { Router, RouterConfiguration, Redirect } from 'aurelia-router';
 import { ApplicationState } from './application-state';
 import { Constants } from './Models/Models';
+import { RouteConfigs } from './routeConfigs';
 import 'fetch';
 
 @autoinject
@@ -17,11 +18,28 @@ export class App {
     }*/
   }
 
+  appRouter(config, appState: ApplicationState) {
+    config.title = 'Peaker Time Management';
+    config.options.pushState = true;
 
+    if (appState.loggedIn) {
+      if (appState.isInRole("Admin")) {
+        config.map(RouteConfigs.adminConfig);
+      }
+      else {
+        config.map(RouteConfigs.userConfig);
+      }
+    }
+    else {
+      config.map(RouteConfigs.defaultConfig);
+    }
+
+  }
 
 
   public configureRouter(config: RouterConfiguration, router: Router) {
     config.title = 'Peaker Time Management';
+    //this.appRouter(config, this.appState);
     config.map([
       {
         route: ['', 'login'],
@@ -68,7 +86,7 @@ export class App {
       },
       {
         route: 'admin',
-        moduleId: './views/admin',
+        moduleId: './views/admin-view',
         nav: true,
         auth: true,
         title: 'Admin',
@@ -77,10 +95,18 @@ export class App {
       {
         route: 'workCodeEdit',
         moduleId: './views/work-code-edit',
-        nav: true,
+        nav: false,
         auth: true,
         title: 'Edit Work Codes',
         name: "editWorkCodes"
+      },
+      {
+        route: 'createUsers',
+        moduleId: './views/create-user',
+        nav: false,
+        auth: true,
+        title: 'Create Users',
+        name: "createUsers"
       },
       //{ route: 'admin', moduleId: './Views/admin', nav: true, auth: true, title: 'Administration' }, //this.appState.isLoggedIn
     ]);

@@ -7,7 +7,7 @@
 			<div repeat.for="timeEntry of timeEntries">
 				<div class="entryContainer">
 					<div>
-						<label>${timeEntry.date.toLocaleDateString()}, ${timeEntry.jobNumber}, ${timeEntry.workCode}</label><span>${timeEntry.hours} Hours</span>
+						<label>${timeEntry.entryDate.toLocaleDateString()}, ${timeEntry.jobnumber}, ${timeEntry.workCode.baseCode} ${timeEntry.workCode.description}</label><span>${timeEntry.userHours} Hours</span>
 					</div>
 					<div>
 						<label>${timeEntry.comments}</label>

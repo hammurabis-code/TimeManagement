@@ -23,21 +23,21 @@ export class loginForm {
 
 
     bind() {
-        console.log('Login Activate Fired.');
         this.accountService.getAuthenticated()
             .then(success => {
-                this.appState.loggedIn = true;
-                console.log("Authenticated Result: " + success);
-                if (success) {
-                    this.appState.fillUser().then(result => {
-                        if (result) {
-                            let route = this.appState.returnRoute;
-                            if (route === null || route === '') {
-                                route = this.appState.defaultRoute;
+                if (!this.appState.loggedIn || this.appState.currentUser == undefined) {
+                    this.appState.loggedIn = true;
+                    if (success) {
+                        this.appState.fillUser().then(result => {
+                            if (result) {
+                                let route = this.appState.returnRoute;
+                                if (route === null || route === '') {
+                                    route = this.appState.defaultRoute;
+                                }
+                                this.router.navigate(route);
                             }
-                            this.router.navigate(route);
-                        }
-                    })
+                        })
+                    }
                 }
             });
     }
@@ -45,24 +45,33 @@ export class loginForm {
     login() {
         if (this.formValid) {
             let login = new Login(this.username, this.password);
-            this.accountService.login(login).then(success => {
-                if (success) {
-                    this.appState.loggedIn = true;
-                    this.appState.fillUser().then(result => {
-                        if (result) {
-                            let route = this.appState.returnRoute;
-                            if (route === null || route === '') {
-                                route = this.appState.defaultRoute;
-                            }
-                            this.router.navigate(route);
-                        }
-                    })
-                }
-                else {
-                    console.log('Login Failed.');
-                }
-            });
+            this.accountService.login(login)
+                .then(success => {
+                    if (success) {
+                        this.appState.loggedIn = true;
+                        this.appState.fillUser()
+                            .then(result => {
+                                console.log('Login Filluser Promise Returned');
+                                if (result) {
+                                    let route = this.appState.returnRoute;
+                                    if (route === null || route === '') {
+                                        route = this.appState.defaultRoute;
+                                    }
+                                    this.router.navigate(route);
+                                }
+                            })
+                    }
+                    else {
+                        console.log('Login Failed.');
+                    }
+                });
         }
+    }
+
+    logout() {
+        this.appState.loggedIn = false;
+        this.appState.currentUser = null;
+        this.accountService.logout();
     }
 
     formValid() {

@@ -2,6 +2,7 @@ import { autoinject } from 'aurelia-dependency-injection';
 import { EntryFilter, TimeEntry } from '../../Models/Models';
 import { bindable } from 'aurelia-framework';
 import { TimeEntryService } from '../../Services/time-entry-service'
+import { ApplicationState } from '../../Application-State'
 
 @autoinject
 export class EntryFilterForm {
@@ -12,7 +13,7 @@ export class EntryFilterForm {
     @bindable showExportedFilter: boolean;
     @bindable showExportTypeFilter: boolean;
 
-    constructor(private timeEntryService: TimeEntryService) { }
+    constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService) { }
 
     getEntries() {
         this.timeEntryService.get(this.filterCriteria)
@@ -20,7 +21,7 @@ export class EntryFilterForm {
                 this.timeEntries = entries;
                 this.total = 0;
                 for (var count = 0; count < this.timeEntries.length; count++) {
-                    this.total += +this.timeEntries[count].hours;
+                    this.total += +this.timeEntries[count].userHours;
                 }
             });
     }

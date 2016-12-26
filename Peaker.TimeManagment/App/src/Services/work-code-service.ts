@@ -33,9 +33,9 @@ export class WorkCodeService {
 
     addUpdateWorkCode(code: WorkCode): Promise<boolean> {
         this.router.isNavigating = true;
-        return this.client.fetch(Constants.workCodeServiceApi,
+        return this.client.fetch(Constants.workCodeServiceApi + 'AddUpdateWorkCode',
             {
-                body: JSON.stringify(WorkCode),
+                body: JSON.stringify(code),
                 headers: {
                     'Authorization': Helper.getAuthHeader(),
                     'Content-Type': 'application/json',

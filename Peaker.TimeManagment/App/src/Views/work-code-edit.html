@@ -1,78 +1,86 @@
 <template>
     <div class="container">
         <div class="workcode-entry">
+            <h3>Edit Work Codes</h3>
             <div class="inline slide">
                 <div class="input-group">
                     <span class="input-group-addon" id="baseCode">Base Code</span>
-                    <input class="form-control" placeholder="ADR" aria-describedby="baseCode" value.two-way="activeWorkCode.BaseCode" type="text">
-                </div>
-                <div class="input-group">
-                    <span class="input-group-addon" id="description">Description</span>
-                    <input class="form-control" placeholder="AIRDUCT REPAIR RIGHT" aria-describedby="description" value.two-way="activeWorkCode.Description"
+                    <input class="form-control" placeholder="ADR" aria-describedby="baseCode" value.two-way="selectedWorkCode.BaseCode" change.trigger="codeChanged()"
                         type="text">
                 </div>
                 <div class="input-group">
+                    <span class="input-group-addon" id="description">Description</span>
+                    <input class="form-control" placeholder="AIRDUCT REPAIR RIGHT" aria-describedby="description" value.two-way="selectedWorkCode.Description"
+                        change.trigger="codeChanged()" type="text">
+                </div>
+                <div class="input-group">
                     <span class="input-group-addon" id="area">Area</span>
-                    <input class="form-control" placeholder="" aria-describedby="area" value.two-way="activeWorkCode.Area" type="text">
+                    <input class="form-control" placeholder="" aria-describedby="area" value.two-way="selectedWorkCode.Area" change.trigger="codeChanged()"
+                        type="text">
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon" id="sub">Sub</span>
-                    <input class="form-control" placeholder="" aria-describedby="area" value.two-way="activeWorkCode.Sub" type="text">
+                    <input class="form-control" placeholder="" aria-describedby="area" value.two-way="selectedWorkCode.Sub" change.trigger="codeChanged()"
+                        type="text">
                 </div>
             </div>
             <div class="inline slide">
                 <div class="form-inline">
                     <label class="input-group-addon" id="isJobNumberRequired">Job Number Required?</label>
                     <div class="input-group">
-                        <input type="checkbox" checked.bind="activeWorkCode.isJobNumberRequired" value.one-way="activeWorkCode.IsJobNumberRequired"
+                        <input type="checkbox" checked.bind="selectedWorkCode.IsJobNumberRequired" model.bind="selectedWorkCode" change.trigger="codeChanged()"
                             aria-describedby="isJobNumberRequired" />
                     </div>
                 </div>
                 <div class="form-inline">
                     <label class="input-group-addon" id="isEngineeringCode">Engineering Code</label>
                     <div class="input-group">
-                        <input type="checkbox" checked.bind="activeWorkCode.isEngineeringCode" value.one-way="activeWorkCode.IsEngineeringCode" aria-describedby="isEngineeringCode"
-                        />
+                        <input type="checkbox" checked.bind="selectedWorkCode.IsEngineeringCode" model.bind="selectedWorkCode" change.trigger="codeChanged()"
+                            aria-describedby="isEngineeringCode" />
                     </div>
                 </div>
                 <div class="form-inline">
                     <label class="input-group-addon" id="isFieldServiceCode">Field Service Code</label>
                     <div class="input-group">
-                        <input type="checkbox" checked.bind="activeWorkCode.isFieldServiceCode" value.one-way="activeWorkCode.IsFieldServiceCode"
-                            aria-describedby="isFieldServiceCode" />
+                        <input type="checkbox" checked.bind="selectedWorkCode.IsFieldServiceCode" change.trigger="codeChanged()" aria-describedby="isFieldServiceCode"
+                        />
                     </div>
                 </div>
                 <div class="form-inline">
                     <label class="input-group-addon" id="isGovernmentCode">Government Code</label>
                     <div class="input-group">
-                        <input type="checkbox" checked.bind="activeWorkCode.isGovernmentCode" value.one-way="activeWorkCode.IsGovernmentCode" aria-describedby="isGovernmentCode"
+                        <input type="checkbox" checked.bind="selectedWorkCode.IsGovernmentCode" change.trigger="codeChanged()" aria-describedby="isGovernmentCode"
                         />
                     </div>
                 </div>
                 <div class="form-inline">
                     <label class="input-group-addon" id="isOfficeCode">Office Code</label>
                     <div class="input-group">
-                        <input type="checkbox" checked.bind="activeWorkCode.isOfficeCode" value.one-way="activeWorkCode.IsOfficeCode" aria-describedby="isOfficeCode"
+                        <input type="checkbox" checked.bind="selectedWorkCode.IsOfficeCode" change.trigger="codeChanged()" aria-describedby="isOfficeCode"
                         />
                     </div>
                 </div>
                 <div class="form-inline">
                     <label class="input-group-addon" id="isShopCode">Shop Code</label>
                     <div class="input-group">
-                        <input type="checkbox" checked.bind="activeWorkCode.isShopCode" value.one-way="activeWorkCode.IsShopCode" aria-describedby="isShopCode"
+                        <input type="checkbox" checked.bind="selectedWorkCode.IsShopCode" change.trigger="codeChanged()" aria-describedby="isShopCode"
                         />
                     </div>
                 </div>
             </div>
-        </div>
-        <div>
-            ${activeWorkCode.Description}
+            <div class="actions">
+                <div class="form-group">
+                    <input type="button" value='Save Code' class="form-control btn btn-primary" click.delegate='submit()' />
+                    <input type="button" value='Cancel' class="form-control btn btn-primary" click.delegate='cancel()' />
+                </div>
+            </div>
         </div>
         <div class="workcode-select">
             <div class="input-group">
                 <span class="input-group-addon" id="workCode">Code</span>
-                <select class="form-control" id="selectWorkCode" value.bind="selectedWorkCode" aria-describedby="workCode">
-                        <option repeat.for="workcode of workCodes" model.bind='workcode' >${workcode.BaseCode} ${workcode.Description}</option>
+                <select class="form-control" id="selectWorkCode" value.bind="selectedWorkCode" aria-describedby="workCode" disabled.bind="isDirty">
+                        <option>Select Code</option>
+                        <option repeat.for="workcode of workCodes " model.bind='workcode' >${workcode.BaseCode} ${workcode.Description}</option>
                     </select>
             </div>
         </div>

@@ -1,6 +1,6 @@
 import { autoinject } from 'aurelia-dependency-injection';
 import { HttpClient, json } from 'aurelia-fetch-client';
-import { Constants, Login, User, Helper, UserInfoViewModel } from '../Models/Models';
+import { Constants, Login, User, Helper, UserInfoViewModel, Register } from '../Models/Models';
 
 @autoinject
 export class AccountService {
@@ -38,6 +38,21 @@ export class AccountService {
         });
     }
 
+    logout() {
+        sessionStorage.removeItem(Constants.tokenName);
+        this.client.fetch(Constants.accountApi + 'Logout',
+            {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': Helper.getAuthHeader()
+                }
+            })
+            .catch(err => {
+                console.log("Error requesting logout: " + err);
+            });
+    }
+
     getUserInfo(): Promise<User> {
         return new Promise(resolve => {
             this.client.fetch(Constants.accountApi + 'UserInfo',
@@ -47,8 +62,8 @@ export class AccountService {
                 })
                 .then(resp => {
                     resp.json().then(data => {
-                        //console.log(data);
-                        let user = new User(data.UserId, data.Username, data.AccountingName, data.DefaultJobEntries, data.UserDepartments, data.UserWorkCodes, data.UsedJobNumbers);
+                        console.log(data);
+                        let user = new User(data.UserDetailId, data.UserId, data.Username, data.AccountingName, data.DefaultJobEntries, data.UserDepartments, data.UserWorkCodes, data.UsedJobNumbers);
                         resolve(user);
                     })
                 }).catch(err => {
@@ -89,9 +104,63 @@ export class AccountService {
                     'Accept': '*/*',
                 },
                 method: 'POST'
-            })           
+            })
             .then(response => {
                 return response.ok;
             });
+    }
+
+    getUserInRole(roleName: string): Promise<boolean> {
+        return new Promise(resolve => {
+            if (sessionStorage.getItem(Constants.tokenName) == undefined || sessionStorage.getItem(Constants.tokenName) == null) {
+                resolve(false);
+            }
+            else {
+                this.client.fetch(Constants.accountApi + 'IsInRole',
+                    {
+                        body: json(roleName),
+                        headers: {
+                            'Authorization': Helper.getAuthHeader(),
+                            'Content-Type': 'application/json',
+                            'Accept': '*/*',
+                        },
+                        method: 'POST'
+                    })
+                    .then(resp => {
+                        console.log('IsInRoleResult Result: ' + resp);
+                        resp.json().then(result => {
+                            resolve(result);
+                        })
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        resolve(false);
+                    })
+            }
+        });
+    }
+
+    createUser(username: string, password: string, confirmPassword: string): Promise<boolean> {
+        let regsiterModel = new Register(username, password, confirmPassword);
+        return this.client.fetch(Constants.accountApi + 'Register',
+            {
+                body: json(regsiterModel),
+                headers: {
+                    'Authorization': Helper.getAuthHeader(),
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                },
+                method: 'POST'
+            })
+            .then(resp => {
+                if (resp.status == 200) {
+                    return true;
+                }
+                return false;
+            })
+            .catch(err => {
+                console.log(err);
+                return false;
+            })
     }
 }

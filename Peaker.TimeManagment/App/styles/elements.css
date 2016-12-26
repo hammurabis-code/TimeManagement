@@ -27,6 +27,6 @@ ul.clean-list li {
 .reviewEntry a {
     width: 100%;
 }
-.reviewEntry {
-    display: flex;
+.actions {
+    margin: 10px auto;
 }

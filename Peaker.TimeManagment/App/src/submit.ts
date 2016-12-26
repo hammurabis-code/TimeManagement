@@ -22,9 +22,9 @@ export class submitTime {
             this.total = 0;
             for (var count = 0; count < this.appState.currentUser.pendingTimeEntries.length; count++) {
                 this.timeEntries.push(this.appState.currentUser.pendingTimeEntries[count]);
-                this.total += +this.appState.currentUser.pendingTimeEntries[count].hours;
+                this.total += +this.appState.currentUser.pendingTimeEntries[count].userHours;
                 if (this.entryDate === null) {
-                    this.entryDate = this.appState.currentUser.pendingTimeEntries[count].date;
+                    this.entryDate = this.appState.currentUser.pendingTimeEntries[count].entryDate;
                 }
             }
             this.appState.clearPendingEntries();
@@ -38,12 +38,13 @@ export class submitTime {
     }
 
     submit() {
-        this.timeEntryService.saveEntries(this.timeEntries, this.appState.currentUser.UserId).then(success => {
-            if (success) {
-                this.appState.clearPendingEntries();
-                this.timeEntries.length = 0;
-                this.router.navigateToRoute('entry', { 'submitted': true });
-            }
-        });
+        this.timeEntryService.saveEntries(this.timeEntries)
+            .then(success => {
+                if (success) {
+                    this.appState.clearPendingEntries();
+                    this.timeEntries.length = 0;
+                    this.router.navigateToRoute('entry', { 'submitted': true });
+                }
+            });
     }
 }

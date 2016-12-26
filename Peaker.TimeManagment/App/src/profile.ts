@@ -74,7 +74,6 @@ export class profile {
     resetCodes() { }
 
     saveProfile() {
-        console.log('UserId: ' + this.currentUser.UserId);
         this.accountService.updateUserProfile(this.currentUser)
             .then(response => {
                 if (response) {

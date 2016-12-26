@@ -1,0 +1,26 @@
+<template>
+    <div class="container">
+        <h2>Create User</h2>
+        <div class="input-group">
+            <span class="input-group-addon" id="username">Username</span>
+            <input class="form-control ${usernameError ? 'alert-danger' : ''}" placeholder="User Name" aria-describedby="username" value.bind="userName"
+                type="text">
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon" id="password">Password</span>
+            <input class="form-control ${passwordError ? 'alert-danger' : ''}" placeholder="Password" aria-describedby="password" value.bind="password"
+                type="password">
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon" id="confirmPassword">Confirm Password</span>
+            <input class="form-control ${passwordConfirmError ? 'alert-danger' : ''}" placeholder="Password" aria-describedby="confirmPassword"
+                value.bind="confirmPassword" type="password">
+        </div>
+        <div if.bind='passwordMismatchError'>
+            <label class='error-text'>Password values do not match.</label>
+        </div>
+        <div class="form-group">
+            <input type="button" value='Review/Submit' class="form-control btn btn-primary" click.delegate='create()' />
+        </div>
+    </div>
+</template>

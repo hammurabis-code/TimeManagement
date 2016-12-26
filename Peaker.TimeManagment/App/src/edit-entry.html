@@ -2,6 +2,7 @@
     <require from="./custom-attributes/datepicker"></require>
     <require from="./custom-attributes/jobnumberinput"></require>
     <require from="./value-converters/date"></require>
+    <require from="./value-converters/hour"></require>
     <div class="container">
         <h2>${heading}</h2>
         <div class="timeEntry">
@@ -15,19 +16,19 @@
             <div class="input-group">
                 <span class="input-group-addon" id="entryHours">Hours</span>
                 <input class="form-control ${timeEntry.hoursError ? 'alert-danger' : ''}" placeholder="Hours" aria-describedby="entryHours"
-                    value.two-way="timeEntry.hours" type="number" step=".25">
+                    value.bind="timeEntry.userHours | hour & updateTrigger:'blur'" type="number" step=".25">
             </div>
             <div class="input-group">
                 <span class="input-group-addon" id="workCode">Code</span>
-                <select class="form-control ${timeEntry.workCodeError ? 'alert-danger' : ''}" id="selectWorkCode" value.two-way="timeEntry.workCode"
+                <select class="form-control ${timeEntry.workCodeError ? 'alert-danger' : ''}" id="selectWorkCode" value.bind="timeEntry.workCode"
                     aria-describedby="workCode">
-                    <option repeat.for="workcode of workCodes" >${workcode.fullCode}</option>
+                    <option repeat.for="workcode of workCodes"  if.bind='workcode.IsSelected' model.bind="workcode"  >${workcode.baseCode} ${workcode.description}</option>
                 </select>
             </div>
             <div class="input-group">
                 <span class="input-group-addon" id="jobNumber">Job Number - J00</span>
-                <input class="form-control  ${timeEntry.jobNumberError ? 'alert-danger' : ''}" value.two-way="timeEntry.jobNumber" placeholder="Format: 12345"
-                    aria-describedby="jobNumber" job-number-input="job-number.two-way: timeEntry.jobNumber; job-number-error.two-way: timeEntry.jobNumberError">
+                <input class="form-control  ${timeEntry.jobNumberError ? 'alert-danger' : ''}" value.two-way="timeEntry.jobnumber" placeholder="Format: 12345"
+                    aria-describedby="jobNumber" job-number-input="job-number.two-way: timeEntry.jobnumber; job-number-error.two-way: timeEntry.jobNumberError">
             </div>
             <div class="input-group">
                 <span class="input-group-addon" id="comments">Comments</span>

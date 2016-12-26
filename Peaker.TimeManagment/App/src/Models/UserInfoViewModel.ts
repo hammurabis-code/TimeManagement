@@ -5,6 +5,7 @@ import { Department } from './Department'
 import { User } from './User'
 
 export class UserInfoViewModel {
+    UserDetailId: number;
     UserId: string;
     Username: string;
     AccountingName: string;
@@ -14,6 +15,7 @@ export class UserInfoViewModel {
     UserWorkCodes: UserWorkCode[];
 
     constructor(user: User) {
+        this.UserDetailId = user.UserDetailId;
         this.UserId = user.UserId;
         this.Username = user.Username;
         this.AccountingName = user.Username;

@@ -13,16 +13,42 @@ export class TimeEntryService {
         });
     }
 
-    saveEntries(entries: TimeEntry[], userId: string): Promise<boolean> {
+    saveEntries(entries: TimeEntry[]) {
         this.router.isNavigating = true;
-        return new Promise(resolve => {
-            entries.forEach(entry => {
-                this.saveEntry(entry);
+        return this.client.fetch(Constants.timeEntryApi + 'SaveEntries',
+            {
+                body: JSON.stringify(entries),
+                headers: {
+                    'Authorization': Helper.getAuthHeader(),
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                },
+                method: 'POST'
+            })
+            .then(response => {
+                this.router.isNavigating = false;
+                if (response.status == 200) {
+                    return true;
+                }
+                return false;
+            }).catch(err => {
+                this.router.isNavigating = false;
+                console.log("Error saving entry.");
+                return false;
             });
-            this.router.isNavigating = false;
-            resolve(true);
-        });
+
     }
+
+    // saveEntries(entries: TimeEntry[], userId: string): Promise<boolean> {
+    //     this.router.isNavigating = true;
+    //     return new Promise(resolve => {
+    //         entries.forEach(entry => {
+    //             return this.saveEntry(entry);
+    //         });
+    //         this.router.isNavigating = false;
+    //         resolve(true);
+    //     });
+    // }
 
     saveEntry(entry: TimeEntry): Promise<boolean> {
         this.router.isNavigating = true;
@@ -36,10 +62,9 @@ export class TimeEntryService {
                 },
                 method: 'POST'
             })
-            .then(response => response.json<number>())
             .then(response => {
                 this.router.isNavigating = false;
-                if (response != -1) {
+                if (response.status == 200) {
                     return true;
                 }
                 return false;
@@ -65,19 +90,23 @@ export class TimeEntryService {
             })
             .then(response => response.json<TimeEntry[]>())
             .then(response => {
-                //let returnEntries = new Array<TimeEntry>();
-                // response.forEach(element => {
-                //     let entry = new TimeEntry(element.Date, element.userId, 0);
-                //     entry.comments = element.comments;
-                //     entry.exported = element.exported;
-                //     entry.hours = +element.hours;
-                //     entry.id = element.id;
-                //     entry.jobNumber = element.jobnumber;
-                //     entry.date = new Date(element.date);
-                //     returnEntries.push(entry);
-                //});
+                let newEntries = new Array<TimeEntry>();
+                let index = 0;
+                response.forEach(element => {
+                    var newEntry = new TimeEntry(element.entryDate, element.userDetailId, index);
+                    newEntry.comments = element.comments;
+                    newEntry.exportedToNavision = element.exportedToNavision;
+                    newEntry.exportedToPayroll = element.exportedToPayroll;
+                    newEntry.id = element.id;
+                    newEntry.jobnumber = element.jobnumber;
+                    newEntry.userHours = element.userHours;
+                    newEntry.workCodeId = element.workCodeId;
+                    newEntry.workCode = element.workCode;
+                    newEntries.push(newEntry);
+                    index++;
+                });
                 this.router.isNavigating = false;
-                return response;
+                return newEntries;
             }).catch(err => {
                 console.log("Error retrieving entries.");
                 this.router.isNavigating = false;
@@ -108,6 +137,20 @@ export class TimeEntryService {
             });
     }
 
+    getRestrictedJobnumbers(): Promise<any[]> {
+        this.router.isNavigating = true;
+        return this.client.fetch(Constants.timeEntryApi + 'getRestrictedJobnumbers',
+            {
+                method: 'get',
+                headers: { 'Authorization': Helper.getAuthHeader() }
+            })
+            .then(resp => resp.json<any[]>())
+            .then(resp => {
+                console.log(resp);
+                return resp;
+            })
+    }
+
     delete(entry: TimeEntry): Promise<boolean> {
         this.router.isNavigating = true;
         return this.client.fetch(
@@ -121,10 +164,12 @@ export class TimeEntryService {
                 },
                 method: 'POST'
             })
-            .then(response => response.json())
             .then(response => {
                 this.router.isNavigating = false;
-                return response;
+                if (response.status == 200) {
+                    return true;
+                }
+                return false;
             }).catch(err => {
                 this.router.isNavigating = false;
                 console.log('Error deleting entry.');
