@@ -17,39 +17,23 @@ using Peaker.TimeManagment.Providers;
 using Peaker.TimeManagment.Results;
 using Peaker.TimeManagment.Data;
 using Peaker.TimeManagment.Models.View;
+using AspNetIdentity.WebApi.Controllers;
 
 namespace Peaker.TimeManagment.Controllers
 {
     [Authorize]
     [RoutePrefix("api/Account")]    
-    public class AccountController : ApiController
+    public class AccountController : BaseApiController
     {
         private const string LocalLoginProvider = "Local";
-        private ApplicationUserManager _userManager;
 
-        public AccountController()
-        {
-        }
+        public AccountController() { }
 
-        public AccountController(ApplicationUserManager userManager,
-            ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
+        public AccountController(ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
         {
-            UserManager = userManager;
             AccessTokenFormat = accessTokenFormat;
         }
-
-        public ApplicationUserManager UserManager
-        {
-            get
-            {
-                return _userManager ?? Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            private set
-            {
-                _userManager = value;
-            }
-        }
-
+               
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
 
         //[AllowAnonymous]
@@ -132,30 +116,57 @@ namespace Peaker.TimeManagment.Controllers
         //[HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
        
         [Route("UserInfo")]
-        public UserInfoViewModel GetUserInfo()
+        public IHttpActionResult GetUserInfo()
         {
-            var user = UserManager.FindById(User.Identity.GetUserId());
+            var user = AppUserManager.FindById(User.Identity.GetUserId());
             if (User.Identity != null && user != null)
             {
-                return UserAccess.FillUserInfo(user);
+                try
+                {
+                    return Ok(new UserAccess().FillUserInfo(user));
+                } 
+                catch (Exception ex)
+                {
+                   return BadRequest("An error occured retrieving this users details.");
+                }
             }
-            else return null;            
+            return BadRequest("User not found.");            
+        }
+
+        [Route("IsInRole")]
+        public IHttpActionResult GetUserIsInRole([FromBody] string roleName)
+        {
+            var user = AppUserManager.FindById(User.Identity.GetUserId());
+            if (User.Identity != null && user != null)
+            {
+                try
+                {
+                    
+                    return Ok(AppUserManager.GetRoles(user.Id).Contains(roleName));
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest("An error occured retrieving this users role info.");
+                }
+            }
+            return BadRequest("User not found.");
         }
 
         [Route("UpdateUserProfile")]
         public IHttpActionResult UpdateProfile(UserInfoViewModel userInfo)
         {
-            var user = UserManager.FindById(User.Identity.GetUserId());
+            var user = AppUserManager.FindById(User.Identity.GetUserId());
             if (User.Identity != null && user != null)
             {
-                return Ok(UserAccess.UpdateUserInfo(userInfo));
+                new UserAccess().UpdateUserInfo(userInfo);
+                return Ok();
             }
             else return BadRequest("Error updating user.");
         }
 
         [HttpGet]
         public async Task<bool> IsAuthenticated() {
-            IdentityUser user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            IdentityUser user = await AppUserManager.FindByIdAsync(User.Identity.GetUserId());
             if (User.Identity != null && user != null)
             {
                 return true;
@@ -175,7 +186,7 @@ namespace Peaker.TimeManagment.Controllers
         [Route("ManageInfo")]
         public async Task<ManageInfoViewModel> GetManageInfo(string returnUrl, bool generateState = false)
         {
-            IdentityUser user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            IdentityUser user = await AppUserManager.FindByIdAsync(User.Identity.GetUserId());
 
             if (user == null)
             {
@@ -220,7 +231,7 @@ namespace Peaker.TimeManagment.Controllers
                 return BadRequest(ModelState);
             }
 
-            IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword,
+            IdentityResult result = await AppUserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword,
                 model.NewPassword);
             
             if (!result.Succeeded)
@@ -240,7 +251,7 @@ namespace Peaker.TimeManagment.Controllers
                 return BadRequest(ModelState);
             }
 
-            IdentityResult result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
+            IdentityResult result = await AppUserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
 
             if (!result.Succeeded)
             {
@@ -277,7 +288,7 @@ namespace Peaker.TimeManagment.Controllers
                 return BadRequest("The external login is already associated with an account.");
             }
 
-            IdentityResult result = await UserManager.AddLoginAsync(User.Identity.GetUserId(),
+            IdentityResult result = await AppUserManager.AddLoginAsync(User.Identity.GetUserId(),
                 new UserLoginInfo(externalData.LoginProvider, externalData.ProviderKey));
 
             if (!result.Succeeded)
@@ -301,11 +312,11 @@ namespace Peaker.TimeManagment.Controllers
 
             if (model.LoginProvider == LocalLoginProvider)
             {
-                result = await UserManager.RemovePasswordAsync(User.Identity.GetUserId());
+                result = await AppUserManager.RemovePasswordAsync(User.Identity.GetUserId());
             }
             else
             {
-                result = await UserManager.RemoveLoginAsync(User.Identity.GetUserId(),
+                result = await AppUserManager.RemoveLoginAsync(User.Identity.GetUserId(),
                     new UserLoginInfo(model.LoginProvider, model.ProviderKey));
             }
 
@@ -347,7 +358,7 @@ namespace Peaker.TimeManagment.Controllers
                 return new ChallengeResult(provider, this);
             }
 
-            ApplicationUser user = await UserManager.FindAsync(new UserLoginInfo(externalLogin.LoginProvider,
+            ApplicationUser user = await AppUserManager.FindAsync(new UserLoginInfo(externalLogin.LoginProvider,
                 externalLogin.ProviderKey));
 
             bool hasRegistered = user != null;
@@ -356,9 +367,9 @@ namespace Peaker.TimeManagment.Controllers
             {
                 Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
                 
-                 ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(UserManager,
+                 ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(AppUserManager,
                     OAuthDefaults.AuthenticationType);
-                ClaimsIdentity cookieIdentity = await user.GenerateUserIdentityAsync(UserManager,
+                ClaimsIdentity cookieIdentity = await user.GenerateUserIdentityAsync(AppUserManager,
                     CookieAuthenticationDefaults.AuthenticationType);
 
                 AuthenticationProperties properties = ApplicationOAuthProvider.CreateProperties(user.UserName);
@@ -427,7 +438,7 @@ namespace Peaker.TimeManagment.Controllers
 
             var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
 
-            IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+            IdentityResult result = await AppUserManager.CreateAsync(user, model.Password);
 
             if (!result.Succeeded)
             {
@@ -456,13 +467,13 @@ namespace Peaker.TimeManagment.Controllers
 
             var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
 
-            IdentityResult result = await UserManager.CreateAsync(user);
+            IdentityResult result = await AppUserManager.CreateAsync(user);
             if (!result.Succeeded)
             {
                 return GetErrorResult(result);
             }
 
-            result = await UserManager.AddLoginAsync(user.Id, info.Login);
+            result = await AppUserManager.AddLoginAsync(user.Id, info.Login);
             if (!result.Succeeded)
             {
                 return GetErrorResult(result); 
@@ -472,10 +483,12 @@ namespace Peaker.TimeManagment.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && _userManager != null)
+            if (disposing && AppUserManager != null)
             {
-                _userManager.Dispose();
-                _userManager = null;
+                AppUserManager.Dispose();               
+            }
+            if (disposing && AppRoleManager != null) {
+                AppRoleManager.Dispose();
             }
 
             base.Dispose(disposing);
@@ -486,36 +499,7 @@ namespace Peaker.TimeManagment.Controllers
         private IAuthenticationManager Authentication
         {
             get { return Request.GetOwinContext().Authentication; }
-        }
-
-        private IHttpActionResult GetErrorResult(IdentityResult result)
-        {
-            if (result == null)
-            {
-                return InternalServerError();
-            }
-
-            if (!result.Succeeded)
-            {
-                if (result.Errors != null)
-                {
-                    foreach (string error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error);
-                    }
-                }
-
-                if (ModelState.IsValid)
-                {
-                    // No ModelState errors are available to send, so just return an empty BadRequest.
-                    return BadRequest();
-                }
-
-                return BadRequest(ModelState);
-            }
-
-            return null;
-        }
+        }        
 
         private class ExternalLoginData
         {

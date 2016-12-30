@@ -1,5 +1,5 @@
 import { Router } from 'aurelia-router';
-import { autoinject } from 'aurelia-dependency-injection';
+import { autoinject, bindable } from 'aurelia-framework';
 import { TimeEntry, UserWorkCode, EntryFilter } from './Models/models';
 import { ApplicationState } from './application-state';
 import { TimeEntryService } from './Services/time-entry-service'
@@ -7,10 +7,11 @@ import { TimeEntryService } from './Services/time-entry-service'
 @autoinject
 export class editEntries {
     heading: string;
-    timeEntry: TimeEntry;
+    @bindable timeEntry: TimeEntry;
     entryDate: Date;
     total: number;
     workCodes: UserWorkCode[];
+    returnRoute: string = 'edit';
 
     constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService, private router: Router) {
         this.heading = 'Edit Time';
@@ -18,16 +19,26 @@ export class editEntries {
     }
 
     activate(params) {
-        console.log(params.id);
-        console.log(this.appState);
-        this.appState.currentUser.UserWorkCodes.forEach(element => {
-            this.workCodes.push(element);
-        });
-        this.timeEntryService.get(new EntryFilter(null, null, null, params.Id, null, null, null))
-            .then(entries => {
-                this.timeEntry = entries[0];
-                this.entryDate = this.timeEntry.entryDate;
-            });
+        if (this.appState.currentUser == null) {
+            this.appState.returnRoute = this.returnRoute;
+            this.router.navigate('login');
+        }
+        if (this.appState.editEntry == null) {
+            this.router.navigate('entry');
+        }
+        this.workCodes = this.appState.currentUser.UserWorkCodes;
+        this.timeEntry = this.appState.editEntry;
+        console.log(this.appState.editEntry);
+        this.entryDate = this.timeEntry.entryDate;
+        this.appState.editEntry = null;
+        // this.appState.currentUser.UserWorkCodes.forEach(element => {
+        //     this.workCodes.push(element);
+        // });
+        // this.timeEntryService.get(new EntryFilter(null, null, null, params.Id, null, null, null))
+        //     .then(entries => {
+        //         this.timeEntry = entries[0];
+        //         this.entryDate = this.timeEntry.entryDate;
+        //     });
     }
 
     validateTotalTimeForDate(): Promise<boolean> {
@@ -46,18 +57,21 @@ export class editEntries {
 
     submit() {
         this.timeEntry.entryDate = this.entryDate;
-        this.timeEntryService.saveEntry(this.timeEntry).then(success => {
-            if (success) {
-                this.timeEntry = null;
-                this.router.navigate('review');
-            }
-        });
+        console.log(this.timeEntry.workCodeId);
+        this.timeEntryService.saveEntry(this.timeEntry)
+            .then(success => {
+                console.log(this.timeEntry.workCodeId);
+                if (success) {
+                    this.timeEntry = null;
+                    this.router.navigate('review');
+                }
+            });
 
         if (this.entryDate === undefined) {
             toastr.error("You must select an entry date.", "Date Error");
             return;
         }
-        let entryValid = this.timeEntry.isValid(this.appState.currentUser)
+        let entryValid = this.timeEntry.isValid(this.appState.currentUser, this.appState.restrictedJobnumbers)
         if (entryValid) {
             this.validateTotalTimeForDate()
                 .then(result => {

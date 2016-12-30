@@ -15,12 +15,12 @@ namespace Peaker.TimeManagment.Controllers
     public class ValuesController : ApiController
     {
         // GET api/values
-        [Route("GetWorkCodes")]
-        [HttpGet]
-        public List<WorkCode> GetCodes()
-        {
-            return WorkCodeAccess.GetAllWorkCodes();
-        }
+        //[Route("GetWorkCodes")]
+        //[HttpGet]
+        //public List<WorkCode> GetCodes()
+        //{
+        //    return WorkCodeAccess.GetAllWorkCodes();
+        //}
 
         // GET api/values/5
         //public string Get(int id)

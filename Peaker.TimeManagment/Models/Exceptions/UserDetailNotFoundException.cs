@@ -2,6 +2,7 @@
 
 namespace Peaker.TimeManagment.Models.Exceptions
 {
+    [Serializable]
     public class UserDetailNotFoundException : Exception
     {
         public UserDetailNotFoundException() { }

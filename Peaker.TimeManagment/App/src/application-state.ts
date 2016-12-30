@@ -4,7 +4,6 @@ import { User, TimeEntry, WorkCode } from './Models/Models';
 import { singleton } from 'aurelia-framework'
 
 @autoinject
-@singleton()
 export class ApplicationState {
     returnRoute: string;
     defaultRoute: string;
@@ -13,6 +12,7 @@ export class ApplicationState {
     loggedIn: boolean;
     isLocal: boolean;
     restrictedJobnumbers: string[];
+    editEntry: TimeEntry;
 
     constructor(private accountService: AccountService, private timeEntryService: TimeEntryService) {
         this.currentUser = null;
@@ -20,6 +20,8 @@ export class ApplicationState {
         this.defaultRoute = 'entry';
         this.activeWorkCodes = new Array<WorkCode>();
         this.loggedIn = false;
+        this.restrictedJobnumbers = [];
+        this.editEntry = null;
         var thisDomain = location.hostname.split('.')[1];
         if (thisDomain == 'timemanagement') {
             this.isLocal = true;
@@ -66,6 +68,7 @@ export class ApplicationState {
                                     resolve(false);
                                 }
                             });
+                        resolve(true);
                     }
                     else {
                         resolve(false);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Peaker.TimeManagment.Models.View;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -9,6 +10,8 @@ using System.Web.Http;
 
 namespace Peaker.TimeManagment.Controllers
 {
+    [Authorize]
+    [RoutePrefix("api/Admin")]
     public class AdminController : ApiController
     {
         // GET: api/Admin
@@ -26,6 +29,35 @@ namespace Peaker.TimeManagment.Controllers
         // POST: api/Admin
         public void Post([FromBody]string value)
         {
+        }
+
+        [Route("GetWeekList")]
+        public IHttpActionResult GetWeekList() {
+            var jan1 = new DateTime(DateTime.Today.Year, 1, 1);            
+            //beware different cultures, see other answers
+            var startOfFirstWeek = jan1;//.AddDays(1 - (int)(jan1.DayOfWeek));
+            while (startOfFirstWeek.DayOfWeek != DayOfWeek.Sunday)
+            {
+                startOfFirstWeek = startOfFirstWeek.AddDays(1);
+            }
+            var weeks =
+                Enumerable
+                    .Range(0, 54)
+                    .Select(i => new {
+                        weekStart = startOfFirstWeek.AddDays(i * 7)
+                    })
+                    .TakeWhile(x => x.weekStart.Year <= jan1.Year)
+                    .Select(x => new {
+                        x.weekStart,
+                        weekFinish = x.weekStart.AddDays(6)
+                    })
+                    .SkipWhile(x => x.weekFinish < jan1.AddDays(1))
+                    .Select((x, i) => new Week() {
+                        weekStart =  x.weekStart,
+                        weekFinish = x.weekFinish,
+                        weekNum = i + 1
+                    });
+            return (Ok(weeks.OrderByDescending(w => w.weekStart)));
         }
 
         //[HttpPost]

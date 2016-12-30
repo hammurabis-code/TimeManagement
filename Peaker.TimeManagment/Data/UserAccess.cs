@@ -5,138 +5,141 @@ using Peaker.TimeManagment.Models.Data;
 using System;
 using System.Security.Principal;
 using Microsoft.AspNet.Identity;
+using System.Collections.Generic;
+using MySql.Data.MySqlClient;
+using System.Data;
 
 namespace Peaker.TimeManagment.Data
 {
-    public static class UserAccess
+    public class UserAccess : DataAccess
     {
 
-        public static UserInfoViewModel FillUserInfo(ApplicationUser user)
+        public UserInfoViewModel FillUserInfo(ApplicationUser user)
         {
-            var userInfo = new UserInfoViewModel(user.Id,user.Email);
-            UserDetail details = null;        
-            using (var context = new PeakerContext())
-            {
-                details = context.UserDetails
-                    .Include(nameof(UserDetail.Departments))
-                    .Include(nameof(UserDetail.WorkCodes))
-                    .Include(nameof(UserDetail.UsedJobNumbers))
-                    .FirstOrDefault(u => u.UserId == user.Id);
-                if (details == null)
-                {
-                    details = CreateDetails(user.Id, user.Email, context);
-                }
-                userInfo.AccountingName = details.AccountingName;
-                userInfo.DefaultJobEntries = details.DefaultJobEntries;
+            var userInfo = new UserInfoViewModel(user.Id, user.Email);
 
-                var departments = context.Departments.ToList();
-                foreach (var department in departments)
-                {
-                    userInfo.UserDepartments.Add(new DepartmentView()
-                    {
-                        DepartmentId = department.Id,
-                        BaseCode = department.BaseCode,
-                        Description = department.Description,
-                        IsSelected = details.Departments.Any(d => d.Id == department.Id)
-                    });
-                }
-                var workcodes = context.WorkCodes.ToList();
-                foreach (var workcode in workcodes)
-                {
-                    userInfo.UserWorkCodes.Add(new WorkCodeView()
-                    {
-                        WorkCodeId = workcode.Id,
-                        area = workcode.Area,
-                        baseCode = workcode.BaseCode,
-                        description = workcode.Description,
-                        sub = workcode.Sub,
-                        IsJobNumberRequired = workcode.IsJobNumberRequired,
-                        IsSelected = details.WorkCodes.Any(w => w.Id == workcode.Id)
-                    });
-                }
-                userInfo.UsedJobNumbers.AddRange(details.UsedJobNumbers);
+            var userDetail = RetrieveSingle(UserDetail.UserDetailFactory, Constants.GetUserDetailProcedure, GetSingleParameter("p_userIdParam", userInfo.UserId));
+            if (userDetail == null)
+            {
+                userDetail = CreateDetails(user.Id, user.UserName);
             }
+            userInfo.AccountingName = userDetail.AccountingName;
+            userInfo.DefaultJobEntries = userDetail.DefaultJobEntries;
+            userInfo.UserDetailId = userDetail.Id;
+
+            FillWorkCodes(userInfo);
+            //FillJobNumbers(userInfo);
+            //FillDepartments(userInfo);            
 
             return userInfo;
         }
 
-        public static bool IsUserAdmin(IPrincipal user) {
+        //private void FillDepartments(UserInfoViewModel userInfo)
+        //{
+        //    var allDepartments = Retrieve(Department., Constants.GetAllWorkCodes, new Dictionary<string, object>());
+
+        //    foreach (var department in departments)
+        //    {
+        //        userInfo.UserDepartments.Add(new DepartmentView()
+        //        {
+        //            DepartmentId = department.Id,
+        //            BaseCode = department.BaseCode,
+        //            Description = department.Description,
+        //            IsSelected = details.Departments.Any(d => d.Id == department.Id)
+        //        });
+        //    }
+        //}
+
+        private void FillJobNumbers(UserInfoViewModel userInfo)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void FillWorkCodes(UserInfoViewModel userInfo)
+        {
+            var allCodes = Retrieve(WorkCode.WorkCodeFactory, Constants.GetAllWorkCodesProcedure, new Dictionary<string, object>());
+            var userCodeIds = Retrieve<int>(Constants.GetUserWorkCodeListProcedure, GetSingleParameter("p_userDetailId", userInfo.UserDetailId));
+            foreach (var workcode in allCodes)
+            {
+                userInfo.UserWorkCodes.Add(new WorkCodeView()
+                {
+                    WorkCodeId = workcode.Id,
+                    area = workcode.Area,
+                    baseCode = workcode.BaseCode,
+                    description = workcode.Description,
+                    sub = workcode.Sub,
+                    IsJobNumberRequired = workcode.IsJobNumberRequired,
+                    IsSelected = userCodeIds.Any(w => w == workcode.Id)
+                });
+            }
+
+        }              
+
+        public static bool IsUserAdmin(IPrincipal user)
+        {
             return IsUserInRole(user, "Administrator");
         }
 
-        private static bool IsUserInRole(IPrincipal user, string roleName) {
+        private static bool IsUserInRole(IPrincipal user, string roleName)
+        {
             return user.IsInRole(roleName);
         }
 
-        private static UserDetail CreateDetails(string userId, string userName, PeakerContext context)
+        private UserDetail CreateDetails(string userId, string userName)
         {
-            UserDetail newDetail = new UserDetail()
-            {
-                UserId = userId,
-                AccountingName = userName,
-                DefaultJobEntries = 3
-            };
-            context.UserDetails.Add(newDetail);
-            context.SaveChanges();
-            return newDetail;
+            var paramDictionary = new Dictionary<string, object>();
+            paramDictionary.Add("p_userId", userId);
+            paramDictionary.Add("p_accountingName", userName);
+            paramDictionary.Add("p_defaultJobEntries", 3);
+            ExecuteNonQuery(Constants.InsertUserDetailProcedure, paramDictionary);
+            paramDictionary.Clear();
+            paramDictionary.Add("p_userId", userId);
+            return RetrieveSingle(UserDetail.UserDetailFactory, Constants.GetUserDetailProcedure, paramDictionary);
+            
         }
 
-        public static bool UpdateUserInfo(UserInfoViewModel userInfo)
+        public void UpdateUserInfo(UserInfoViewModel userInfo)
         {
-            using (var context = new PeakerContext())
+            var detail = Retrieve(UserDetail.UserDetailFactory, Constants.GetUserDetailProcedure, GetSingleParameter("p_userIdParam", userInfo.UserDetailId));
+            if (detail != null)
             {
-                var details = context.UserDetails
-                    .Include(nameof(UserDetail.Departments))
-                    .Include(nameof(UserDetail.WorkCodes))
-                    .Include(nameof(UserDetail.UsedJobNumbers))
-                    .FirstOrDefault(u => u.UserId == userInfo.UserId);
-                if (details != null)
-                {
-                    details.DefaultJobEntries = userInfo.DefaultJobEntries;
-                    details.AccountingName = userInfo.AccountingName;
-                }
-                else {
-                    throw new ArgumentException("Detail not found.");
-                }
 
-                foreach (var department in userInfo.UserDepartments)
-                {
-                    var targetDepartment = context.Departments.FirstOrDefault(d => d.Id == department.DepartmentId);
-                    if (department.IsSelected)
-                    {
-                        if (!details.Departments.Contains(targetDepartment))
-                        {
-                            details.Departments.Add(targetDepartment);
-                        }
-                    }
-                    else {
-                        if (details.Departments.Contains(targetDepartment))
-                        {
-                            details.Departments.Remove(targetDepartment);
-                        }
-                    }
-                }
+                ExecuteNonQuery(Constants.UpdateUserDetailProcedure, userInfo.GetProfileUpdateParameters());
 
+                var userWorkCodeParams = new Dictionary<string, object>();
                 foreach (var workCode in userInfo.UserWorkCodes)
                 {
-                    var targetWorkCode = context.WorkCodes.FirstOrDefault(d => d.Id == workCode.WorkCodeId);
+                    var workcodeParamDictionary = new Dictionary<string, object>();
+                    workcodeParamDictionary.Add("p_workCodeId", workCode.WorkCodeId);
+
+                    var userCodeIds = Retrieve<int>(Constants.GetUserWorkCodeListProcedure, GetSingleParameter("p_userDetailId", userInfo.UserDetailId));
+                    var targetWorkCode = RetrieveSingle(WorkCode.WorkCodeFactory, Constants.GetTargetWorkCodeProcedure, workcodeParamDictionary);// context.WorkCodes.FirstOrDefault(d => d.Id == workCode.WorkCodeId);
                     if (workCode.IsSelected)
                     {
-                        if (!details.WorkCodes.Contains(targetWorkCode))
+                        if (!userCodeIds.Contains(targetWorkCode.Id))
                         {
-                            details.WorkCodes.Add(targetWorkCode);
+                            userWorkCodeParams.Clear();
+                            userWorkCodeParams.Add("p_userDetailId", userInfo.UserDetailId);
+                            userWorkCodeParams.Add("p_workCodeId", targetWorkCode.Id);
+                            ExecuteNonQuery(Constants.InsertUserWorkCodeProcedure, userWorkCodeParams);
+                            //details.WorkCodes.Add(targetWorkCode);
                         }
                     }
                     else
                     {
-                        if (details.WorkCodes.Contains(targetWorkCode))
+                        if (userCodeIds.Contains(targetWorkCode.Id))
                         {
-                            details.WorkCodes.Remove(targetWorkCode);
+                            userWorkCodeParams.Clear();
+                            userWorkCodeParams.Add("p_userDetailId", userInfo.UserDetailId);
+                            userWorkCodeParams.Add("p_workCodeId", targetWorkCode.Id);
+                            ExecuteNonQuery(Constants.DeleteUserWorkCodeProcedure, userWorkCodeParams);
                         }
                     }
                 }
-                context.SaveChanges();
-                return true;                          
+            }
+            else
+            {
+                throw new ArgumentException("User detail not found.");
             }
         }
     }

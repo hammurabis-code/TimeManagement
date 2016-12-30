@@ -11,188 +11,254 @@ using Microsoft.AspNet.Identity;
 using MySql.Data.MySqlClient;
 using System.Data;
 using System.Configuration;
+using System.Text;
+using Peaker.TimeManagment.Models.Enums;
+using System.IO;
 
 namespace Peaker.TimeManagment.Data
 {
-    public static class TimeEntryAccess
+    public class TimeEntryAccess : DataAccess
     {
-        public static int AddUpdateEntry(TimeEntryView entryToSave)
+        public List<TimeEntryView> GetTimeEntries(EntryFilter filter, IPrincipal user)
         {
-            int returnId = -1;
-            var hours = new HourEntry()
+            var sb = new StringBuilder();
+            sb.Append("SELECT * FROM peakertimemanagement.timeentry ");
+            if (!filter.ShowAllUsers)
             {
-                Duration = entryToSave.hours,
-                Type = Constants.HoursType
-            };
-            using (var context = new PeakerContext())
-            {
-                if (entryToSave.id != -1)
+                if (filter.UserDetailId != null)
                 {
-                    var entry = context.TimeEntries.FirstOrDefault(e => e.Id == entryToSave.id);
-                    if (entry != null)
+                    if (UserAccess.IsUserAdmin(user))
                     {
-
-                        entry.JobNumber = entryToSave.jobnumber;
-                        entry.Date = entryToSave.date.Date;
-                        entry.Code = entryToSave.workCode;
-                        entry.Comments = entryToSave.comments;
-                        context.SaveChanges();
-                        returnId = entry.Id;
+                        sb.Append($"WHERE UserDetailId = {filter.UserDetailId} ");
                     }
-                    entry.Hours.Clear();
-                    entry.Hours.Add(hours);
                 }
                 else
                 {
-                    var detail = context.UserDetails.FirstOrDefault(u => u.UserId == entryToSave.userId);
-                    if (detail != null)
+                    sb.Append($"WHERE UserDetailId = {filter.CurrentUserDetailId} ");
+                }
+            }
+            else
+            {
+                sb.Append($"WHERE UserDetailId <> -1 ");
+            }
+
+            if (filter.EntryId != null)
+            {
+                sb.Append($"AND Id = {filter.EntryId} ");
+            }
+            if (filter.FilterStartDate != null)
+            {
+                var startDate = filter.FilterStartDate.Value.Date;
+                sb.Append($"AND EntryDate >= '{startDate.ToString("yyyy-MM-dd")}' ");
+            }
+            if (filter.FilterEndDate != null)
+            {
+                var endDate = filter.FilterEndDate.Value.Date;
+                sb.Append($"AND EntryDate <= '{endDate.ToString("yyyy-MM-dd")}' ");
+            }
+            try
+            {
+                var entries = Retrieve(TimeEntry.WorkCodeFactory, sb.ToString(), null, false).ToList();
+                return FillTimeEntryView(entries);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        private List<TimeEntryView> FillTimeEntryView(List<TimeEntry> entries)
+        {
+            var workCodeAccess = new WorkCodeAccess();
+            var finalEntries = new List<TimeEntryView>();
+            foreach (var entry in entries)
+            {
+                entry.Hours = Retrieve(TimeEntryHours.TimeEntryHoursFactory, Constants.GetHoursForTimeEntryProcedure, entry.GetIdParameters()).ToList();
+                var newEntry = new TimeEntryView(entry);
+                newEntry.hours = entry.Hours;
+                newEntry.workCode = workCodeAccess.GetWorkCode(entry.WorkCodeId);
+                finalEntries.Add(newEntry);
+            }
+            return finalEntries;
+        }
+
+        internal MemoryStream GetExportFile(EntryFilter filter, IPrincipal user)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("CODE,DATE,HOURS,JOB_NO");
+            var entries = GetTimeEntries(filter, user);
+            foreach (var entry in entries)
+            {
+                foreach (var hours in entry.hours)
+                {
+                    var hoursSuffix = hours.HoursType == HourTypes.Regular ? "HRS" : "OT";
+                    sb.AppendLine($"{entry.workCode.BaseCode}-{hoursSuffix},{entry.entryDate.ToShortDateString()},{hours.Duration}, J00{entry.jobnumber}");
+                }
+            }
+            MemoryStream stream = new MemoryStream();
+            StreamWriter writer = new StreamWriter(stream);
+            writer.Write(sb.ToString());
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
+        }
+
+        public void AddUpdateEntry(TimeEntryView entryToSave)
+        {
+            if (entryToSave.id == -1)
+            {
+                var entryId = RetrieveSingleConvertible<int>(Constants.InsertTimeEntryProcedure, entryToSave.GetInsertParameters());
+                if (entryId != int.MinValue)
+                {
+                    entryToSave.id = entryId;
+                }
+            }
+            else
+            {
+                ExecuteNonQuery(Constants.UpdateTimeEntryProcedure, entryToSave.GetUpdateParameters());
+            }
+            UpdateEntryHours(entryToSave);
+        }
+
+        private void UpdateEntryHours(TimeEntryView entryToSave)
+        {
+            bool isShiftWorker = GetIsShiftWorker(entryToSave.userDetailId);
+            if (isShiftWorker)
+            {
+                ProcessShiftHours(entryToSave);
+            }
+            else
+            {
+                ProcessNonShiftHours(entryToSave);
+            }
+        }
+
+        internal List<RestrictedJobnumber> GetRestrictedJobnumbers()
+        {
+            return Retrieve(RestrictedJobnumber.RestrictedJobnumberFactory, Constants.GetRestrictedJobnumbersProcedure).ToList();
+        }
+
+        private void ProcessShiftHours(TimeEntryView entryToSave)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ProcessNonShiftHours(TimeEntryView entryToSave)
+        {
+            //get all hour entries
+            //iterate through each entry
+            //for each entry
+            // if entry total drives total over 8 hours
+            // split entry into two parts
+            //regular hours and 
+            var finalHours = new List<TimeEntryHours>();
+
+
+
+            var hoursParams = GetSingleParameter("p_entryDate", entryToSave.entryDate.ToString("yyyy-MM-dd"));
+            hoursParams.Add("p_userDetailId", entryToSave.userDetailId);
+            hoursParams.Add("p_timeEntryIdToSkip", entryToSave.id);
+
+            var hourEntries = Retrieve(TimeEntryHours.TimeEntryHoursFactory, Constants.GetHoursByDateProcedure, hoursParams).ToList();
+
+            hourEntries = MergeRecords(hourEntries);
+            hourEntries.Add(new TimeEntryHours()
+            {
+                Id = int.MinValue,
+                TimeEntryId = entryToSave.id,
+                Duration = entryToSave.userHours,
+                HoursType = HourTypes.Regular
+            });
+            decimal hours = 0;
+            foreach (var hourEntry in hourEntries)
+            {
+                if (hours > 8)
+                {
+                    hourEntry.HoursType = HourTypes.Overtime;
+                    finalHours.Add(hourEntry);
+                }
+                else
+                {
+                    hours += hourEntry.Duration;
+                    if (hours > 8)
                     {
-                        var entry = new TimeEntry()
-                        {
-                            JobNumber = entryToSave.jobnumber,
-                            Date = entryToSave.date.Date,
-                            Code = entryToSave.workCode,
-                            Comments = entryToSave.comments,
-                            Exported = false,
-                        };
-                        entry.Hours.Add(hours);
-                        detail.TimeEntries.Add(
-                            entry);
-                        context.SaveChanges();
-                        returnId = entry.Id;
+                        AddSplitHourEntries(hours, hourEntry, finalHours);
+                    }
+                    else
+                    {
+                        hourEntry.HoursType = HourTypes.Regular;
+                        finalHours.Add(hourEntry);
                     }
                 }
             }
-            return returnId;
+
+            UpdateTimeEntryHours(finalHours);
         }
 
-        public static decimal GetTotalHours(EntryFilter filter, IPrincipal user)
+        private void UpdateTimeEntryHours(List<TimeEntryHours> finalHours)
+        {
+            foreach (var entry in finalHours)
+            {
+                ExecuteNonQuery(Constants.DeleteHoursForTimeEntry, entry.GetTimeEntryIdParameters());
+            }
+            foreach (var entry in finalHours)
+            {
+                ExecuteNonQuery(Constants.InsertTimeEntryHoursProcedure, entry.GetInsertParameters());
+            }
+        }
+
+        private void AddSplitHourEntries(decimal hours, TimeEntryHours hourEntry, List<TimeEntryHours> finalHours)
+        {
+            var overtimeHours = hours - 8;
+            var regularHours = hourEntry.Duration - overtimeHours;
+            hourEntry.Duration = regularHours;
+            hourEntry.HoursType = HourTypes.Regular;
+            finalHours.Add(hourEntry);
+            finalHours.Add(new TimeEntryHours()
+            {
+                TimeEntryId = hourEntry.TimeEntryId,
+                Duration = overtimeHours,
+                HoursType = HourTypes.Overtime
+            });
+        }
+
+        private List<TimeEntryHours> MergeRecords(List<TimeEntryHours> hourEntries)
+        {
+            var returnEntries = new List<TimeEntryHours>();
+            var floatingEntries = new List<TimeEntryHours>();
+            foreach (var entry in hourEntries)
+            {
+                floatingEntries.Clear();
+                if (!returnEntries.Any(e => e.TimeEntryId == entry.TimeEntryId))
+                {
+                    floatingEntries.AddRange(hourEntries.Where(e => e.TimeEntryId == entry.TimeEntryId));
+                    entry.Duration = floatingEntries.Sum(e => e.Duration);
+                    returnEntries.Add(entry);
+                }
+            }
+            return returnEntries;
+        }
+
+        private bool GetIsShiftWorker(int userDetailId)
+        {
+            return false;
+        }
+
+        public decimal GetTotalHours(EntryFilter filter, IPrincipal user)
         {
             decimal total = 0;
-            var entries = GetTimeEntryViews(filter, user);
+            var entries = GetTimeEntries(filter, user);
             foreach (var entry in entries)
             {
-                total += entry.hours;
+                total += entry.userHours;
             }
             return total;
         }
 
-        public static List<TimeEntryView> GetEntries(EntryFilter filter, IPrincipal user)
+        public void DeleteEntry(TimeEntry entryToDelete)
         {
-            return GetTimeEntryViews(filter, user);
-        }
-
-        private static List<TimeEntryView> GetTimeEntryViews(EntryFilter filter, IPrincipal user)
-        {
-            using (var context = new PeakerContext())
-            {
-                string queryUserId = string.Empty;
-                IQueryable<TimeEntry> entries = context.TimeEntries.AsQueryable();
-                if (!string.IsNullOrEmpty(filter.UserId))
-                {
-                    if (UserAccess.IsUserAdmin(user))
-                    {
-                        queryUserId = filter.UserId;
-                    }
-                }
-                else
-                {
-                    queryUserId = user.Identity.GetUserId();
-                }
-                var detail = context.UserDetails.FirstOrDefault(u => u.UserId == queryUserId);
-                if (detail != null)
-                {
-                    entries = entries.Where(e => e.UserDetailId == detail.Id);
-                }
-                else
-                {
-                    throw new UserDetailNotFoundException($"The User Id did not match a UserDeatil. Id: {queryUserId}");
-                }
-
-                if (filter.EntryId != null)
-                {
-                    entries = entries.Where(e => e.Id == filter.EntryId);
-                }
-                if (filter.FilterStartDate != null)
-                {
-                    var startDate = filter.FilterStartDate.Value.Date;
-                    entries = entries.Where(e => e.Date >= startDate);
-                }
-                if (filter.FilterEndDate != null)
-                {
-                    var endDate = filter.FilterEndDate.Value.Date;
-                    entries = entries.Where(e => e.Date <= endDate);
-                }
-                if (filter.Exported != null)
-                {
-                    entries = entries.Where(e => e.Exported == (bool)filter.Exported);
-                }
-                return entries.Select(entry => new TimeEntryView()
-                {
-                    id = entry.Id,
-                    userId = queryUserId,
-                    date = entry.Date,
-                    hours = entry.Hours.FirstOrDefault().Duration,
-                    workCode = entry.Code,
-                    jobnumber = entry.JobNumber,
-                    comments = entry.Comments,
-                    hoursError = false,
-                    jobNumberError = false,
-                    workCodeError = false,
-                    exported = entry.Exported,
-                    index = 0
-                })
-                .OrderByDescending(e => e.date)
-                .ToList();
-            }
-        }
-
-        public static bool DeleteEntry(TimeEntryView entryToDelete)
-        {
-            using (var context = new PeakerContext())
-            {
-                var detail = context.UserDetails.FirstOrDefault(u => u.UserId == entryToDelete.userId);
-                if (detail != null)
-                {
-                    var entry = context.TimeEntries
-                   .FirstOrDefault(e => e.Id == entryToDelete.id && e.UserDetailId == detail.Id);
-                    if (entry != null)
-                    {
-                        return DeleteEntryClassic(entry.Id, detail.Id);
-                    }
-                }
-
-            }
-            return false; ;
-        }
-
-        public static bool DeleteEntryClassic(int entryId, int userDetailId) {
-            string connStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-            MySqlConnection conn = new MySqlConnection(connStr);
-            try
-            {
-                conn.Open();
-
-                string sql = "deletetimeentry";
-                MySqlCommand cmd = new MySqlCommand(sql, conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("entryId", entryId);
-                cmd.Parameters.AddWithValue("userDetailId", userDetailId);
-
-                cmd.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                return false;
-                //TODO: log exception
-            }
-            finally {
-                conn.Close();
-            }
-
-            return true;
+            ExecuteNonQuery(Constants.DeleteTimeEntryProcedure, GetSingleParameter("p_entryId", entryToDelete.Id));
         }
     }
-    
+
 }

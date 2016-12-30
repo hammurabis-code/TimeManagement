@@ -18,7 +18,7 @@ export class loginForm {
         this.username = '';
         this.password = '';
         this.loginFailed = false;
-
+        console.log('Login constructed');
     }
 
 
@@ -26,8 +26,8 @@ export class loginForm {
         this.accountService.getAuthenticated()
             .then(success => {
                 if (!this.appState.loggedIn || this.appState.currentUser == undefined) {
-                    this.appState.loggedIn = true;
                     if (success) {
+                        this.appState.loggedIn = true;
                         this.appState.fillUser().then(result => {
                             if (result) {
                                 let route = this.appState.returnRoute;
@@ -53,13 +53,16 @@ export class loginForm {
                             .then(result => {
                                 console.log('Login Filluser Promise Returned');
                                 if (result) {
+
                                     let route = this.appState.returnRoute;
                                     if (route === null || route === '') {
                                         route = this.appState.defaultRoute;
                                     }
+                                    console.log(route);
                                     this.router.navigate(route);
                                 }
                             })
+                        //this.router.navigate('entry');
                     }
                     else {
                         console.log('Login Failed.');

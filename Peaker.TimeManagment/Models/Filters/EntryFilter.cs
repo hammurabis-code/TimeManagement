@@ -4,7 +4,8 @@ namespace Peaker.TimeManagment.Models.Filters
 {
     public class EntryFilter
     {
-        public string UserId { get; set; }
+        public int CurrentUserDetailId { get; set; }
+        public int? UserDetailId { get; set; }
         public bool ShowAllUsers { get; set; }
         public int? EntryId { get; set; }
         public DateTime? FilterStartDate { get; set; }

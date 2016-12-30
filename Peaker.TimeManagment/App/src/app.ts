@@ -12,34 +12,11 @@ export class App {
 
   constructor(private appState: ApplicationState) {
     this.appState = appState;
-    /*if (this.testMode){
-      this.appState.isLoggedIn = true;
-      this.appState.loggedInUser = new User('TestUser', 3);
-    }*/
-  }
-
-  appRouter(config, appState: ApplicationState) {
-    config.title = 'Peaker Time Management';
-    config.options.pushState = true;
-
-    if (appState.loggedIn) {
-      if (appState.isInRole("Admin")) {
-        config.map(RouteConfigs.adminConfig);
-      }
-      else {
-        config.map(RouteConfigs.userConfig);
-      }
-    }
-    else {
-      config.map(RouteConfigs.defaultConfig);
-    }
-
   }
 
 
   public configureRouter(config: RouterConfiguration, router: Router) {
-    config.title = 'Peaker Time Management';
-    //this.appRouter(config, this.appState);
+    config.title = 'Peaker Job Cost';
     config.map([
       {
         route: ['', 'login'],
@@ -51,7 +28,7 @@ export class App {
         name: 'entry',
         moduleId: './entry',
         nav: true,
-        auth: true,
+        auth: false,
         title: 'New Entry'
       },
       {
@@ -69,8 +46,8 @@ export class App {
         title: 'Review/Submit'
       },
       {
-        route: 'edit/:id',
-        moduleId: './/edit-entry',
+        route: 'edit',
+        moduleId: './edit-entry',
         nav: false,
         auth: true,
         title: 'Edit Entry',

@@ -194,54 +194,46 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\BundleConfig.cs" />
-    <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\BaseApiController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\TimeEntryController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Controllers\WorkCodeController.cs" />
     <Compile Include="Data\Constants.cs" />
+    <Compile Include="Data\DataAccess.cs" />
     <Compile Include="Data\Export\Navision.cs" />
-    <Compile Include="Data\Init\Setup.cs" />
-    <Compile Include="Data\Init\Values.cs" />
-    <Compile Include="Data\MySqlInitializer.cs" />
-    <Compile Include="Data\PeakerContext.cs" />
     <Compile Include="Data\TimeEntryAccess.cs" />
     <Compile Include="Data\UserAccess.cs" />
     <Compile Include="Data\WorkCodeAccess.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201611281822497_InitializeTables.cs" />
-    <Compile Include="Migrations\201611281822497_InitializeTables.Designer.cs">
-      <DependentUpon>201611281822497_InitializeTables.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612041833167_Precision.cs" />
-    <Compile Include="Migrations\201612041833167_Precision.Designer.cs">
-      <DependentUpon>201612041833167_Precision.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
+    <Compile Include="Models\Data\RestrictedJobnumber.cs" />
+    <Compile Include="Models\Data\TimeEntryHours.cs" />
+    <Compile Include="Models\Enums\HourTypes.cs" />
     <Compile Include="Models\Exceptions\UnauthorizedFilter.cs" />
     <Compile Include="Models\Exceptions\UserDetailNotFoundException.cs" />
+    <Compile Include="Models\ModelFactory.cs" />
     <Compile Include="Models\View\AccountViewModels.cs" />
     <Compile Include="Models\Account\LoginModel.cs" />
     <Compile Include="Models\Data\Department.cs" />
     <Compile Include="Models\Filters\EntryFilter.cs" />
-    <Compile Include="Models\Data\HourEntry.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Data\JobNumber.cs" />
     <Compile Include="Models\Data\TimeEntry.cs" />
     <Compile Include="Models\View\DepartmentView.cs" />
     <Compile Include="Models\View\ProfileView.cs" />
-    <Compile Include="Models\View\TimeEntryView.cs" />
     <Compile Include="Models\Data\UserDetail.cs" />
+    <Compile Include="Models\View\TimeEntryView.cs" />
+    <Compile Include="Models\View\Week.cs" />
     <Compile Include="Models\View\WorkCodeView.cs" />
     <Compile Include="Models\Data\WorkCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -251,20 +243,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Properties\PublishProfiles\LocalFile.pubxml" />
-    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="Scripts\jquery-1.10.2.js" />
-    <Content Include="Scripts\jquery-1.10.2.min.js" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Scripts\modernizr-2.6.2.js" />
-    <Content Include="Scripts\respond.js" />
-    <Content Include="Scripts\respond.min.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -274,23 +253,14 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Scripts\_references.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Data\Init\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
-    <Content Include="Scripts\jquery-1.10.2.min.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201611281822497_InitializeTables.resx">
-      <DependentUpon>201611281822497_InitializeTables.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612041833167_Precision.resx">
-      <DependentUpon>201612041833167_Precision.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

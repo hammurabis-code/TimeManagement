@@ -250,9 +250,6 @@ C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\bin\Microsoft.
 C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\bin\Microsoft.Owin.Security.Twitter.xml
 C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\bin\System.Web.Http.Owin.xml
-C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\obj\Debug\Peaker.TimeManagment.csprojResolveAssemblyReference.cache
-C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\obj\Debug\Peaker.TimeManagment.Migrations.InitializeTables.resources
-C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\obj\Debug\Peaker.TimeManagment.Migrations.Precision.resources
-C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\obj\Debug\Peaker.TimeManagment.csproj.GenerateResource.Cache
 C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\obj\Debug\Peaker.TimeManagment.dll
 C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\obj\Debug\Peaker.TimeManagment.pdb
+C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\obj\Debug\Peaker.TimeManagment.csprojResolveAssemblyReference.cache

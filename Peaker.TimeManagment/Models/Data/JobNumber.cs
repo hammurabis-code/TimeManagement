@@ -1,17 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 namespace Peaker.TimeManagment.Models.Data
 {
     public class JobNumber
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int UserDetailId { get; set; }
-        [Required]
         public string JobNumberValue { get; set; }
-        public UserDetail UserDetail { get; set; }        
 
-
+        public static JobNumber JobnumberFactory(IDataRecord record)
+        {
+            return new JobNumber
+            {
+                Id = record.GetInt32(record.GetOrdinal("Id")),
+                UserDetailId = record.GetInt32(record.GetOrdinal("UserDetailId")),
+                JobNumberValue = record.GetString(record.GetOrdinal("JobNumberValue")),
+            };
+        }
     }
 }

@@ -1,4 +1,5 @@
 <template>
+    <require from="./custom-elements/delete"></require>
     <require from="./custom-attributes/datepicker"></require>
     <require from="./custom-attributes/jobnumberinput"></require>
     <require from="./value-converters/date"></require>
@@ -13,31 +14,35 @@
                 </div>
             </div>
             <div><label value.bind="timeEntry.entryDate"></label> </div>
-            <div class="input-group">
-                <span class="input-group-addon" id="entryHours">Hours</span>
-                <input class="form-control ${timeEntry.hoursError ? 'alert-danger' : ''}" placeholder="Hours" aria-describedby="entryHours"
-                    value.bind="timeEntry.userHours | hour & updateTrigger:'blur'" type="number" step=".25">
+            <div class="timeEntry">
+                <div>
+                    <delete msg="Are you sure you want to remove this entry?" action.call="$parent.delete(timeEntry)"></delete>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon" id="entryHours">Hours</span>
+                    <input class="form-control ${timeEntry.hoursError ? 'alert-danger' : ''}" placeholder="Hours" aria-describedby="entryHours"
+                        value.bind="timeEntry.userHours | hour & updateTrigger:'blur'" type="number" step=".25">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon" id="workCode">Code</span>
+                    <select class="form-control ${timeEntry.workCodeError ? 'alert-danger' : ''}" id="selectWorkCode" value.bind="timeEntry.workCode"
+                        aria-describedby="workCode">
+                        <option repeat.for="workcode of workCodes" if.bind='workcode.IsSelected' model.bind="workcode" >${workcode.baseCode} ${workcode.description}</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon" id="jobNumber">Job Number - J00</span>
+                    <input class="form-control  ${timeEntry.jobNumberError || timeEntry.invalidJobnumber ? 'alert-danger' : ''}" value.two-way="timeEntry.jobnumber"
+                        placeholder="Format: 12345" aria-describedby="jobNumber" job-number-input="job-number.two-way: timeEntry.jobnumber; job-number-error.two-way: timeEntry.jobNumberError">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon" id="comments">Comments</span>
+                    <input class="form-control" placeholder="Comments" aria-describedby="comments" value.two-way="timeEntry.comments" type="text">
+                </div>
             </div>
-            <div class="input-group">
-                <span class="input-group-addon" id="workCode">Code</span>
-                <select class="form-control ${timeEntry.workCodeError ? 'alert-danger' : ''}" id="selectWorkCode" value.bind="timeEntry.workCode"
-                    aria-describedby="workCode">
-                    <option repeat.for="workcode of workCodes"  if.bind='workcode.IsSelected' model.bind="workcode"  >${workcode.baseCode} ${workcode.description}</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <span class="input-group-addon" id="jobNumber">Job Number - J00</span>
-                <input class="form-control  ${timeEntry.jobNumberError ? 'alert-danger' : ''}" value.two-way="timeEntry.jobnumber" placeholder="Format: 12345"
-                    aria-describedby="jobNumber" job-number-input="job-number.two-way: timeEntry.jobnumber; job-number-error.two-way: timeEntry.jobNumberError">
-            </div>
-            <div class="input-group">
-                <span class="input-group-addon" id="comments">Comments</span>
-                <input class="form-control" placeholder="Comments" aria-describedby="comments" value.two-way="timeEntry.comments" type="text">
+            <div class="form-group">
+                <input type="button" value='Submit Changes' class="form-control btn btn-primary" click.delegate='submit()' />
+                <input type="button" value='Cancel' class="form-control btn btn-primary" click.delegate='cancel()' />
             </div>
         </div>
-        <div class="form-group">
-            <input type="button" value='Submit Changes' class="form-control btn btn-primary" click.delegate='submit()' />
-            <input type="button" value='Cancel' class="form-control btn btn-primary" click.delegate='cancel()' />
-        </div>
-    </div>
 </template>

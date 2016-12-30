@@ -138,7 +138,7 @@ export class TimeEntryService {
     }
 
     getRestrictedJobnumbers(): Promise<any[]> {
-        this.router.isNavigating = true;
+        //this.router.isNavigating = true;
         return this.client.fetch(Constants.timeEntryApi + 'getRestrictedJobnumbers',
             {
                 method: 'get',

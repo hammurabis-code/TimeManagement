@@ -11,15 +11,21 @@ export class entry {
     entryDate: Date;
     @bindable timeEntries: TimeEntry[];
     workCodes: UserWorkCode[];
+    returnRoute: string = 'entry';
 
     constructor(private appState: ApplicationState, private router: Router, private timeEntryService: TimeEntryService) {
         this.heading = 'Enter Time';
         this.workCodes = new Array<UserWorkCode>();
         this.timeEntries = new Array<TimeEntry>();
         this.entryDate = new Date();
+        console.log("Entry constructed");
     }
 
     activate(params) {
+        if (this.appState.currentUser == null) {
+            this.appState.returnRoute = this.returnRoute;
+            this.router.navigate('login');
+        }
         if (params != undefined) {
             if (params.submitted) {
                 toastr.success("Time entries submitted.");
@@ -59,7 +65,7 @@ export class entry {
         let entriesValid = true;
         for (let index = 0; index < this.timeEntries.length; index++) {
             let entry = this.timeEntries[index];
-            if (!entry.isValid(this.appState.currentUser)) {
+            if (!entry.isValid(this.appState.currentUser, this.appState.restrictedJobnumbers)) {
                 entriesValid = false;
             }
         }

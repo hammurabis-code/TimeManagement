@@ -13,6 +13,7 @@ export class TimeEntry {
     comments: string;
     hoursError: boolean;
     @bindable({ defaultBindingMode: bindingMode.twoWay }) jobNumberError: boolean;
+    invalidJobnumber: boolean;
     workCodeError: boolean;
     exportedToNavision: boolean;
     exportedToPayroll: boolean;
@@ -29,6 +30,7 @@ export class TimeEntry {
         this.comments = '';
         this.hoursError = false;
         this.jobNumberError = false;
+        this.invalidJobnumber = false;
         this.workCodeError = false;
         this.exportedToNavision = false;
         this.exportedToPayroll = false;
@@ -36,7 +38,7 @@ export class TimeEntry {
         this.index = index;
     }
 
-    isValid(currentUser: User): boolean {
+    isValid(currentUser: User, invalidJobNumbers: string[]): boolean {
         if (this.userHours <= 0 || this.userHours > 24) {
             this.hoursError = true;
         }
@@ -53,18 +55,23 @@ export class TimeEntry {
         let targetWorkCode = currentUser.UserWorkCodes.find(w =>
             w.WorkCodeId === this.workCode.WorkCodeId);
         if (targetWorkCode.IsJobNumberRequired || this.jobnumber != '') {
-            console.log(this.jobnumber);
             if (this.jobnumber.length != 5) {
                 this.jobNumberError = true;
             }
             else {
                 this.jobNumberError = false;
+                if (invalidJobNumbers.find(i => i == this.jobnumber) != undefined) {
+                    this.invalidJobnumber = true;
+                }
+                else {
+                    this.invalidJobnumber = false;
+                }
             }
         }
         else {
             this.jobNumberError = false;
         }
-        return (!this.jobNumberError && !this.hoursError && !this.workCodeError);
+        return (!this.jobNumberError && !this.hoursError && !this.workCodeError && !this.invalidJobnumber);
 
     }
 

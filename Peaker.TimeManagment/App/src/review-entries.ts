@@ -12,19 +12,26 @@ export class reviewEntries {
     @bindable timeEntries: TimeEntry[] = [];
     @bindable total: number = 0;
     @bindable filterCriteria: EntryFilter = new EntryFilter(-1, null, null, null, new Date(+new Date - 12096e5), null, null);
+    returnRoute: string = 'review';
     constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService, private router: Router) {
         this.heading = 'Review Time';
-        this.filterCriteria.CurrentUserDetailId = this.appState.currentUser.UserDetailId;
+        console.log("Review constructed.");
     }
 
     activate() {
-        console.log(this.appState);
+        if (this.appState.currentUser == null) {
+            this.appState.returnRoute = this.returnRoute;
+            this.router.navigate('login');
+        }
+        this.filterCriteria.CurrentUserDetailId = this.appState.currentUser.UserDetailId;
         this.getEntries();
     }
 
     editEntry(entry: TimeEntry) {
         if (!entry.exportedToNavision) {
-            this.router.navigateToRoute('edit', { 'id': entry.id });
+            console.log(entry);
+            this.appState.editEntry = entry;
+            this.router.navigate('edit');
         }
     }
 

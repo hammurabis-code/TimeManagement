@@ -17,14 +17,17 @@ namespace Peaker.TimeManagment.Controllers
         [HttpGet]
         public IHttpActionResult GetCodes()
         {
-            return Ok(WorkCodeAccess.GetAllWorkCodes());
+            return Ok(new WorkCodeAccess().GetAllWorkCodes());
         }
 
+        [Route("AddUpdateWorkCode")]
         [HttpPost]
-        public IHttpActionResult Post([FromBody] WorkCode code) {
+        public IHttpActionResult AddUpdateWorkCode([FromBody] WorkCode code)
+        {
             if (User.Identity != null)
             {
-                return Ok(WorkCodeAccess.AddOrUpdateWorkCode(code));
+                new WorkCodeAccess().AddOrUpdateWorkCode(code);
+                return Ok();
             }
             else return Unauthorized();
         }

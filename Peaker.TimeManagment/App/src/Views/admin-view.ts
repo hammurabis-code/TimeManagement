@@ -29,6 +29,7 @@ export class AdminView {
         this.showRolesText = "User Roles";
         this.showCodesText = "Manage Codes";
         this.selectedWeek = undefined;
+        console.log("Admin constructed");
     }
 
     activate() {
