@@ -140,11 +140,13 @@ namespace Peaker.TimeManagment.Data
             using (var cmd = new MySqlCommand(sql, cn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-                foreach (var param in updateParameters)
+                if (updateParameters != null)
                 {
-                    cmd.Parameters.Add(new MySqlParameter(param.Key, param.Value));
+                    foreach (var param in updateParameters)
+                    {
+                        cmd.Parameters.Add(new MySqlParameter(param.Key, param.Value));
+                    }
                 }
-
                 cn.Open();
                 cmd.ExecuteNonQuery();
             }

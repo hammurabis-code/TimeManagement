@@ -140,8 +140,7 @@ namespace Peaker.TimeManagment.Controllers
             if (User.Identity != null && user != null)
             {
                 try
-                {
-                    
+                {                    
                     return Ok(AppUserManager.GetRoles(user.Id).Contains(roleName));
                 }
                 catch (Exception ex)

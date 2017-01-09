@@ -204,7 +204,6 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
     <Compile Include="Controllers\TimeEntryController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Controllers\WorkCodeController.cs" />
     <Compile Include="Data\Constants.cs" />
     <Compile Include="Data\DataAccess.cs" />

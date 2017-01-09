@@ -25,9 +25,13 @@
         public const string InsertUserDetailProcedure = "insertuserdetail";
         public const string InsertUserWorkCodeProcedure = "insertuserworkcode";
 
+        public const string SetExportedToNavisionProcedure = "setexportedtonavision";
+
         public const string UpdateTimeEntryProcedure = "updatetimeentry";
         public const string UpdateUserDetailProcedure = "updateuserdetail";
         public const string UpdateWorkCodeProcedure = "updateworkcode";
+        public const string UpdateTimeEntryClearNavisionExportProcedure = "UpdateTimeEntryClearNavisionExport";
+        public const string UpdateTimeEntryClearPayrollExportProcedure = "UpdateTimeEntryClearPayrollExport";
 
 
     }

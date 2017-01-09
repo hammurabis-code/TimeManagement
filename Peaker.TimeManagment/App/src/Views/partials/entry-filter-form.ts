@@ -1,5 +1,5 @@
 import { autoinject } from 'aurelia-dependency-injection';
-import { EntryFilter, TimeEntry } from '../../Models/Models';
+import { EntryFilter, TimeEntry, User } from '../../Models/Models';
 import { bindable } from 'aurelia-framework';
 import { TimeEntryService } from '../../Services/time-entry-service'
 import { ApplicationState } from '../../Application-State'
@@ -12,6 +12,8 @@ export class EntryFilterForm {
     @bindable exportTypes: string[] = [];
     @bindable showExportedFilter: boolean;
     @bindable showExportTypeFilter: boolean;
+    @bindable showUserFilter: boolean;
+    @bindable users: User[]
 
     constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService) { }
 

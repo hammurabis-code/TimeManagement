@@ -21,6 +21,7 @@ namespace Peaker.TimeManagment.Data
     {
         public List<TimeEntryView> GetTimeEntries(EntryFilter filter, IPrincipal user)
         {
+            //TODO: Parameterize sql
             var sb = new StringBuilder();
             sb.Append("SELECT * FROM peakertimemanagement.timeentry ");
             if (!filter.ShowAllUsers)
@@ -56,9 +57,32 @@ namespace Peaker.TimeManagment.Data
                 var endDate = filter.FilterEndDate.Value.Date;
                 sb.Append($"AND EntryDate <= '{endDate.ToString("yyyy-MM-dd")}' ");
             }
+            if (filter.RequireJobCode != null && (bool)filter.RequireJobCode) {
+                sb.Append($"AND Jobnumber <> '' ");
+            }
+            if (filter.ExportedToNavision != null) {
+                if ((bool)filter.ExportedToNavision)
+                {
+                    sb.Append("AND ExportedToNavision = 1 ");
+                }
+                else {
+                    sb.Append("AND ExportedToNavision = 0 ");
+                }
+            }
+            if (filter.ExportedToPayroll != null)
+            {
+                if ((bool)filter.ExportedToPayroll)
+                {
+                    sb.Append("AND ExportedToPayroll = 1 ");
+                }
+                else
+                {
+                    sb.Append("AND ExportedToPayroll = 0 ");
+                }
+            }
             try
             {
-                var entries = Retrieve(TimeEntry.WorkCodeFactory, sb.ToString(), null, false).ToList();
+                var entries = Retrieve(TimeEntry.WorkCodeFactory, sb.ToString(), null, false).OrderByDescending(t => t.EntryDate).ToList();
                 return FillTimeEntryView(entries);
             }
             catch (Exception ex)
@@ -94,6 +118,7 @@ namespace Peaker.TimeManagment.Data
                     var hoursSuffix = hours.HoursType == HourTypes.Regular ? "HRS" : "OT";
                     sb.AppendLine($"{entry.workCode.BaseCode}-{hoursSuffix},{entry.entryDate.ToShortDateString()},{hours.Duration}, J00{entry.jobnumber}");
                 }
+                SetEntryExportedToNavision(entry);
             }
             MemoryStream stream = new MemoryStream();
             StreamWriter writer = new StreamWriter(stream);
@@ -103,9 +128,14 @@ namespace Peaker.TimeManagment.Data
             return stream;
         }
 
+        private void SetEntryExportedToNavision(TimeEntryView entry)
+        {
+            ExecuteNonQuery(Constants.SetExportedToNavisionProcedure, GetSingleParameter("p_timeEntryId", entry.id));
+        }
+
         public void AddUpdateEntry(TimeEntryView entryToSave)
         {
-            if (entryToSave.id == -1)
+            if (entryToSave.id <= 0)
             {
                 var entryId = RetrieveSingleConvertible<int>(Constants.InsertTimeEntryProcedure, entryToSave.GetInsertParameters());
                 if (entryId != int.MinValue)
@@ -193,6 +223,10 @@ namespace Peaker.TimeManagment.Data
             }
 
             UpdateTimeEntryHours(finalHours);
+        }
+
+        public void ClearNavisionFlag() {
+            ExecuteNonQuery(Constants.UpdateTimeEntryClearNavisionExportProcedure, null);
         }
 
         private void UpdateTimeEntryHours(List<TimeEntryHours> finalHours)

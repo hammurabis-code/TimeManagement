@@ -10,6 +10,8 @@ namespace Peaker.TimeManagment.Models.Filters
         public int? EntryId { get; set; }
         public DateTime? FilterStartDate { get; set; }
         public DateTime? FilterEndDate { get; set; }
-        public bool? Exported { get; set; }
+        public bool? ExportedToNavision { get; set; }        
+        public bool? RequireJobCode { get; set; }
+        public bool? ExportedToPayroll { get; set; }
     }
 }

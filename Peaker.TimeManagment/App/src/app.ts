@@ -85,6 +85,22 @@ export class App {
         title: 'Create Users',
         name: "createUsers"
       },
+      {
+        route: 'manageRoles',
+        moduleId: './views/manage-roles',
+        nav: false,
+        auth: true,
+        title: 'Manage Roles',
+        name: "manageRoles"
+      },
+      {
+        route: 'adminReview',
+        moduleId: './views/admin-review',
+        nav: false,
+        auth: true,
+        title: 'Admine Review',
+        name: "adminReview"
+      },
       //{ route: 'admin', moduleId: './Views/admin', nav: true, auth: true, title: 'Administration' }, //this.appState.isLoggedIn
     ]);
 

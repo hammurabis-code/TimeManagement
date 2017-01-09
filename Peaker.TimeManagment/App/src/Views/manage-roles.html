@@ -1,0 +1,37 @@
+<template>
+    <div class="container">
+        <h2>Manage User Roles</h2>
+        <div>
+            <h3>Select Role</h3>
+            <div>
+                <input type="button" value="Admin" class="form-control btn btn-primary" click.delegate="manageAdmin()">
+            </div>
+            <div>
+                <input type="button" value="Supervisor" class="form-control btn btn-primary" click.delegate="manageSupervisor()">
+            </div>
+        </div>
+        <div if.bind='dataFilled'>
+            <div>
+                <h4>${selectedRole}</h4>
+            </div>
+            <div>
+                <ul class='clean-list'>
+                    <li repeat.for="userInRole of usersInRole">
+                        <div class="inline form=content content-right">
+                            <input type="checkbox" checked.bind="userInRole.IsInRole" value.one-way="userInRole.UserId" />
+                        </div>
+                        <div class="inline content-left">
+                            <label>${userInRole.UserName}</label>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class='mt-1'>
+                <div class="form-group">
+                    <input type="button" value='Update Roles' class="form-control btn btn-primary" click.delegate='updateUsersInRole()' />
+                    <!--<input type="button" value='Save Preferences' class="form-control btn btn-primary" click.delegate='saveProfile()' />-->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

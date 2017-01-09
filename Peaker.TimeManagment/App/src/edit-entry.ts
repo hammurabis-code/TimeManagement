@@ -26,9 +26,11 @@ export class editEntries {
         if (this.appState.editEntry == null) {
             this.router.navigate('entry');
         }
-        this.workCodes = this.appState.currentUser.UserWorkCodes;
+        this.appState.currentUser.UserWorkCodes.forEach(element => {
+            this.workCodes.push(element);
+        });
         this.timeEntry = this.appState.editEntry;
-        console.log(this.appState.editEntry);
+        console.log(this.appState.editEntry.workCode);
         this.entryDate = this.timeEntry.entryDate;
         this.appState.editEntry = null;
         // this.appState.currentUser.UserWorkCodes.forEach(element => {
@@ -58,14 +60,6 @@ export class editEntries {
     submit() {
         this.timeEntry.entryDate = this.entryDate;
         console.log(this.timeEntry.workCodeId);
-        this.timeEntryService.saveEntry(this.timeEntry)
-            .then(success => {
-                console.log(this.timeEntry.workCodeId);
-                if (success) {
-                    this.timeEntry = null;
-                    this.router.navigate('review');
-                }
-            });
 
         if (this.entryDate === undefined) {
             toastr.error("You must select an entry date.", "Date Error");

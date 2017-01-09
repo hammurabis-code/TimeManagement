@@ -240,3 +240,7 @@ div.au-stagger {
 .hidden{
   display:none;
 }
+.affix {
+    top:0;
+    position:fixed;
+}

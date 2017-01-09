@@ -86,25 +86,7 @@ namespace Peaker.TimeManagment.Controllers
         {
             using (MemoryStream stream = new TimeEntryAccess().GetExportFile(filter, User))
             {
-                // processing the stream.
-                //string fileName = $"{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}_{DateTime.Now.Hour}_{DateTime.Now.Minute}_{DateTime.Now.Second}.csv";
-                //string filePath = $"{Path.GetTempPath()}{fileName}";
-                //using (FileStream file = new FileStream(filePath, FileMode.Create, FileAccess.Write)) {
-                //    stream.WriteTo(file);
-                //    file.Close();
-                //}
-
-                //HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
-                ////using ()
-                ////{
-                //var newStrean = new FileStream(filePath, FileMode.Open);
-                //    result.Content = new StreamContent(stream);
-                //    result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                //    result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
-                //    result.Content.Headers.ContentDisposition.FileName = fileName;
-                //    return result;
-                ////}
-
+                
                 var result = new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new ByteArrayContent(stream.GetBuffer())

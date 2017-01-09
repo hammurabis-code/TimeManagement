@@ -2,12 +2,13 @@
 using Microsoft.AspNet.Identity.EntityFramework;
 using Peaker.TimeManagment.Models;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace AspNetIdentity.WebApi.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [RoutePrefix("api/roles")]
     public class RolesController : BaseApiController
     {
@@ -31,7 +32,7 @@ namespace AspNetIdentity.WebApi.Controllers
         [Route("", Name = "GetAllRoles")]
         public IHttpActionResult GetAllRoles()
         {
-            var roles = this.AppRoleManager.Roles;
+            var roles = this.AppRoleManager.Roles.ToList();
 
             return Ok(roles);
         }
@@ -79,6 +80,43 @@ namespace AspNetIdentity.WebApi.Controllers
 
             return NotFound();
 
+        }
+
+        [Route("AddUserToRole")]
+        public async Task<IHttpActionResult> AddUserToRole([FromBody] RoleBindingModel userData) {
+            var role = await AppRoleManager.FindByIdAsync(userData.RoleId);
+            if (role != null)
+            {
+                IdentityResult result = await AppUserManager.AddToRoleAsync(userData.UserId, role.Name);
+
+                if (!result.Succeeded)
+                {
+                    return GetErrorResult(result);
+                }
+
+                return Ok();
+            }
+
+            return NotFound();
+        }
+
+        [Route("RemoveUserFromRole")]
+        public async Task<IHttpActionResult> RemoveUserFromRole([FromBody] RoleBindingModel userData)
+        {
+            var role = await AppRoleManager.FindByIdAsync(userData.RoleId);
+            if (role != null)
+            {
+                IdentityResult result = await AppUserManager.RemoveFromRoleAsync(userData.UserId, role.Name);
+
+                if (!result.Succeeded)
+                {
+                    return GetErrorResult(result);
+                }
+
+                return Ok();
+            }
+
+            return NotFound();
         }
 
         [Route("ManageUsersInRole")]

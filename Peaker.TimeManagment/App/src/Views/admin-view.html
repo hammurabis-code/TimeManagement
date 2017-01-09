@@ -1,23 +1,36 @@
 <template>
     <require from="../value-converters/date"></require>
+    <require from="../custom-elements/action-confirm"></require>
     <div class="container">
-        <div if.bind='appState.isLocal'>
-            <input type="button" value='User Roles' class="form-control btn btn-primary" click.delegate='showHideUserRoles()' />
-        </div>
         <div>
-            <input type="button" value='Export Jobs' class="form-control btn btn-primary" click.delegate='showHideExport()' />
-        </div>
-        <div>
-            <input type="button" value='Manage Codes' class="form-control btn btn-primary" click.delegate='goToWorkCodes()' />
-        </div>
-        <div>
-            <input type="button" value='Create Users' class="form-control btn btn-primary" click.delegate='goToCreateUsers()' />
-        </div>
-        <div class="${showUserRoles ? 'expandView' : 'collapseView'}">
-            Comming soon!
+            <div>
+                <input type="button" value='Export Jobs' class="form-control btn btn-primary" click.delegate='showHideExport()' />
+            </div>
+            <div>
+                <input type="button" value='Manage Codes' class="form-control btn btn-primary" click.delegate='goToWorkCodes()' />
+            </div>
+            <div>
+                <input type="button" value='Create Users' class="form-control btn btn-primary" click.delegate='goToCreateUsers()' />
+            </div>
+            <div>
+                <input type="button" value='Manage Roles' class="form-control btn btn-primary" click.delegate='goToManageRoles()' />
+            </div>
+            <!--<div>
+                <input type="button" value='Admin Review' class="form-control btn btn-primary" click.delegate='goToAdminReview()' />
+            </div>-->
+            <div>
+                <action-confirm msg="Are you sure? This will remove the exported flag from ALL entries." action.call="clearNavisionExport()"
+                    button-class="btn-warning" button-name="Clear Navision Export Flag"></action-confirm>
+            </div>
         </div>
         <div class="${showExport ? 'expandView' : 'collapseView'}">
             <h3>Export Jobs</h3>
+            <div class="input-group">
+                <span class="input-group-addon" id="years">Year</span>
+                <select class="form-control" id="selectedYear" value.bind="selectedYear" aria-describedby="years">
+                        <option repeat.for="year of years" model.bind="year" >${year}</option>
+                    </select>
+            </div>
             <div class="input-group">
                 <span class="input-group-addon" id="weeks">Weeks</span>
                 <select class="form-control" id="selectWorkCode" value.bind="selectedWeek" aria-describedby="weeks">
@@ -28,15 +41,17 @@
                 <input type="button" value='Get Entries' class="form-control btn btn-primary" click.delegate='getEntries()' />
             </div>
             <div if.bind="timeEntries">
+                <div data-spy="affix" data-offset-top="300">
+                    <div class="form-group">
+                        <input type="button" value='Export Entries' class="form-control btn btn-primary" click.delegate='exportEntries()' />
+                    </div>
+                </div>
                 <div repeat.for="timeEntry of timeEntries">
                     <div class="entryContainer">
                         <div class='reviewEntry'>
                             <label>${timeEntry.entryDate | date}, ${timeEntry.jobnumber}, ${timeEntry.workCode.BaseCode} ${timeEntry.workCode.Descripotion}</label><span>${timeEntry.userHours} Hours</span>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <input type="button" value='Export Entries' class="form-control btn btn-primary" click.delegate='exportEntries()' />
                 </div>
             </div>
         </div>

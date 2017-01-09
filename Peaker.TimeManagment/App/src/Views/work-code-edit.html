@@ -79,7 +79,6 @@
             <div class="input-group">
                 <span class="input-group-addon" id="workCode">Code</span>
                 <select class="form-control" id="selectWorkCode" value.bind="selectedWorkCode" aria-describedby="workCode" disabled.bind="isDirty">
-                        <option>Select Code</option>
                         <option repeat.for="workcode of workCodes " model.bind='workcode' >${workcode.BaseCode} ${workcode.Description}</option>
                     </select>
             </div>

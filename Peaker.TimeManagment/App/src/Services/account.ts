@@ -141,10 +141,10 @@ export class AccountService {
     }
 
     createUser(username: string, password: string, confirmPassword: string): Promise<boolean> {
-        let regsiterModel = new Register(username, password, confirmPassword);
+        let registerModel = new Register(username, password, confirmPassword);
         return this.client.fetch(Constants.accountApi + 'Register',
             {
-                body: json(regsiterModel),
+                body: json(registerModel),
                 headers: {
                     'Authorization': Helper.getAuthHeader(),
                     'Content-Type': 'application/json',

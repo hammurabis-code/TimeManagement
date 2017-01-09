@@ -99,4 +99,17 @@ namespace Peaker.TimeManagment.Models
         public List<string> EnrolledUsers { get; set; }
         public List<string> RemovedUsers { get; set; }
     }
+
+    public class RoleBindingModel {
+        public string UserId { get; set; }
+        public string RoleId { get; set; }
+    }
+
+    public class UserInRoleModel {
+        public string UserName { get; set; }
+        public string UserId { get; set; }
+        public string RoleId { get; set; }
+        public bool IsInRole { get; set; }
+
+    }
 }

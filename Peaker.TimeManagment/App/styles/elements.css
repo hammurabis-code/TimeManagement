@@ -7,6 +7,9 @@ ul.clean-list {
 ul.clean-list li {
     display: flex;
 }
+.clean-list li .content-left {
+    padding-left: 10px;
+}
 .form-label {
     width: 30%;
 }
