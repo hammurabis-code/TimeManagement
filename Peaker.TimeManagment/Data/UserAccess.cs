@@ -14,7 +14,7 @@ namespace Peaker.TimeManagment.Data
     public class UserAccess : DataAccess
     {
 
-        public UserInfoViewModel FillUserInfo(ApplicationUser user)
+        public UserInfoViewModel FillUserInfo(ApplicationUser user, ApplicationRoleManager roleManager)
         {
             var userInfo = new UserInfoViewModel(user.Id, user.Email);
 
@@ -30,8 +30,16 @@ namespace Peaker.TimeManagment.Data
             FillWorkCodes(userInfo);
             //FillJobNumbers(userInfo);
             //FillDepartments(userInfo);            
-
+            FillUserRoles(userInfo, user, roleManager);
+            
             return userInfo;
+        }
+
+        private void FillUserRoles(UserInfoViewModel userinfo,ApplicationUser user, ApplicationRoleManager roleManager)
+        {
+            foreach (var role in user.Roles) {
+                userinfo.UserRoles.Add(new UserRole() { RoleName = roleManager.FindById(role.RoleId).Name });
+            }
         }
 
         //private void FillDepartments(UserInfoViewModel userInfo)
@@ -49,7 +57,7 @@ namespace Peaker.TimeManagment.Data
         //        });
         //    }
         //}
-
+        
         private void FillJobNumbers(UserInfoViewModel userInfo)
         {
             throw new NotImplementedException();

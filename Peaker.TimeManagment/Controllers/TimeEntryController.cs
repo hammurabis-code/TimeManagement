@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using Peaker.TimeManagment.Data;
+using Peaker.TimeManagment.Data.Export;
 using Peaker.TimeManagment.Models.Data;
 using Peaker.TimeManagment.Models.Filters;
 using Peaker.TimeManagment.Models.View;
@@ -80,19 +81,42 @@ namespace Peaker.TimeManagment.Controllers
             else return Unauthorized();
         }
 
-        [Route("ExportEntries")]
+        [Route("ExportEntriesForNavision")]
         [HttpPost]
-        public HttpResponseMessage ExportEntries([FromBody]EntryFilter filter)
+        public HttpResponseMessage ExportEntriesForNavision([FromBody]EntryFilter filter)
         {
-            using (MemoryStream stream = new TimeEntryAccess().GetExportFile(filter, User))
+            using (MemoryStream stream = new FileExport().GetExportFile(filter, User, new TimeEntryAccess()))
             {
-                
+
                 var result = new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new ByteArrayContent(stream.GetBuffer())
                 };
                 result.Content.Headers.ContentDisposition =
-                    new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
+                    new ContentDispositionHeaderValue("attachment")
+                    {
+                        FileName = "Test.csv"
+                    };
+                result.Content.Headers.ContentType =
+                    new MediaTypeHeaderValue("application/octet-stream");
+
+                return result;
+            }
+        }
+
+        [Route("ExportEntriesForPayroll")]
+        [HttpPost]
+        public HttpResponseMessage ExportEntriesForPayroll([FromBody]EntryFilter filter)
+        {
+            using (MemoryStream stream = new FileExport().GetExportFileForPayroll(filter, User, new TimeEntryAccess()))
+            {
+
+                var result = new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new ByteArrayContent(stream.GetBuffer())
+                };
+                result.Content.Headers.ContentDisposition =
+                    new ContentDispositionHeaderValue("attachment")
                     {
                         FileName = "Test.csv"
                     };
@@ -105,9 +129,10 @@ namespace Peaker.TimeManagment.Controllers
 
         [Route("GetRestrictedJobnumbers")]
         [HttpGet]
-        public IHttpActionResult GetRestrictedJobnumbers() {
+        public IHttpActionResult GetRestrictedJobnumbers()
+        {
             if (User.Identity != null)
-            {                
+            {
                 return Ok(new TimeEntryAccess().GetRestrictedJobnumbers().Select(j => j.Jobnumber).ToList());
             }
             else return Unauthorized();

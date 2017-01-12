@@ -15,7 +15,7 @@ export class User {
     UserWorkCodes: UserWorkCode[];
     pendingTimeEntries: TimeEntry[];
 
-    constructor(userDetailId: number, userId: string, username: string, accountingName: string, defaultJobEntries: number, userDepartments: Department[], userWorkCodes: UserWorkCode[], userJobNumbers: JobNumber[]) {
+    constructor(userDetailId: number, userId: string, username: string, accountingName: string, defaultJobEntries: number, userDepartments: Department[], userWorkCodes: UserWorkCode[], userJobNumbers: JobNumber[], userRoles?: UserRole[]) {
         this.UserDetailId = userDetailId;
         this.UserId = userId;
         this.Username = username;

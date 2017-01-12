@@ -21,7 +21,8 @@ export class App {
       {
         route: ['', 'login'],
         moduleId: './login',
-        nav: false, title: 'Login'
+        nav: false, title: 'Login',
+        role: 'User'
       },
       {
         route: ['entry', 'entry/:submitted'],
@@ -29,21 +30,24 @@ export class App {
         moduleId: './entry',
         nav: true,
         auth: false,
-        title: 'New Entry'
+        title: 'New Entry',
+        role: 'User'
       },
       {
         route: 'review',
         moduleId: './review-entries',
         nav: true,
         auth: true,
-        title: 'Review'
+        title: 'Review',
+        role: 'User'
       },
       {
         route: 'submit',
         moduleId: './submit',
         nav: false,
         auth: true,
-        title: 'Review/Submit'
+        title: 'Review/Submit',
+        role: 'User'
       },
       {
         route: 'edit',
@@ -51,7 +55,8 @@ export class App {
         nav: false,
         auth: true,
         title: 'Edit Entry',
-        name: 'edit'
+        name: 'edit',
+        role: 'User'
       },
       {
         route: 'profile',
@@ -59,7 +64,8 @@ export class App {
         nav: true,
         auth: true,
         title: 'Profile',
-        name: "Profile"
+        name: "Profile",
+        role: 'User'
       },
       {
         route: 'admin',
@@ -67,7 +73,8 @@ export class App {
         nav: true,
         auth: true,
         title: 'Admin',
-        name: "Admin"
+        name: "Admin",
+        role: 'Admin'
       },
       {
         route: 'workCodeEdit',
@@ -75,7 +82,8 @@ export class App {
         nav: false,
         auth: true,
         title: 'Edit Work Codes',
-        name: "editWorkCodes"
+        name: "editWorkCodes",
+        role: 'Admin'
       },
       {
         route: 'createUsers',
@@ -83,7 +91,8 @@ export class App {
         nav: false,
         auth: true,
         title: 'Create Users',
-        name: "createUsers"
+        name: "createUsers",
+        role: 'Admin'
       },
       {
         route: 'manageRoles',
@@ -91,7 +100,8 @@ export class App {
         nav: false,
         auth: true,
         title: 'Manage Roles',
-        name: "manageRoles"
+        name: "manageRoles",
+        role: 'Admin'
       },
       {
         route: 'adminReview',
@@ -99,7 +109,8 @@ export class App {
         nav: false,
         auth: true,
         title: 'Admine Review',
-        name: "adminReview"
+        name: "adminReview",
+        role: 'Admin'
       },
       //{ route: 'admin', moduleId: './Views/admin', nav: true, auth: true, title: 'Administration' }, //this.appState.isLoggedIn
     ]);

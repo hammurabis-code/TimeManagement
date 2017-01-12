@@ -1,4 +1,4 @@
-import {DOM, customAttribute, inject} from 'aurelia-framework';
+import { DOM, customAttribute, inject } from 'aurelia-framework';
 import 'bootstrap-datepicker';
 
 @customAttribute('datepicker')
@@ -10,7 +10,7 @@ export class DatepickerCustomAttribute {
     }
 
     public bind() {
-        let datepickerOptions: DatepickerOptions = { autoclose: true, format: 'yyyy-mm-dd' };
+        let datepickerOptions: DatepickerOptions = { autoclose: true, format: 'yyyy-mm-dd', orientation: "top" };
 
         $(this.element)
             .datepicker(datepickerOptions)

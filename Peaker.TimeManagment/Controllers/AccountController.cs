@@ -123,7 +123,7 @@ namespace Peaker.TimeManagment.Controllers
             {
                 try
                 {
-                    return Ok(new UserAccess().FillUserInfo(user));
+                    return Ok(new UserAccess().FillUserInfo(user, AppRoleManager));
                 } 
                 catch (Exception ex)
                 {

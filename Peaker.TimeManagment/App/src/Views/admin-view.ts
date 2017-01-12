@@ -111,7 +111,7 @@ export class AdminView {
     }
 
     exportEntries() {
-        this.fileService.exportEntries(this.filterCriteria)
+        this.fileService.exportEntriesForNavision(this.filterCriteria)
             .then(result => {
                 this.timeEntries.length = 0;
                 this.timeEntries = undefined;

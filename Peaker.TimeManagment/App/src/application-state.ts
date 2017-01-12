@@ -85,6 +85,7 @@ export class ApplicationState {
             this.accountService.getUserInfo()
                 .then(user => {
                     this.currentUser = user;
+                    console.log(this.currentUser);
                     let codes = new Array<WorkCode>();
                     codes = this.activeWorkCodes.filter(c =>
                         this.currentUser.UserWorkCodes.find(uc => uc.baseCode == c.BaseCode))
@@ -112,6 +113,7 @@ export class ApplicationState {
     }
 
     isInRole(roleName: string) {
-
+        let role = this.currentUser.UserRoles.find(r => r.RoleName == roleName);
+        return role != undefined;
     }
 }

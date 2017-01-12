@@ -17,7 +17,7 @@ using System.IO;
 
 namespace Peaker.TimeManagment.Data
 {
-    public class TimeEntryAccess : DataAccess
+    public class TimeEntryAccess : DataAccess, ITimeEntryAccess
     {
         public List<TimeEntryView> GetTimeEntries(EntryFilter filter, IPrincipal user)
         {
@@ -105,30 +105,9 @@ namespace Peaker.TimeManagment.Data
             }
             return finalEntries;
         }
+               
 
-        internal MemoryStream GetExportFile(EntryFilter filter, IPrincipal user)
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine("CODE,DATE,HOURS,JOB_NO");
-            var entries = GetTimeEntries(filter, user);
-            foreach (var entry in entries)
-            {
-                foreach (var hours in entry.hours)
-                {
-                    var hoursSuffix = hours.HoursType == HourTypes.Regular ? "HRS" : "OT";
-                    sb.AppendLine($"{entry.workCode.BaseCode}-{hoursSuffix},{entry.entryDate.ToShortDateString()},{hours.Duration}, J00{entry.jobnumber}");
-                }
-                SetEntryExportedToNavision(entry);
-            }
-            MemoryStream stream = new MemoryStream();
-            StreamWriter writer = new StreamWriter(stream);
-            writer.Write(sb.ToString());
-            writer.Flush();
-            stream.Position = 0;
-            return stream;
-        }
-
-        private void SetEntryExportedToNavision(TimeEntryView entry)
+        public void SetEntryExportedToNavision(TimeEntryView entry)
         {
             ExecuteNonQuery(Constants.SetExportedToNavisionProcedure, GetSingleParameter("p_timeEntryId", entry.id));
         }
@@ -227,6 +206,11 @@ namespace Peaker.TimeManagment.Data
 
         public void ClearNavisionFlag() {
             ExecuteNonQuery(Constants.UpdateTimeEntryClearNavisionExportProcedure, null);
+        }
+
+        public void ClearPayrollExportFlag()
+        {
+            ExecuteNonQuery(Constants.UpdateTimeEntryClearPayrollExportProcedure, null);
         }
 
         private void UpdateTimeEntryHours(List<TimeEntryHours> finalHours)

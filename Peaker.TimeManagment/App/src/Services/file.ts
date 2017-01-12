@@ -9,7 +9,7 @@ export class FileService {
     }
 
     exportEntriesForNavision(filter: EntryFilter) {
-        return this.http.createRequest(Constants.timeEntryApi + 'ExportEntries')
+        return this.http.createRequest(Constants.timeEntryApi + 'ExportEntriesForNavision')
             .asPost()
             .withHeader('Authorization', Helper.getAuthHeader())
             .withHeader('Content-Type', 'application/json')
@@ -48,7 +48,7 @@ export class FileService {
     }
 
     exportEntriesForPayroll(filter: EntryFilter) {
-        return this.http.createRequest(Constants.timeEntryApi + 'ExportEntries')
+        return this.http.createRequest(Constants.timeEntryApi + 'ExportEntriesForPayroll')
             .asPost()
             .withHeader('Authorization', Helper.getAuthHeader())
             .withHeader('Content-Type', 'application/json')

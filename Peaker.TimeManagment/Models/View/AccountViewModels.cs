@@ -45,6 +45,8 @@ namespace Peaker.TimeManagment.Models.View
 
         public List<WorkCodeView> UserWorkCodes { get; set; }
 
+        public List<UserRole> UserRoles { get; set; }
+
         public UserInfoViewModel(string id,string username) {
             UserDetailId = int.MinValue;
             UserId = id;
@@ -52,6 +54,7 @@ namespace Peaker.TimeManagment.Models.View
             UsedJobNumbers = new List<JobNumber>();
             UserDepartments = new List<DepartmentView>();
             UserWorkCodes = new List<WorkCodeView>();
+            UserRoles = new List<UserRole>();
         }
 
         public Dictionary<string, object> GetProfileUpdateParameters()
@@ -63,6 +66,10 @@ namespace Peaker.TimeManagment.Models.View
             paramDictionary.Add("p_defaultJobEntries", DefaultJobEntries);
             return paramDictionary;
         }
+    }
+
+    public class UserRole {
+        public string RoleName { get; set; }
     }
 
     public class UserLoginInfoViewModel
