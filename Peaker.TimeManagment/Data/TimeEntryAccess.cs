@@ -112,10 +112,22 @@ namespace Peaker.TimeManagment.Data
             ExecuteNonQuery(Constants.SetExportedToNavisionProcedure, GetSingleParameter("p_timeEntryId", entry.id));
         }
 
-        public void AddUpdateEntry(TimeEntryView entryToSave)
+        public void SetEntryExportedToPayroll(TimeEntryView entry)
         {
+            ExecuteNonQuery(Constants.SetExportedToNavisionProcedure, GetSingleParameter("p_timeEntryId", entry.id));
+        }
+
+        public void AddUpdateEntry(TimeEntryView entryToSave, string userId)
+        {
+            var eventType = EventTypes.Default;
+            var peakerEvent = new PeakerEvent()
+            {
+                TimeStamp = DateTime.Now,
+                UserId = userId
+            };
             if (entryToSave.id <= 0)
             {
+                eventType = EventTypes.Created;
                 var entryId = RetrieveSingleConvertible<int>(Constants.InsertTimeEntryProcedure, entryToSave.GetInsertParameters());
                 if (entryId != int.MinValue)
                 {
@@ -124,23 +136,20 @@ namespace Peaker.TimeManagment.Data
             }
             else
             {
+                eventType = EventTypes.Updated;
                 ExecuteNonQuery(Constants.UpdateTimeEntryProcedure, entryToSave.GetUpdateParameters());
             }
-            UpdateEntryHours(entryToSave);
+            peakerEvent.EventType = eventType;
+            peakerEvent.ObjectId = entryToSave.id;
+            peakerEvent.Data = entryToSave;
+            ProcessHours(entryToSave, GetIsShiftWorker(entryToSave.userDetailId));
+            SaveEvent(peakerEvent);
         }
 
-        private void UpdateEntryHours(TimeEntryView entryToSave)
+        private void SaveEvent(PeakerEvent peakerEvent)
         {
-            bool isShiftWorker = GetIsShiftWorker(entryToSave.userDetailId);
-            if (isShiftWorker)
-            {
-                ProcessShiftHours(entryToSave);
-            }
-            else
-            {
-                ProcessNonShiftHours(entryToSave);
-            }
-        }
+            ExecuteNonQuery(Constants.InsertPeakerEventProcedure, peakerEvent.GetInsertParameters());
+        }       
 
         internal List<RestrictedJobnumber> GetRestrictedJobnumbers()
         {
@@ -152,7 +161,7 @@ namespace Peaker.TimeManagment.Data
             throw new NotImplementedException();
         }
 
-        private void ProcessNonShiftHours(TimeEntryView entryToSave)
+        private void ProcessHours(TimeEntryView entryToSave, bool isShiftWorker)
         {
             //get all hour entries
             //iterate through each entry
@@ -160,9 +169,10 @@ namespace Peaker.TimeManagment.Data
             // if entry total drives total over 8 hours
             // split entry into two parts
             //regular hours and 
+            bool mondayThruFriday = (entryToSave.entryDate.DayOfWeek != DayOfWeek.Saturday && entryToSave.entryDate.DayOfWeek != DayOfWeek.Sunday);
+            decimal threshold = isShiftWorker && mondayThruFriday ? 10 : 8;
+
             var finalHours = new List<TimeEntryHours>();
-
-
 
             var hoursParams = GetSingleParameter("p_entryDate", entryToSave.entryDate.ToString("yyyy-MM-dd"));
             hoursParams.Add("p_userDetailId", entryToSave.userDetailId);
@@ -178,30 +188,53 @@ namespace Peaker.TimeManagment.Data
                 Duration = entryToSave.userHours,
                 HoursType = HourTypes.Regular
             });
+            
+            var entryDay = entryToSave.entryDate.DayOfWeek;
+
+            if (entryDay == DayOfWeek.Sunday)
+            {
+                foreach (var hourEntry in hourEntries)
+                {
+                    hourEntry.HoursType = HourTypes.DoubleTime;
+                    finalHours.Add(hourEntry);
+                }
+            }
+            else if (entryDay == DayOfWeek.Saturday)
+            {
+                finalHours = ProcessHoursForDay(hourEntries, threshold, HourTypes.Overtime, HourTypes.DoubleTime);
+            }
+            else
+            {
+                finalHours = ProcessHoursForDay(hourEntries, threshold, HourTypes.Regular, HourTypes.Overtime);
+            }            
+            UpdateTimeEntryHours(finalHours);
+        }
+
+        private List<TimeEntryHours> ProcessHoursForDay(List<TimeEntryHours> hourEntries, decimal threshold, HourTypes underThresholdType, HourTypes overThresholdType) {
             decimal hours = 0;
+            var finalHours = new List<TimeEntryHours>();
             foreach (var hourEntry in hourEntries)
             {
-                if (hours > 8)
+                if (hours > threshold)
                 {
-                    hourEntry.HoursType = HourTypes.Overtime;
+                    hourEntry.HoursType = overThresholdType;
                     finalHours.Add(hourEntry);
                 }
                 else
                 {
                     hours += hourEntry.Duration;
-                    if (hours > 8)
+                    if (hours > threshold)
                     {
-                        AddSplitHourEntries(hours, hourEntry, finalHours);
+                        AddSplitHourEntries(hours, hourEntry, finalHours, threshold, underThresholdType, overThresholdType);
                     }
                     else
                     {
-                        hourEntry.HoursType = HourTypes.Regular;
+                        hourEntry.HoursType = underThresholdType;
                         finalHours.Add(hourEntry);
                     }
                 }
             }
-
-            UpdateTimeEntryHours(finalHours);
+            return finalHours;
         }
 
         public void ClearNavisionFlag() {
@@ -225,18 +258,18 @@ namespace Peaker.TimeManagment.Data
             }
         }
 
-        private void AddSplitHourEntries(decimal hours, TimeEntryHours hourEntry, List<TimeEntryHours> finalHours)
+        private void AddSplitHourEntries(decimal hours, TimeEntryHours hourEntry, List<TimeEntryHours> finalHours, decimal threshold, HourTypes underThresholdType, HourTypes overThresholdType)
         {
-            var overtimeHours = hours - 8;
+            var overtimeHours = hours - threshold;
             var regularHours = hourEntry.Duration - overtimeHours;
             hourEntry.Duration = regularHours;
-            hourEntry.HoursType = HourTypes.Regular;
+            hourEntry.HoursType = underThresholdType;
             finalHours.Add(hourEntry);
             finalHours.Add(new TimeEntryHours()
             {
                 TimeEntryId = hourEntry.TimeEntryId,
                 Duration = overtimeHours,
-                HoursType = HourTypes.Overtime
+                HoursType = overThresholdType
             });
         }
 
@@ -259,7 +292,7 @@ namespace Peaker.TimeManagment.Data
 
         private bool GetIsShiftWorker(int userDetailId)
         {
-            return false;
+            return RetrieveSingleConvertible<bool>(Constants.GetIsSecondShiftProcedure, GetSingleParameter("p_userDetailId", userDetailId));
         }
 
         public decimal GetTotalHours(EntryFilter filter, IPrincipal user)

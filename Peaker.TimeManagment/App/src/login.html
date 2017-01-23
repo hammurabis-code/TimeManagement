@@ -8,6 +8,9 @@
             </div>
             <div if.bind='!appState.loggedIn'>
                 <h2 class="form-signin-heading">Please sign in</h2>
+                <div if.bind="loginFailed">
+                    <h3 class='text-danger'>Login attempt failed.</h3>
+                </div>
                 <label for="inputEmail2" class="sr-only">Email address</label>
                 <input id="inputEmail2" class="form-control ${usernameError ? 'alert-danger' : ''}" placeholder="Email address" required=""
                     autofocus="" type="email" value.bind='username'>

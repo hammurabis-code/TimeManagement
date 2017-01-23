@@ -7,14 +7,11 @@ namespace Peaker.TimeManagment.Models.Data
 {
     public class UserDetail
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [Required]
         public string UserId { get; set; }
-        [Required]
         public string AccountingName { get; set; }
-        [Required]
         public int DefaultJobEntries { get; set; }
+        public bool IsSecondShift { get; set; }
         public List<Department> Departments { get; set; }
         public List<WorkCode> WorkCodes { get; set; }
         public List<JobNumber> UsedJobNumbers { get; set; }
@@ -36,6 +33,7 @@ namespace Peaker.TimeManagment.Models.Data
                 UserId = record.GetString(record.GetOrdinal("UserId")),
                 AccountingName = record.GetString(record.GetOrdinal("AccountingName")),
                 DefaultJobEntries = record.GetInt32(record.GetOrdinal("DefaultJobEntries")),
+                IsSecondShift = record.GetBoolean(record.GetOrdinal("IsSecondShift")),
                 Departments = new List<Department>(),
                 WorkCodes = new List<WorkCode>(),
                 UsedJobNumbers = new List<JobNumber>(),

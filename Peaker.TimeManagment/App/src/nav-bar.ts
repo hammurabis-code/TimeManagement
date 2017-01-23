@@ -1,13 +1,14 @@
-import { autoinject } from 'aurelia-dependency-injection';
+import { autoinject, bindable } from 'aurelia-framework';
 import { ApplicationState } from './application-state';
+import { Router } from 'aurelia-router';
+
+@autoinject
 export class NavBar {
+    @bindable router: Router;
+    @bindable appState: ApplicationState;
 
-    constructor(private appState: ApplicationState) { }
-
-    showNav(navItem) {
-        console.log(navItem.role);
-        console.log(this.appState.isInRole(navItem.role));
-        return this.appState.isInRole(navItem.role);
+    showNav(row) {
+        console.log(row.settings);
+        console.log(row.settings.adminView);
     }
-
 }

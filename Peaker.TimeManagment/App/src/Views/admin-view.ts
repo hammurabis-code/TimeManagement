@@ -29,11 +29,9 @@ export class AdminView {
         this.showRolesText = "User Roles";
         this.showCodesText = "Manage Codes";
         this.selectedWeek = undefined;
-        console.log("Admin constructed");
     }
 
     activate() {
-        console.log("Admin activated");
         this.setYears();
         this.setWeeks();
     }
@@ -88,7 +86,6 @@ export class AdminView {
     }
 
     clearNavisionExport() {
-        console.log('Clear navision flag called.');
         this.adminService.clearNavisionFlag()
             .then(result => {
                 if (result) {

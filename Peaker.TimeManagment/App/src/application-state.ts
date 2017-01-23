@@ -2,6 +2,7 @@ import { autoinject } from 'aurelia-dependency-injection';
 import { AccountService, TimeEntryService } from './Services/services';
 import { User, TimeEntry, WorkCode } from './Models/Models';
 import { singleton } from 'aurelia-framework'
+import { Router, RouterConfiguration } from 'aurelia-router';
 
 @autoinject
 export class ApplicationState {
@@ -13,8 +14,10 @@ export class ApplicationState {
     isLocal: boolean;
     restrictedJobnumbers: string[];
     editEntry: TimeEntry;
+    isAdmin: boolean = false;
 
-    constructor(private accountService: AccountService, private timeEntryService: TimeEntryService) {
+    constructor(private accountService: AccountService, private timeEntryService: TimeEntryService,
+        private config: RouterConfiguration, private router: Router) {
         this.currentUser = null;
         this.returnRoute = '';
         this.defaultRoute = 'entry';
@@ -59,6 +62,9 @@ export class ApplicationState {
             this.getUserInfo()
                 .then(result => {
                     if (result) {
+                        if (this.currentUser.UserRoles.find(r => r.RoleName == 'Admin' != undefined)) {
+                            this.isAdmin = true;
+                        }
                         this.fillRestrictedJobnumbers()
                             .then(result => {
                                 if (result) {
@@ -85,7 +91,6 @@ export class ApplicationState {
             this.accountService.getUserInfo()
                 .then(user => {
                     this.currentUser = user;
-                    console.log(this.currentUser);
                     let codes = new Array<WorkCode>();
                     codes = this.activeWorkCodes.filter(c =>
                         this.currentUser.UserWorkCodes.find(uc => uc.baseCode == c.BaseCode))
@@ -113,7 +118,25 @@ export class ApplicationState {
     }
 
     isInRole(roleName: string) {
-        let role = this.currentUser.UserRoles.find(r => r.RoleName == roleName);
+        console.log(roleName);
+        let role = undefined;
+        if (this.currentUser != null) {
+            console.log(this.currentUser.UserRoles);
+            role = this.currentUser.UserRoles.find(r => r.RoleName == roleName);
+        }
+        return role != undefined;
+    }
+
+    isInRoles(roles: string[]) {
+        console.log(roles);
+        let role = undefined;
+        if (this.currentUser != null) {
+            console.log(this.currentUser.UserRoles);
+            roles.some(targetRole => {
+                role = this.currentUser.UserRoles.find(r => r.RoleName == targetRole);
+                return role != undefined;
+            });
+        }
         return role != undefined;
     }
 }

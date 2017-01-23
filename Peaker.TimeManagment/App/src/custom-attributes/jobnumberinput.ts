@@ -50,21 +50,6 @@ export class JobNumberInputCustomAttribute {
     constructor(private element: Element) {
     }
 
-    jobNumberChanged(newValue: string, oldValue: string) {
-        // console.log("jobNumberChanged fired.")
-        // if (newValue.length > 5) {
-        //     newValue = oldValue;
-        //     console.log("Over Length.");
-        // }
-        // let newChar = newValue.substr(newValue.length - 1, 1)
-        // if (newChar != undefined) {
-        //     if (isNaN(Number(newChar))) {
-        //         newValue = oldValue;
-        //         console.log("Not a Number.");
-        //     }
-        // }
-    }
-
     attached() {
         this.element.addEventListener('keydown', keydown);
     }

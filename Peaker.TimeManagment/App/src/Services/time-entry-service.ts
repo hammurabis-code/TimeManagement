@@ -146,7 +146,6 @@ export class TimeEntryService {
             })
             .then(resp => resp.json<any[]>())
             .then(resp => {
-                console.log(resp);
                 return resp;
             })
     }

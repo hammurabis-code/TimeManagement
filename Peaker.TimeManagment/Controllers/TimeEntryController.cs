@@ -41,7 +41,7 @@ namespace Peaker.TimeManagment.Controllers
                 var access = new TimeEntryAccess();
                 foreach (var entry in entriesToSave)
                 {
-                    access.AddUpdateEntry(entry);
+                    access.AddUpdateEntry(entry, User.Identity.GetUserId());
                 }
                 return Ok();
             }
@@ -53,7 +53,7 @@ namespace Peaker.TimeManagment.Controllers
         {
             if (User.Identity != null)
             {
-                new TimeEntryAccess().AddUpdateEntry(entryToSave);
+                new TimeEntryAccess().AddUpdateEntry(entryToSave, User.Identity.GetUserId());
                 return Ok();
             }
             else return Unauthorized();

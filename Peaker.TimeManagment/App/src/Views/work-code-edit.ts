@@ -42,8 +42,13 @@ export class WorkCodeEdit {
                         toastr.success('Work code updated.');
                     });
                 }
+                else {
+                    toastr.error('An error occured updating the work code.');
+                }
             })
             .catch(err => {
+                this.selectedWorkCode = null;
+                this.isDirty = false;
                 toastr.error('An error occured updating the work code.');
             })
     }

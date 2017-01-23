@@ -17,11 +17,9 @@ export class PayrollExport {
 
     constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService, private adminService: AdminService, private fileService: FileService, private router: Router) {
         this.selectedWeek = undefined;
-        console.log("Admin constructed");
     }
 
     activate() {
-        console.log("Admin activated");
         this.setYears();
         this.setWeeks();
     }
@@ -52,7 +50,6 @@ export class PayrollExport {
     }
 
     clearPayrollExport() {
-        console.log('Clear payroll flag called.');
         this.adminService.clearPayrollExportFlag()
             .then(result => {
                 if (result) {

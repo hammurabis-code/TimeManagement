@@ -24,7 +24,6 @@ export class ActionConfirm {
             , model: this.msg
         }).then(result => {
             if (result.wasCancelled) return;
-            console.log(this.action);
             this.action();
         });
     }

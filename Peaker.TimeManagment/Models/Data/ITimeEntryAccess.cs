@@ -18,5 +18,6 @@ namespace Peaker.TimeManagment.Models.Data
         decimal GetTotalHours(EntryFilter filter, IPrincipal user);
 
         void DeleteEntry(TimeEntry entryToDelete);
+        void SetEntryExportedToPayroll(TimeEntryView entry);
     }
 }

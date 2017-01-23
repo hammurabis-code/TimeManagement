@@ -18,7 +18,6 @@ export class entry {
         this.workCodes = new Array<UserWorkCode>();
         this.timeEntries = new Array<TimeEntry>();
         this.entryDate = new Date();
-        console.log("Entry constructed");
     }
 
     activate(params) {
@@ -26,29 +25,31 @@ export class entry {
             this.appState.returnRoute = this.returnRoute;
             this.router.navigate('login');
         }
-        if (params != undefined) {
-            if (params.submitted) {
-                toastr.success("Time entries submitted.");
-            }
-        }
-        this.appState.currentUser.UserWorkCodes.forEach(element => {
-            this.workCodes.push(element);
-        });
-        if (this.appState.currentUser.hasPendingEntries) {
-            let dateSet = false;
-            for (let count = 0; count < this.appState.currentUser.pendingTimeEntries.length; count++) {
-                this.timeEntries.push(this.appState.currentUser.pendingTimeEntries[count]);
-                if (!dateSet) {
-                    this.entryDate == new Date(this.appState.currentUser.pendingTimeEntries[count].entryDate);
+        else {
+            if (params != undefined) {
+                if (params.submitted) {
+                    toastr.success("Time entries submitted.");
                 }
             }
-            this.appState.clearPendingEntries();
-        }
-        else {
-            this.entryDate = new Date();
-            let entryCount = this.appState.currentUser.DefaultJobEntries;
-            for (let count = 0; count < entryCount; count++) {
-                this.timeEntries.push(new TimeEntry(this.entryDate, this.appState.currentUser.UserDetailId, count))
+            this.appState.currentUser.UserWorkCodes.forEach(element => {
+                this.workCodes.push(element);
+            });
+            if (this.appState.currentUser.hasPendingEntries) {
+                let dateSet = false;
+                for (let count = 0; count < this.appState.currentUser.pendingTimeEntries.length; count++) {
+                    this.timeEntries.push(this.appState.currentUser.pendingTimeEntries[count]);
+                    if (!dateSet) {
+                        this.entryDate == new Date(this.appState.currentUser.pendingTimeEntries[count].entryDate);
+                    }
+                }
+                this.appState.clearPendingEntries();
+            }
+            else {
+                this.entryDate = new Date();
+                let entryCount = this.appState.currentUser.DefaultJobEntries;
+                for (let count = 0; count < entryCount; count++) {
+                    this.timeEntries.push(new TimeEntry(this.entryDate, this.appState.currentUser.UserDetailId, count))
+                }
             }
         }
     }

@@ -50,7 +50,6 @@ export class profile {
         var department = this.currentUser.UserDepartments[index];
         department.IsSelected = !department.IsSelected;
         this.currentUser.UserDepartments[index] = department;
-        console.log(this.currentUser.UserDepartments);
         this.codeSelectionIsDirty = true;
     }
 

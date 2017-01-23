@@ -7,6 +7,7 @@ using Peaker.TimeManagment.Data;
 using System.IO;
 using Microsoft.VisualBasic.FileIO;
 using Peaker.TimeManagment.Models.View;
+using Peaker.TimeManagment;
 
 namespace DataImporter
 {
@@ -103,11 +104,11 @@ namespace DataImporter
         }
 
         public void InsertEntries(List<TimeEntryView> entries) {
-            var count = 0;
+            var count = 0;            
             var access = new TimeEntryAccess();
             foreach (var entry in entries)
             {
-                access.AddUpdateEntry(entry);
+                access.AddUpdateEntry(entry, entry.userDetailId.ToString());
                 count++;
                 
             }

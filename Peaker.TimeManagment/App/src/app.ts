@@ -3,7 +3,6 @@ import { HttpClient } from 'aurelia-fetch-client';
 import { Router, RouterConfiguration, Redirect } from 'aurelia-router';
 import { ApplicationState } from './application-state';
 import { Constants } from './Models/Models';
-import { RouteConfigs } from './routeConfigs';
 import 'fetch';
 
 @autoinject
@@ -11,7 +10,6 @@ export class App {
   public router: Router;
 
   constructor(private appState: ApplicationState) {
-    this.appState = appState;
   }
 
 
@@ -22,7 +20,7 @@ export class App {
         route: ['', 'login'],
         moduleId: './login',
         nav: false, title: 'Login',
-        role: 'User'
+        settings: { roles: ['User'], adminView: false }
       },
       {
         route: ['entry', 'entry/:submitted'],
@@ -31,7 +29,7 @@ export class App {
         nav: true,
         auth: false,
         title: 'New Entry',
-        role: 'User'
+        settings: { roles: ['User'], adminView: false }
       },
       {
         route: 'review',
@@ -39,7 +37,7 @@ export class App {
         nav: true,
         auth: true,
         title: 'Review',
-        role: 'User'
+        settings: { roles: ['User'], adminView: false }
       },
       {
         route: 'submit',
@@ -47,7 +45,7 @@ export class App {
         nav: false,
         auth: true,
         title: 'Review/Submit',
-        role: 'User'
+        settings: { roles: ['User'], adminView: false }
       },
       {
         route: 'edit',
@@ -56,7 +54,7 @@ export class App {
         auth: true,
         title: 'Edit Entry',
         name: 'edit',
-        role: 'User'
+        settings: { roles: ['User'], adminView: false }
       },
       {
         route: 'profile',
@@ -65,7 +63,7 @@ export class App {
         auth: true,
         title: 'Profile',
         name: "Profile",
-        role: 'User'
+        settings: { roles: ['User'], adminView: false }
       },
       {
         route: 'admin',
@@ -74,7 +72,7 @@ export class App {
         auth: true,
         title: 'Admin',
         name: "Admin",
-        role: 'Admin'
+        settings: { roles: ['Admin'], adminView: true }
       },
       {
         route: 'workCodeEdit',
@@ -83,7 +81,7 @@ export class App {
         auth: true,
         title: 'Edit Work Codes',
         name: "editWorkCodes",
-        role: 'Admin'
+        settings: { roles: ['Admin'], adminView: true }
       },
       {
         route: 'createUsers',
@@ -92,7 +90,7 @@ export class App {
         auth: true,
         title: 'Create Users',
         name: "createUsers",
-        role: 'Admin'
+        settings: { roles: ['Admin'], adminView: true }
       },
       {
         route: 'manageRoles',
@@ -101,7 +99,7 @@ export class App {
         auth: true,
         title: 'Manage Roles',
         name: "manageRoles",
-        role: 'Admin'
+        settings: { roles: ['Admin'], adminView: true }
       },
       {
         route: 'adminReview',
@@ -110,11 +108,10 @@ export class App {
         auth: true,
         title: 'Admine Review',
         name: "adminReview",
-        role: 'Admin'
+        settings: { roles: ['Admin'], adminView: true }
       },
       //{ route: 'admin', moduleId: './Views/admin', nav: true, auth: true, title: 'Administration' }, //this.appState.isLoggedIn
     ]);
-
     config.addPipelineStep('authorize', AuthorizeStep);
 
     this.router = router;
@@ -133,16 +130,21 @@ export class AuthorizeStep {
         this.appState.returnRoute = routingContext.config.route;
         return next.cancel(new Redirect('login'));
       }
+      if (routingContext.getAllInstructions().some(i => i.config.settings.roles.indexOf('Admin') !== -1)) {
+        console.log(this.appState.isInRole('Admin'));
+
+        var isAdmin = this.appState.isInRole('Admin');
+        if (!isAdmin) {
+          return next.cancel(new Redirect('entry'));
+        }
+      }
     }
     return next();
 
   }
 
   static isLoggedIn(): boolean {
-    console.log('isLoggedIn: ' + Constants.tokenName);
-    console.log(localStorage.getItem(Constants.tokenName));
     var auth_token = localStorage.getItem(Constants.tokenName);
-    console.log(auth_token);
     return (typeof auth_token !== "undefined" && auth_token !== null);
   }
 }

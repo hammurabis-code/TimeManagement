@@ -20,6 +20,7 @@ namespace Peaker.TimeManagment.Controllers
             return Ok(new WorkCodeAccess().GetAllWorkCodes());
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("AddUpdateWorkCode")]
         [HttpPost]
         public IHttpActionResult AddUpdateWorkCode([FromBody] WorkCode code)

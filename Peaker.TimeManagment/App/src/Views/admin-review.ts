@@ -17,7 +17,6 @@ export class AdminReview {
 
     constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService, private router: Router) {
         this.heading = 'Review Users Time';
-        console.log("Review constructed.");
     }
 
     activate() {
@@ -31,7 +30,6 @@ export class AdminReview {
 
     editEntry(entry: TimeEntry) {
         if (!entry.exportedToNavision) {
-            console.log(entry);
             this.appState.editEntry = entry;
             this.router.navigate('edit');
         }

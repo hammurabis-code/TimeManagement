@@ -20,6 +20,11 @@
                 <span class="input-group-addon" id="defaultentries">Entries per Submission</span>
                 <input class="form-control" aria-describedby="defaultentries" value.bind="currentUser.DefaultJobEntries" type="text">
             </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="isSecondShift">Second Shift</span>
+                <input type="checkbox" checked.bind="currentUser.IsSecondShift" value.one-way="currentUser.IsSecondShift" aria-describedby="isSecondShift"
+                />
+            </div>
             <div class='mt-1'>
                 <div class="form-group">
                     <input type="button" value='Cancel' class="form-control btn btn-primary" click.delegate='resetModel()' />

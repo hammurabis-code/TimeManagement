@@ -36,6 +36,8 @@ namespace Peaker.TimeManagment.Models.View
         public string Username { get; set; }
 
         public string AccountingName { get; set; }
+
+        public bool IsSecondShift { get; set; }
         
         public int DefaultJobEntries { get; set; }
 
@@ -47,10 +49,11 @@ namespace Peaker.TimeManagment.Models.View
 
         public List<UserRole> UserRoles { get; set; }
 
-        public UserInfoViewModel(string id,string username) {
+        public UserInfoViewModel(string id,string username, bool isSecondShift) {
             UserDetailId = int.MinValue;
             UserId = id;
             Username = username;
+            IsSecondShift = isSecondShift;
             UsedJobNumbers = new List<JobNumber>();
             UserDepartments = new List<DepartmentView>();
             UserWorkCodes = new List<WorkCodeView>();
@@ -64,6 +67,7 @@ namespace Peaker.TimeManagment.Models.View
             paramDictionary.Add("p_userId", UserId);
             paramDictionary.Add("p_accountingName", AccountingName);
             paramDictionary.Add("p_defaultJobEntries", DefaultJobEntries);
+            paramDictionary.Add("p_isSecondShift", IsSecondShift);
             return paramDictionary;
         }
     }

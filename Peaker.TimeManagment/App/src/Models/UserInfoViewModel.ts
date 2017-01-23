@@ -9,6 +9,7 @@ export class UserInfoViewModel {
     UserId: string;
     Username: string;
     AccountingName: string;
+    IsSecondShift: boolean;
     DefaultJobEntries: number;
     UsedJobNumbers: JobNumber[];
     UserDepartments: Department[];
@@ -23,5 +24,6 @@ export class UserInfoViewModel {
         this.UserDepartments = user.UserDepartments;
         this.UsedJobNumbers = user.UserJobNumbers;
         this.UserWorkCodes = user.UserWorkCodes;
+        this.IsSecondShift = user.IsSecondShift;
     }
 }

@@ -16,13 +16,15 @@ namespace Peaker.TimeManagment.Data
 
         public UserInfoViewModel FillUserInfo(ApplicationUser user, ApplicationRoleManager roleManager)
         {
-            var userInfo = new UserInfoViewModel(user.Id, user.Email);
+            
 
-            var userDetail = RetrieveSingle(UserDetail.UserDetailFactory, Constants.GetUserDetailProcedure, GetSingleParameter("p_userIdParam", userInfo.UserId));
+            var userDetail = RetrieveSingle(UserDetail.UserDetailFactory, Constants.GetUserDetailProcedure, GetSingleParameter("p_userIdParam", user.Id));
+            
             if (userDetail == null)
             {
                 userDetail = CreateDetails(user.Id, user.UserName);
             }
+            var userInfo = new UserInfoViewModel(user.Id, user.Email, userDetail.IsSecondShift);
             userInfo.AccountingName = userDetail.AccountingName;
             userInfo.DefaultJobEntries = userDetail.DefaultJobEntries;
             userInfo.UserDetailId = userDetail.Id;

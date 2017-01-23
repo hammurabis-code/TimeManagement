@@ -19,11 +19,13 @@
         public const string GetHoursByDateProcedure = "gethoursfordate";
         public const string GetWorkCodeProcedure = "getWorkCode";
         public const string GetRestrictedJobnumbersProcedure = "getrestrictedjobnumbers";
+        public const string GetIsSecondShiftProcedure = "getissecondshift";
 
         public const string InsertTimeEntryProcedure = "inserttimeentry";
         public const string InsertTimeEntryHoursProcedure = "inserttimeentryhours";
         public const string InsertUserDetailProcedure = "insertuserdetail";
         public const string InsertUserWorkCodeProcedure = "insertuserworkcode";
+        public const string InsertPeakerEventProcedure = "insertpeakerevent";
 
         public const string SetExportedToNavisionProcedure = "setexportedtonavision";
 

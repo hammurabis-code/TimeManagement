@@ -8,6 +8,7 @@ export class User {
     UserId: string;
     Username: string;
     AccountingName: string;
+    IsSecondShift: boolean;
     UserRoles: UserRole[];
     DefaultJobEntries: number;
     UserJobNumbers: JobNumber[];
@@ -15,14 +16,20 @@ export class User {
     UserWorkCodes: UserWorkCode[];
     pendingTimeEntries: TimeEntry[];
 
-    constructor(userDetailId: number, userId: string, username: string, accountingName: string, defaultJobEntries: number, userDepartments: Department[], userWorkCodes: UserWorkCode[], userJobNumbers: JobNumber[], userRoles?: UserRole[]) {
+    constructor(userDetailId: number, userId: string, username: string, accountingName: string, isSecondShift: boolean, defaultJobEntries: number, userDepartments: Department[], userWorkCodes: UserWorkCode[], userJobNumbers: JobNumber[], userRoles?: UserRole[]) {
         this.UserDetailId = userDetailId;
         this.UserId = userId;
         this.Username = username;
         this.AccountingName = accountingName;
+        this.IsSecondShift = isSecondShift;
         this.DefaultJobEntries = defaultJobEntries;
         this.UserDepartments = userDepartments;
-        this.UserRoles = new Array<UserRole>();
+        if (userRoles == undefined) {
+            this.UserRoles = new Array<UserRole>();
+        }
+        else {
+            this.UserRoles = userRoles;
+        }
         this.UserJobNumbers = userJobNumbers;
         this.pendingTimeEntries = new Array<TimeEntry>();
         this.UserWorkCodes = userWorkCodes;

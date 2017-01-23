@@ -10,7 +10,7 @@ export class DatepickerCustomAttribute {
     }
 
     public bind() {
-        let datepickerOptions: DatepickerOptions = { autoclose: true, format: 'yyyy-mm-dd', orientation: "top" };
+        let datepickerOptions: DatepickerOptions = { autoclose: true, format: 'yyyy-mm-dd', orientation: "bottom" };
 
         $(this.element)
             .datepicker(datepickerOptions)

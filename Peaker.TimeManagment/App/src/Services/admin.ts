@@ -23,7 +23,6 @@ export class AdminService {
                 })
                 .then(resp => resp.json<Week[]>())
                 .then(resp => {
-                    console.log(resp);
                     return resp;
                 })
         }
@@ -104,7 +103,6 @@ export class AdminService {
             })
             .then(resp => resp.json<UserInRole[]>())
             .then(resp => {
-                console.log(resp);
                 return resp;
             })
     }
@@ -121,7 +119,6 @@ export class AdminService {
                 method: 'POST',
             })
             .then(resp => {
-                console.log(resp);
                 if (resp.status == 200) {
                     return true;
                 }

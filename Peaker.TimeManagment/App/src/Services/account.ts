@@ -25,7 +25,6 @@ export class AccountService {
                     response.json()
                         .then(data => {
                             if (data.access_token != undefined) {
-                                console.log('Setting Token :' + Constants.tokenName);
                                 sessionStorage.setItem(Constants.tokenName, data.access_token);
                                 loginSuccess = true;
                             }
@@ -61,11 +60,12 @@ export class AccountService {
                     headers: { 'Authorization': Helper.getAuthHeader() }
                 })
                 .then(resp => {
-                    resp.json().then(data => {
-                        console.log(data);
-                        let user = new User(data.UserDetailId, data.UserId, data.Username, data.AccountingName, data.DefaultJobEntries, data.UserDepartments, data.UserWorkCodes, data.UsedJobNumbers);
-                        resolve(user);
-                    })
+                    resp.json()
+                        .then(data => {
+                            console.log(data);
+                            let user = new User(data.UserDetailId, data.UserId, data.Username, data.AccountingName, data.IsSecondShift, data.DefaultJobEntries, data.UserDepartments, data.UserWorkCodes, data.UsedJobNumbers, data.UserRoles);
+                            resolve(user);
+                        })
                 }).catch(err => {
                     console.log('Error filling user: ' + err);
                     resolve(null);
@@ -85,7 +85,6 @@ export class AccountService {
                         headers: { 'Authorization': Helper.getAuthHeader() }
                     })
                     .then(resp => {
-                        console.log('IsAuthenticated Result: ' + resp);
                         resp.json().then(result => {
                             resolve(result);
                         })
@@ -127,7 +126,6 @@ export class AccountService {
                         method: 'POST'
                     })
                     .then(resp => {
-                        console.log('IsInRoleResult Result: ' + resp);
                         resp.json().then(result => {
                             resolve(result);
                         })

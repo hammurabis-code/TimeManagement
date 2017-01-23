@@ -225,8 +225,10 @@
     </Compile>
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\Data\ITimeEntryAccess.cs" />
+    <Compile Include="Models\Data\PeakerEvent.cs" />
     <Compile Include="Models\Data\RestrictedJobnumber.cs" />
     <Compile Include="Models\Data\TimeEntryHours.cs" />
+    <Compile Include="Models\Enums\EventTypes.cs" />
     <Compile Include="Models\Enums\HourTypes.cs" />
     <Compile Include="Models\Exceptions\UnauthorizedFilter.cs" />
     <Compile Include="Models\Exceptions\UserDetailNotFoundException.cs" />
@@ -240,7 +242,6 @@
     <Compile Include="Models\Data\JobNumber.cs" />
     <Compile Include="Models\Data\TimeEntry.cs" />
     <Compile Include="Models\View\DepartmentView.cs" />
-    <Compile Include="Models\View\ProfileView.cs" />
     <Compile Include="Models\Data\UserDetail.cs" />
     <Compile Include="Models\View\TimeEntryView.cs" />
     <Compile Include="Models\View\Week.cs" />

@@ -18,7 +18,6 @@ export class loginForm {
         this.username = '';
         this.password = '';
         this.loginFailed = false;
-        console.log('Login constructed');
     }
 
 
@@ -27,16 +26,7 @@ export class loginForm {
             .then(success => {
                 if (!this.appState.loggedIn || this.appState.currentUser == undefined) {
                     if (success) {
-                        this.appState.loggedIn = true;
-                        this.appState.fillUser().then(result => {
-                            if (result) {
-                                let route = this.appState.returnRoute;
-                                if (route === null || route === '') {
-                                    route = this.appState.defaultRoute;
-                                }
-                                this.router.navigate(route);
-                            }
-                        })
+                        this.fillUser();
                     }
                 }
             });
@@ -48,27 +38,28 @@ export class loginForm {
             this.accountService.login(login)
                 .then(success => {
                     if (success) {
-                        this.appState.loggedIn = true;
-                        this.appState.fillUser()
-                            .then(result => {
-                                console.log('Login Filluser Promise Returned');
-                                if (result) {
-
-                                    let route = this.appState.returnRoute;
-                                    if (route === null || route === '') {
-                                        route = this.appState.defaultRoute;
-                                    }
-                                    console.log(route);
-                                    this.router.navigate(route);
-                                }
-                            })
-                        //this.router.navigate('entry');
+                        this.fillUser();
                     }
                     else {
+                        this.loginFailed = true;
                         console.log('Login Failed.');
                     }
                 });
         }
+    }
+
+    fillUser() {
+        this.appState.loggedIn = true;
+        this.appState.fillUser()
+            .then(result => {
+                if (result) {
+                    let route = this.appState.returnRoute;
+                    if (route === null || route === '') {
+                        route = this.appState.defaultRoute;
+                    }
+                    this.router.navigate(route);
+                }
+            })
     }
 
     logout() {

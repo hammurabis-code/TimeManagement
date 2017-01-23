@@ -15,7 +15,6 @@ export class reviewEntries {
     returnRoute: string = 'review';
     constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService, private router: Router) {
         this.heading = 'Review Time';
-        console.log("Review constructed.");
     }
 
     activate() {
@@ -29,7 +28,6 @@ export class reviewEntries {
 
     editEntry(entry: TimeEntry) {
         if (!entry.exportedToNavision) {
-            console.log(entry);
             this.appState.editEntry = entry;
             this.router.navigate('edit');
         }
