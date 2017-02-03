@@ -1,7 +1,7 @@
 import { bindable } from 'aurelia-framework';
 import { Router } from 'aurelia-router';
 import { autoinject } from 'aurelia-dependency-injection';
-import { TimeEntry, EntryFilter, Week } from '../Models/Models';
+import { TimeEntry, EntryFilter } from '../Models/Models';
 import { ApplicationState } from '../application-state';
 import { TimeEntryService, AdminService, FileService } from '../Services/services';
 import * as toastr from 'toastr';
@@ -18,8 +18,7 @@ export class AdminView {
     showUserRoles: boolean = false;
     showExport: boolean = false;
     showCodes: boolean = false;
-    weeks: Week[];
-    selectedWeek: Week;
+
     years: number[] = [];
     @bindable selectedYear: number;
 
@@ -28,27 +27,9 @@ export class AdminView {
         this.showExportText = "Export Jobs";
         this.showRolesText = "User Roles";
         this.showCodesText = "Manage Codes";
-        this.selectedWeek = undefined;
     }
 
-    activate() {
-        this.setYears();
-        this.setWeeks();
-    }
 
-    selectedYearChanged() {
-        this.setWeeks();
-    }
-
-    setWeeks(): Promise<any> {
-        return this.adminService.getWeeks(this.selectedYear)
-            .then(weeks => {
-                this.weeks = new Array<Week>();
-                this.weeks.push(undefined);
-                this.weeks = this.weeks.concat(weeks);
-                this.selectedWeek = undefined;
-            });
-    }
 
     showHideUserRoles() {
         if (this.showUserRoles) {
@@ -99,34 +80,5 @@ export class AdminView {
                     toastr.error('Something went wrong during the requested operation.', 'And error occured.');
                 }
             });
-    }
-
-    getEntries() {
-        this.filterCriteria.FilterStartDate = this.selectedWeek.weekStart;
-        this.filterCriteria.FilterEndDate = this.selectedWeek.weekFinish;
-        this.filterCriteria.RequireJobCode = true;
-        this.timeEntryService.get(this.filterCriteria)
-            .then(entries => {
-                this.timeEntries = entries;
-            });
-    }
-
-    exportEntries() {
-        this.fileService.exportEntriesForNavision(this.filterCriteria)
-            .then(result => {
-                this.timeEntries.length = 0;
-                this.timeEntries = undefined;
-            });
-    }
-
-    setYears() {
-        let startYear: number = 2016;
-        let currentYear: number = new Date().getFullYear();
-        this.selectedYear = currentYear;
-        while (currentYear != startYear) {
-            this.years.push(currentYear);
-            currentYear--;
-        }
-        this.years.push(startYear);
     }
 }

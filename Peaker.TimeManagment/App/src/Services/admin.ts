@@ -1,7 +1,7 @@
 import { Router } from 'aurelia-router';
 import { HttpClient, json } from 'aurelia-fetch-client';
 import { autoinject } from 'aurelia-dependency-injection';
-import { TimeEntry, Constants, EntryFilter, Helper, UserInRole, Week } from '../Models/Models';
+import { TimeEntry, Constants, EntryFilter, Helper, UserInRole } from '../Models/Models';
 
 @autoinject
 export class AdminService {
@@ -9,23 +9,6 @@ export class AdminService {
         client.configure(config => {
             config.useStandardConfiguration();
         });
-    }
-
-    getWeeks(year: number): Promise<Array<Week>> {
-        if (sessionStorage.getItem(Constants.tokenName) == undefined || sessionStorage.getItem(Constants.tokenName) == null) {
-            return null;
-        }
-        else {
-            return this.client.fetch(Constants.adminApi + 'GetWeekList?year=' + year,
-                {
-                    method: 'get',
-                    headers: { 'Authorization': Helper.getAuthHeader() }
-                })
-                .then(resp => resp.json<Week[]>())
-                .then(resp => {
-                    return resp;
-                })
-        }
     }
 
     exportEntries(filter: EntryFilter) {

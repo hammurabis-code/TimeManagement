@@ -1,7 +1,7 @@
 import { bindable } from 'aurelia-framework';
 import { Router } from 'aurelia-router';
 import { autoinject } from 'aurelia-dependency-injection';
-import { ExportType, TimeEntry, EntryFilter, Week } from '../Models/Models';
+import { ExportType, TimeEntry, EntryFilter } from '../Models/Models';
 import { ApplicationState } from '../application-state';
 import { TimeEntryService, AdminService, FileService } from '../Services/services';
 import * as toastr from 'toastr';

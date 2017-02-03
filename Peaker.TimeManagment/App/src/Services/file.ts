@@ -1,6 +1,6 @@
 import { HttpClient } from 'aurelia-http-client';
 import { autoinject } from 'aurelia-dependency-injection';
-import { TimeEntry, Constants, EntryFilter, Helper, Week } from '../Models/Models';
+import { TimeEntry, Constants, EntryFilter, Helper } from '../Models/Models';
 
 @autoinject
 export class FileService {
