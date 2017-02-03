@@ -7,8 +7,4 @@ export class NavBar {
     @bindable router: Router;
     @bindable appState: ApplicationState;
 
-    showNav(row) {
-        console.log(row.settings);
-        console.log(row.settings.adminView);
-    }
 }

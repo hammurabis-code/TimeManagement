@@ -14,6 +14,7 @@ using System.Configuration;
 using System.Text;
 using Peaker.TimeManagment.Models.Enums;
 using System.IO;
+using Peaker.TimeManagment.Models.File;
 
 namespace Peaker.TimeManagment.Data
 {
@@ -91,6 +92,32 @@ namespace Peaker.TimeManagment.Data
             }
         }
 
+        public List<PayrollExport> GetEntriesForPayrollExport(EntryFilter filter, IPrincipal user) {
+            var filterParams = new Dictionary<string, object>();
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(@"SELECT U.AccountingName, T.Id AS TimeEntryId, T.UserDetailId, T.EntryDate, W.BaseCode, W.Description, W.sub, Sum(H.Duration) AS Hours
+                        FROM userdetail U
+                        INNER JOIN timeentry T
+                            ON U.Id = T.UserDetailId
+                        INNER JOIN workcode W
+                            ON T.WorkCodeId = W.Id
+                        INNER JOIN timeentryhours H ON t.Id = H.TimeEntryId
+                        WHERE T.ExportedToPayroll = 0 ");
+            if (filter.FilterStartDate != null) {
+                sb.AppendLine("AND T.EntryDate >= ?p_startDate ");
+                filterParams.Add("?p_startDate", filter.FilterStartDate.Value.Date);
+            }
+            if (filter.FilterEndDate != null)
+            {
+                sb.AppendLine("AND T.EntryDate <= ?p_endDate ");
+                filterParams.Add("?p_endDate", filter.FilterEndDate.Value.Date);
+            }
+            sb.AppendLine(@"GROUP BY U.AccountingName,TimeEntryId, T.UserDetailId, T.EntryDate, W.BaseCode, W.Description, W.sub;");
+
+
+            return Retrieve(PayrollExport.PayrollExportFactory, sb.ToString(), filterParams, false).ToList();
+        }
+
         private List<TimeEntryView> FillTimeEntryView(List<TimeEntry> entries)
         {
             var workCodeAccess = new WorkCodeAccess();
@@ -112,9 +139,9 @@ namespace Peaker.TimeManagment.Data
             ExecuteNonQuery(Constants.SetExportedToNavisionProcedure, GetSingleParameter("p_timeEntryId", entry.id));
         }
 
-        public void SetEntryExportedToPayroll(TimeEntryView entry)
+        public void SetEntryExportedToPayroll(int entryId)
         {
-            ExecuteNonQuery(Constants.SetExportedToNavisionProcedure, GetSingleParameter("p_timeEntryId", entry.id));
+            ExecuteNonQuery(Constants.SetExportedToPayrollProcedure, GetSingleParameter("p_timeEntryId", entryId));
         }
 
         public void AddUpdateEntry(TimeEntryView entryToSave, string userId)

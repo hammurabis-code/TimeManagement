@@ -93,6 +93,7 @@ export class AccountService {
         });
     }
     updateUserProfile(user: User): Promise<boolean> {
+        console.log(user.AccountingName);
         return this.client.fetch(
             Constants.accountApi + 'UpdateUserProfile',
             {

@@ -13,3 +13,4 @@ export { Helper } from './Helper';
 export { UserInfoViewModel } from './UserInfoViewModel';
 export { Week } from './Weeks';
 export { UserInRole } from './UserInRole';
+export { ExportType } from './ExportType';

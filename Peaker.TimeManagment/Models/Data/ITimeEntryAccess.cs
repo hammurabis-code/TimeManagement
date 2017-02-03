@@ -1,4 +1,5 @@
-﻿using Peaker.TimeManagment.Models.Filters;
+﻿using Peaker.TimeManagment.Models.File;
+using Peaker.TimeManagment.Models.Filters;
 using Peaker.TimeManagment.Models.View;
 using System.Collections.Generic;
 using System.Security.Principal;
@@ -9,6 +10,8 @@ namespace Peaker.TimeManagment.Models.Data
     {
         List<TimeEntryView> GetTimeEntries(EntryFilter filter, IPrincipal user);
 
+        List<PayrollExport> GetEntriesForPayrollExport(EntryFilter filter, IPrincipal user);
+
         void SetEntryExportedToNavision(TimeEntryView entry);
 
         void ClearNavisionFlag();
@@ -18,6 +21,6 @@ namespace Peaker.TimeManagment.Models.Data
         decimal GetTotalHours(EntryFilter filter, IPrincipal user);
 
         void DeleteEntry(TimeEntry entryToDelete);
-        void SetEntryExportedToPayroll(TimeEntryView entry);
+        void SetEntryExportedToPayroll(int entryId);
     }
 }

@@ -19,7 +19,7 @@
           <!-- if.bind='${!row.settings.adminView}' -->
           <a data-toggle="collapse" data-target="#bs-example-navbar-collapse-1.in" href.bind="row.href">${row.title}</a>
         </li>
-        <li repeat.for="row of router.navigation" class="${row.isActive ? 'active' : ''} ${showNav(row) ? 'On': 'Off'}" if.bind="row.settings.adminView && appState.isAdmin">
+        <li repeat.for="row of router.navigation" class="${row.isActive ? 'active' : ''}" if.bind="row.settings.adminView && appState.isAdmin">
           <!--  if.bind="${row.settings.adminView && appState.isAdmin}" -->
           <a data-toggle="collapse" data-target="#bs-example-navbar-collapse-1.in" href.bind="row.href">${row.title}</a>
         </li>

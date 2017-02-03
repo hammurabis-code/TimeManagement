@@ -19,7 +19,7 @@ export class UserInfoViewModel {
         this.UserDetailId = user.UserDetailId;
         this.UserId = user.UserId;
         this.Username = user.Username;
-        this.AccountingName = user.Username;
+        this.AccountingName = user.AccountingName;
         this.DefaultJobEntries = user.DefaultJobEntries;
         this.UserDepartments = user.UserDepartments;
         this.UsedJobNumbers = user.UserJobNumbers;

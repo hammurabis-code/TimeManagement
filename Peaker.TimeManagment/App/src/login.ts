@@ -65,6 +65,7 @@ export class loginForm {
     logout() {
         this.appState.loggedIn = false;
         this.appState.currentUser = null;
+        this.appState.isAdmin = false;
         this.accountService.logout();
     }
 

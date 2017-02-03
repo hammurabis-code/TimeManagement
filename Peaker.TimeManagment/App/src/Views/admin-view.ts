@@ -70,6 +70,10 @@ export class AdminView {
         this.showExport = !this.showExport;
     }
 
+    goToExport() {
+        this.router.navigate('export');
+    }
+
     goToWorkCodes() {
         this.router.navigate('workCodeEdit');
     }

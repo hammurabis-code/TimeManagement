@@ -20,6 +20,7 @@
         public const string GetWorkCodeProcedure = "getWorkCode";
         public const string GetRestrictedJobnumbersProcedure = "getrestrictedjobnumbers";
         public const string GetIsSecondShiftProcedure = "getissecondshift";
+        public const string GetPayrollExportEntriesProcedure = "getPayrollExportEntries";
 
         public const string InsertTimeEntryProcedure = "inserttimeentry";
         public const string InsertTimeEntryHoursProcedure = "inserttimeentryhours";
@@ -28,6 +29,7 @@
         public const string InsertPeakerEventProcedure = "insertpeakerevent";
 
         public const string SetExportedToNavisionProcedure = "setexportedtonavision";
+        public const string SetExportedToPayrollProcedure = "setexportedtopayroll";
 
         public const string UpdateTimeEntryProcedure = "updatetimeentry";
         public const string UpdateUserDetailProcedure = "updateuserdetail";

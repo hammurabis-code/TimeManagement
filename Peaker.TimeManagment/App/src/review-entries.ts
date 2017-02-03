@@ -11,7 +11,7 @@ export class reviewEntries {
     entry: TimeEntry;
     @bindable timeEntries: TimeEntry[] = [];
     @bindable total: number = 0;
-    @bindable filterCriteria: EntryFilter = new EntryFilter(-1, null, null, null, new Date(+new Date - 12096e5), null, null);
+    @bindable filterCriteria: EntryFilter;
     returnRoute: string = 'review';
     constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService, private router: Router) {
         this.heading = 'Review Time';
@@ -22,12 +22,18 @@ export class reviewEntries {
             this.appState.returnRoute = this.returnRoute;
             this.router.navigate('login');
         }
-        this.filterCriteria.CurrentUserDetailId = this.appState.currentUser.UserDetailId;
+        if (this.appState.filterCriteria == undefined) {
+            this.filterCriteria = new EntryFilter(this.appState.currentUser.UserDetailId, null, false, null, new Date(+new Date - 12096e5), null, null, null, null);
+        }
+        else {
+            this.filterCriteria = this.appState.filterCriteria;
+        }
         this.getEntries();
     }
 
     editEntry(entry: TimeEntry) {
         if (!entry.exportedToNavision) {
+            this.appState.filterCriteria = this.filterCriteria;
             this.appState.editEntry = entry;
             this.router.navigate('edit');
         }

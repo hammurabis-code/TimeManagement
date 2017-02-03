@@ -139,7 +139,7 @@ namespace Peaker.TimeManagment.Controllers
         [Route("ClearPayrollExportedFlag")]
         public IHttpActionResult ClearPayrollExportedFlag()
         {
-            new TimeEntryAccess().ClearNavisionFlag();
+            new TimeEntryAccess().ClearPayrollExportFlag();
             return Ok();
         }
 

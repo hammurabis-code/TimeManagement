@@ -63,7 +63,7 @@ export class FileService {
                     // Determine the content type from the header or default to "application/octet-stream"
                     var contentType = response.headers['content-type'];
                     try {
-                        var defaultFileName = "NAV_EXPORT_";
+                        var defaultFileName = "PAYROLL_EXPORT_";
                         var date = new Date();
                         var utc = new Date().toJSON().slice(0, 10);
                         defaultFileName = defaultFileName + utc + '.csv';

@@ -88,20 +88,12 @@ namespace Peaker.TimeManagment.Data.Export
         {
             var sb = new StringBuilder();
             sb.AppendLine("Name,Date Worked,Work Code,Hours (Total), Sub");
-            var entries = timeEntryAccess.GetTimeEntries(filter, user);
-            var usersWithEntries = entries.GroupBy(e => e.userDetailId).Select(u => u.ToList()).ToList();
-            foreach (var userWithEntries in usersWithEntries) {
-                var entriesPerDay = userWithEntries.GroupBy(u => u.entryDate).Select(u => u.ToList()).ToList();
-                foreach (var entryPerDay in entriesPerDay)
-                {
-                    foreach (var entry in entryPerDay)
-                    {
-                        //sb.AppendLine($"{entry.workCode.BaseCode}-HRS,{entry.entryDate.ToShortDateString()},{hours}, J00{entry.jobnumber}");
-                    }
-                }
+            var entries = timeEntryAccess.GetEntriesForPayrollExport(filter, user);
+            foreach (var entry in entries) {
+                sb.AppendLine($"{entry.AccountingName},{entry.EntryDate.ToShortDateString()},{entry.BaseCode} - {entry.CodeDescription},{entry.Hours}, {entry.Sub}");
+                timeEntryAccess.SetEntryExportedToPayroll(entry.TimeEntryId);
             }
-                //timeEntryAccess.SetEntryExportedToPayroll(entry);
-            
+
             MemoryStream stream = new MemoryStream();
             StreamWriter writer = new StreamWriter(stream);
             writer.Write(sb.ToString());

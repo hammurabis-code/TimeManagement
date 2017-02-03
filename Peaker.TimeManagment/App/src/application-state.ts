@@ -1,6 +1,6 @@
 import { autoinject } from 'aurelia-dependency-injection';
 import { AccountService, TimeEntryService } from './Services/services';
-import { User, TimeEntry, WorkCode } from './Models/Models';
+import { EntryFilter, User, TimeEntry, WorkCode } from './Models/Models';
 import { singleton } from 'aurelia-framework'
 import { Router, RouterConfiguration } from 'aurelia-router';
 
@@ -15,6 +15,7 @@ export class ApplicationState {
     restrictedJobnumbers: string[];
     editEntry: TimeEntry;
     isAdmin: boolean = false;
+    filterCriteria: EntryFilter;
 
     constructor(private accountService: AccountService, private timeEntryService: TimeEntryService,
         private config: RouterConfiguration, private router: Router) {

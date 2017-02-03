@@ -24,7 +24,7 @@ export class profile {
         this.subheading = 'Departments';
         this.subheading = 'Work Codes';
         this.currentUser = appState.currentUser;
-        this.currentAccountingName = this.currentUser.Username;
+        this.currentAccountingName = this.currentUser.AccountingName;
         this.currentEntryCount = this.currentUser.DefaultJobEntries;
         this.showCodeSelection = true;
         this.showCodeSelectionText = Constants.codeSelectionTextShow;
@@ -73,6 +73,7 @@ export class profile {
     resetCodes() { }
 
     saveProfile() {
+        console.log(this.currentUser.AccountingName);
         this.accountService.updateUserProfile(this.currentUser)
             .then(response => {
                 if (response) {

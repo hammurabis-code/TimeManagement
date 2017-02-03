@@ -106,8 +106,17 @@ export class App {
         moduleId: './views/admin-review',
         nav: false,
         auth: true,
-        title: 'Admine Review',
+        title: 'Admin Review',
         name: "adminReview",
+        settings: { roles: ['Admin'], adminView: true }
+      },
+      {
+        route: 'export',
+        moduleId: './views/export',
+        nav: false,
+        auth: true,
+        title: 'Admin Export',
+        name: "export",
         settings: { roles: ['Admin'], adminView: true }
       },
       //{ route: 'admin', moduleId: './Views/admin', nav: true, auth: true, title: 'Administration' }, //this.appState.isLoggedIn
