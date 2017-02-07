@@ -245,6 +245,7 @@
     <Compile Include="Models\View\DepartmentView.cs" />
     <Compile Include="Models\Data\UserDetail.cs" />
     <Compile Include="Models\View\TimeEntryView.cs" />
+    <Compile Include="Models\View\UserListItem.cs" />
     <Compile Include="Models\View\Week.cs" />
     <Compile Include="Models\View\WorkCodeView.cs" />
     <Compile Include="Models\Data\WorkCode.cs" />

@@ -9,46 +9,26 @@ import * as toastr from 'toastr';
 @autoinject
 export class AdminView {
     heading: string;
-    @bindable timeEntries: TimeEntry[] = undefined;
-    @bindable total: number = 0;
-    @bindable filterCriteria: EntryFilter = new EntryFilter(null, null, true, null, new Date(+new Date - 12096e5), null, false, true, null);
     showExportText: string;
     showRolesText: string;
     showCodesText: string;
     showUserRoles: boolean = false;
     showExport: boolean = false;
     showCodes: boolean = false;
-
-    years: number[] = [];
-    @bindable selectedYear: number;
+    returnRoute: string = 'admin';
 
     constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService, private adminService: AdminService, private fileService: FileService, private router: Router) {
-        this.filterCriteria.CurrentUserDetailId = this.appState.currentUser.UserDetailId;
+
         this.showExportText = "Export Jobs";
         this.showRolesText = "User Roles";
         this.showCodesText = "Manage Codes";
     }
 
-
-
-    showHideUserRoles() {
-        if (this.showUserRoles) {
-            this.showRolesText = 'Hide Roles';
+    activate() {
+        if (this.appState.currentUser == null) {
+            this.appState.returnRoute = this.returnRoute;
+            this.router.navigate('login');
         }
-        else {
-            this.showRolesText = 'User Roles';
-        }
-        this.showUserRoles = !this.showUserRoles;
-    }
-
-    showHideExport() {
-        if (this.showExport) {
-            this.showExportText = 'Hide Export';
-        }
-        else {
-            this.showExportText = 'Export Jobs';
-        }
-        this.showExport = !this.showExport;
     }
 
     goToExport() {
@@ -68,17 +48,5 @@ export class AdminView {
 
     goToAdminReview() {
         this.router.navigate('adminReview');
-    }
-
-    clearNavisionExport() {
-        this.adminService.clearNavisionFlag()
-            .then(result => {
-                if (result) {
-                    toastr.success('You may need to reload the page to see updates.', 'Export flag cleared.');
-                }
-                else {
-                    toastr.error('Something went wrong during the requested operation.', 'And error occured.');
-                }
-            });
     }
 }

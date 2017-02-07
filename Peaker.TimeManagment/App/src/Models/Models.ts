@@ -12,4 +12,5 @@ export { UserWorkCode } from './UserWorkCode';
 export { Helper } from './Helper';
 export { UserInfoViewModel } from './UserInfoViewModel';
 export { UserInRole } from './UserInRole';
+export { UserListItem } from './UserListItem';
 export { ExportType } from './ExportType';

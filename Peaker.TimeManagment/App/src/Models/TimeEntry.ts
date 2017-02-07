@@ -6,6 +6,7 @@ import { UserWorkCode } from '../models/userworkcode';
 export class TimeEntry {
     id: number;
     userDetailId: number;
+    userAccountingName: string;
     entryDate: Date;
     @bindable userHours: number;
     @bindable workCode: UserWorkCode;
@@ -23,6 +24,7 @@ export class TimeEntry {
     constructor(entryDate: Date, userDetailId: number, index: number) {
         this.id = -1;
         this.userDetailId = userDetailId;
+        this.userAccountingName = '';
         this.entryDate = entryDate;
         this.userHours = 0;
         this.workCode = null;

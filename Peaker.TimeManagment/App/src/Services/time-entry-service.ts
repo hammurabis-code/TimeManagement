@@ -39,17 +39,6 @@ export class TimeEntryService {
 
     }
 
-    // saveEntries(entries: TimeEntry[], userId: string): Promise<boolean> {
-    //     this.router.isNavigating = true;
-    //     return new Promise(resolve => {
-    //         entries.forEach(entry => {
-    //             return this.saveEntry(entry);
-    //         });
-    //         this.router.isNavigating = false;
-    //         resolve(true);
-    //     });
-    // }
-
     saveEntry(entry: TimeEntry): Promise<boolean> {
         this.router.isNavigating = true;
         return this.client.fetch(Constants.timeEntryApi + 'SaveEntry',
@@ -102,10 +91,12 @@ export class TimeEntryService {
                     newEntry.userHours = element.userHours;
                     newEntry.workCodeId = element.workCodeId;
                     newEntry.workCode = element.workCode;
+                    newEntry.userAccountingName = element.userAccountingName;
                     newEntries.push(newEntry);
                     index++;
                 });
                 this.router.isNavigating = false;
+                this.isRequesting = false;
                 return newEntries;
             }).catch(err => {
                 console.log("Error retrieving entries.");
@@ -138,7 +129,7 @@ export class TimeEntryService {
     }
 
     getRestrictedJobnumbers(): Promise<any[]> {
-        //this.router.isNavigating = true;
+        this.router.isNavigating = true;
         return this.client.fetch(Constants.timeEntryApi + 'getRestrictedJobnumbers',
             {
                 method: 'get',
@@ -146,6 +137,7 @@ export class TimeEntryService {
             })
             .then(resp => resp.json<any[]>())
             .then(resp => {
+                this.router.isNavigating = false;
                 return resp;
             })
     }

@@ -127,6 +127,29 @@ namespace Peaker.TimeManagment.Controllers
             }
         }
 
+        [Route("ExportEntriesForReview")]
+        [HttpPost]
+        public HttpResponseMessage ExportEntriesForReview([FromBody]EntryFilter filter)
+        {
+            using (MemoryStream stream = new FileExport().GetExportFileForReview(filter, User, new TimeEntryAccess()))
+            {
+
+                var result = new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new ByteArrayContent(stream.GetBuffer())
+                };
+                result.Content.Headers.ContentDisposition =
+                    new ContentDispositionHeaderValue("attachment")
+                    {
+                        FileName = "Test.csv"
+                    };
+                result.Content.Headers.ContentType =
+                    new MediaTypeHeaderValue("application/octet-stream");
+
+                return result;
+            }
+        }
+
         [Route("GetRestrictedJobnumbers")]
         [HttpGet]
         public IHttpActionResult GetRestrictedJobnumbers()

@@ -9,9 +9,10 @@ export class editEntries {
     heading: string;
     @bindable timeEntry: TimeEntry;
     entryDate: Date;
-    total: number;
+    total: number = 0;
     workCodes: UserWorkCode[];
     returnRoute: string = 'edit';
+    originalHours: number;
 
     constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService, private router: Router) {
         this.heading = 'Edit Time';
@@ -32,6 +33,7 @@ export class editEntries {
         this.timeEntry = this.appState.editEntry;
         this.entryDate = this.timeEntry.entryDate;
         this.appState.editEntry = null;
+        this.originalHours = this.timeEntry.userHours;
         // this.appState.currentUser.UserWorkCodes.forEach(element => {
         //     this.workCodes.push(element);
         // });
@@ -46,11 +48,16 @@ export class editEntries {
         let result = true;
         return this.timeEntryService.getTotalHours(new EntryFilter(this.appState.currentUser.UserDetailId, null, null, null, this.entryDate, this.entryDate, null))
             .then(hours => {
-                let total: number = hours;
-                total += this.timeEntry.userHours;
-                if (total > 24) {
+                let validationTotal: number = hours;
+                console.log(this.total)
+                validationTotal -= this.originalHours;
+                validationTotal += this.timeEntry.userHours;
+                console.log(this.total);
+                console.log()
+                if (validationTotal > 24) {
                     result = false;
                 }
+                console.log(result);
                 return result;
             });
     }
@@ -69,22 +76,22 @@ export class editEntries {
                         toastr.error("Total time exceeds 24 hours.", "Duration Error");
                         return;
                     }
-                })
-                .then(r => {
-                    if (entryValid) {
-                        this.timeEntryService.saveEntry(this.timeEntry)
-                            .then(success => {
-                                if (success) {
-                                    this.timeEntry = null;
-                                    this.router.navigate('review');
-                                }
-                            });
+                    else {
+                        if (entryValid) {
+                            this.timeEntryService.saveEntry(this.timeEntry)
+                                .then(success => {
+                                    if (success) {
+                                        this.timeEntry = null;
+                                        this.router.navigate(this.appState.returnRoute);
+                                    }
+                                });
+                        }
                     }
-                });
+                })
         }
     }
 
     cancel() {
-        this.router.navigate('review');
+        this.router.navigate(this.appState.returnRoute);
     }
 }

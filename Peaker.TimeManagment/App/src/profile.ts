@@ -1,4 +1,5 @@
 import { autoinject } from 'aurelia-dependency-injection';
+import { Router } from 'aurelia-router';
 import { ApplicationState } from './application-state';
 import { Constants, Department, UserWorkCode, User } from './Models/Models';
 import { AccountService } from './Services/Services';
@@ -18,8 +19,9 @@ export class profile {
     profileIsDirty: boolean;
     originalDepartments: Department[];
     originalWorkCodes: UserWorkCode[];
+    returnRoute: string = 'profile';
 
-    constructor(private appState: ApplicationState, private accountService: AccountService) {
+    constructor(private appState: ApplicationState, private accountService: AccountService, private router: Router) {
         this.heading = 'Profile';
         this.subheading = 'Departments';
         this.subheading = 'Work Codes';
@@ -33,6 +35,14 @@ export class profile {
         this.originalDepartments = this.currentUser.UserDepartments;
         this.originalWorkCodes = this.currentUser.UserWorkCodes;
 
+
+    }
+
+    activate() {
+        if (this.appState.currentUser == null) {
+            this.appState.returnRoute = this.returnRoute;
+            this.router.navigate('login');
+        }
     }
 
     get userDepartments(): string {

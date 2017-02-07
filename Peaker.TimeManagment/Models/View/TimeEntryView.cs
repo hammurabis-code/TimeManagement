@@ -8,6 +8,7 @@ namespace Peaker.TimeManagment.Models.View
     {
         public int id { get; set; }
         public int userDetailId { get; set; }
+        public string userAccountingName { get; set; }
         public DateTime entryDate { get; set; }
         public decimal userHours { get; set; }
         public WorkCode workCode { get; set; }
@@ -24,9 +25,10 @@ namespace Peaker.TimeManagment.Models.View
 
         public TimeEntryView() { }
 
-        public TimeEntryView(TimeEntry entry) {
+        public TimeEntryView(TimeEntry entry, string accountingName) {
             id = entry.Id;
             userDetailId = entry.UserDetailId;
+            userAccountingName = accountingName;
             entryDate = entry.EntryDate;
             jobnumber = entry.JobNumber;
             comments = entry.Comments;

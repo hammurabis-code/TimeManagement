@@ -14,6 +14,7 @@ namespace Peaker.TimeManagment.Models.File
         public string CodeDescription { get; set; }
         public decimal Hours { get; set; }
         public string Sub { get; set; }
+        public string JobNumber { get; set; }
 
         public static PayrollExport PayrollExportFactory(IDataRecord record)
         {
@@ -27,6 +28,7 @@ namespace Peaker.TimeManagment.Models.File
                 BaseCode = record.GetString(record.GetOrdinal("BaseCode")),
                 CodeDescription = record.GetString(record.GetOrdinal("Description")),
                 Sub = record.GetString(record.GetOrdinal("Sub")),
+                JobNumber = record.GetString(record.GetOrdinal("JobNumber")),
             };
         }
 

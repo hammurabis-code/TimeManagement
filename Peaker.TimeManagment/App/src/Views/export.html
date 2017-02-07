@@ -31,13 +31,13 @@
             <div if.bind="timeEntries && entriesFound">
                 <div data-spy="affix" data-offset-top="300">
                     <div class="form-group">
-                        <input type="button" value='Export Entries' class="form-control btn btn-primary" click.delegate='exportEntries()' />
+                        <input type="button" value='Export Entries' class="form-control btn btn-success" click.delegate='exportEntries()' />
                     </div>
                 </div>
                 <div repeat.for="timeEntry of timeEntries">
                     <div class="entryContainer">
                         <div class='reviewEntry'>
-                            <label>${timeEntry.entryDate | date}, ${timeEntry.jobnumber}, ${timeEntry.workCode.BaseCode} - ${timeEntry.workCode.Description}</label><span>${timeEntry.userHours} Hours</span>
+                            <label>${timeEntry.entryDate | date}, ${timeEntry.jobnumber}, ${timeEntry.workCode.BaseCode} - ${timeEntry.workCode.Description}, ${timeEntry.userAccountingName}</label><span>${timeEntry.userHours} Hours</span>
                         </div>
                     </div>
                 </div>

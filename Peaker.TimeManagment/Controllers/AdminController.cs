@@ -95,6 +95,12 @@ namespace Peaker.TimeManagment.Controllers
             return NotFound();
         }
 
+        [Route("GetUsersFilterList")]
+        public IHttpActionResult GetUsersFilterList()
+        {
+            return Ok(new UserAccess().GetAllUsers());
+        }
+
         [HttpPost]
         [Route("UpdateUsersInRoles")]
         public async Task<IHttpActionResult> UpdateUsersInRoles([FromBody]IEnumerable<UserInRoleModel> usersInRole)

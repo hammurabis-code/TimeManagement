@@ -42,8 +42,8 @@ namespace Peaker.TimeManagment.Data
             }
         }
 
-        protected T RetrieveSingle<T>(Func<IDataRecord, T> factory, string sql, Dictionary<string, object> parameters) {
-            var single = Retrieve(factory, sql, parameters);
+        protected T RetrieveSingle<T>(Func<IDataRecord, T> factory, string sql, Dictionary<string, object> parameters, bool isStoredProcedure = true) {
+            var single = Retrieve(factory, sql, parameters, isStoredProcedure);
             if (single.Count() == 1)
             {
                 return single.First();
@@ -59,16 +59,26 @@ namespace Peaker.TimeManagment.Data
             }
         }
 
-        protected IEnumerable<T> Retrieve<T>(string sql, Dictionary<string, object> parameters)
+        protected IEnumerable<T> Retrieve<T>(string sql, Dictionary<string, object> parameters, bool isStoredProcedure = true)
         {
             List<T> results = new List<T>();
             using (var cn = new MySqlConnection(ConnectionString))
             using (var cmd = new MySqlCommand(sql, cn))
             {
-                cmd.CommandType = CommandType.StoredProcedure;
-                foreach (var param in parameters)
+                if (isStoredProcedure)
                 {
-                    cmd.Parameters.Add(new MySqlParameter(param.Key, param.Value));
+                    cmd.CommandType = CommandType.StoredProcedure;
+                }
+                else
+                {
+                    cmd.CommandType = CommandType.Text;
+                }
+                if (parameters != null)
+                {
+                    foreach (var param in parameters)
+                    {
+                        cmd.Parameters.Add(new MySqlParameter(param.Key, param.Value));
+                    }
                 }
 
                 cn.Open();
@@ -86,9 +96,9 @@ namespace Peaker.TimeManagment.Data
         }
 
 
-        protected T RetrieveSingleConvertible<T>(string sql, Dictionary<string, object> parameters)
+        protected T RetrieveSingleConvertible<T>(string sql, Dictionary<string, object> parameters, bool isStoredProcedure = true)
         {
-            var single = RetrieveConvertible<T>(sql, parameters);
+            var single = RetrieveConvertible<T>(sql, parameters, isStoredProcedure);
             if (single.Count() == 1)
             {
                 return single.First();
@@ -106,16 +116,26 @@ namespace Peaker.TimeManagment.Data
         /// <param name="sql">Stored Procedure</param>
         /// <param name="parameters">Dictionary of parameters.</param>
         /// <returns>IEnumerable of T from stored procedure.</returns>
-        protected IEnumerable<T> RetrieveConvertible<T>(string sql, Dictionary<string, object> parameters)
+        protected IEnumerable<T> RetrieveConvertible<T>(string sql, Dictionary<string, object> parameters, bool isStoredProcedure = true)
         {
             List<T> results = new List<T>();
             using (var cn = new MySqlConnection(ConnectionString))
             using (var cmd = new MySqlCommand(sql, cn))
             {
-                cmd.CommandType = CommandType.StoredProcedure;
-                foreach (var param in parameters)
+                if (isStoredProcedure)
                 {
-                    cmd.Parameters.Add(new MySqlParameter(param.Key, param.Value));
+                    cmd.CommandType = CommandType.StoredProcedure;
+                }
+                else
+                {
+                    cmd.CommandType = CommandType.Text;
+                }
+                if (parameters != null)
+                {
+                    foreach (var param in parameters)
+                    {
+                        cmd.Parameters.Add(new MySqlParameter(param.Key, param.Value));
+                    }
                 }
 
                 cn.Open();
@@ -134,15 +154,22 @@ namespace Peaker.TimeManagment.Data
         }
         
 
-        protected void ExecuteNonQuery( string sql, Dictionary<string, object> updateParameters)
+        protected void ExecuteNonQuery( string sql, Dictionary<string, object> parameters, bool isStoredProcedure = true)
         {
             using (var cn = new MySqlConnection(ConnectionString))
             using (var cmd = new MySqlCommand(sql, cn))
             {
-                cmd.CommandType = CommandType.StoredProcedure;
-                if (updateParameters != null)
+                if (isStoredProcedure)
                 {
-                    foreach (var param in updateParameters)
+                    cmd.CommandType = CommandType.StoredProcedure;
+                }
+                else
+                {
+                    cmd.CommandType = CommandType.Text;
+                }
+                if (parameters != null)
+                {
+                    foreach (var param in parameters)
                     {
                         cmd.Parameters.Add(new MySqlParameter(param.Key, param.Value));
                     }

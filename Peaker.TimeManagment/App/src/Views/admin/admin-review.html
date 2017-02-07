@@ -1,0 +1,50 @@
+<template>
+    <require from="../../custom-elements/delete"></require>
+    <require from="../../value-converters/date"></require>
+    <require from="../../Views/partials/entry-filter-form"></require>
+    <div class="container">
+        <h2>${heading}</h2>
+        <entry-filter-form filter-criteria.two-way="filterCriteria" time-entries.two-way="timeEntries" total.two-way="total" show-exported-filter.bind="false"
+            show-user-filter.bind="true" show-export-type-filter.bind="true" no-entries-found.two-way="noEntriesFound"></entry-filter-form>
+        <div if.bind="timeEntries.length > 0">
+            <div class="form-group">
+                <input type="button" value='Export' class="form-control btn btn-success" click.delegate='export()' />
+            </div>
+            <div>
+                <div class="form-group">
+                    <div repeat.for="timeEntry of timeEntries">
+                        <div class="entryContainer">
+                            <div class='reviewEntry'>
+                                <a click.delegate="editEntry(timeEntry)">
+                                    <div>
+                                        <div class="float-right entry-row-right"><label>${timeEntry.userHours} Hours</label></div>
+                                        <div class="entry-row-left"><label>${timeEntry.userAccountingName}, ${timeEntry.entryDate | date}</label></div>
+                                        <div class="entry-row-left"><label>Work Code: ${timeEntry.workCode.BaseCode}-${timeEntry.workCode.Description}</label></div>
+                                        <div class="entry-row-left"><label>Job number: J00${timeEntry.jobnumber}</label></div>
+                                        <div class="entry-row-left" if.bind="timeEntry.exportedToNavision || timeEntry.exportedToPayroll">
+                                            <label>Exported to:</label>
+                                            <label if.bind="timeEntry.exportedToNavision">&nbsp;Navision</label>
+                                            <label if.bind="timeEntry.exportedToPayroll">&nbsp;Payroll</label>
+                                        </div>
+                                    </div>
+                                </a>
+                                <delete msg="Are you sure you want to remove this entry?" action.call="$parent.delete(timeEntry)"></delete>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="form-group">
+                    <div class="totalContainer">
+                        <span id="total">Total</span>
+                        <label model.bind="total">${total} Hours</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div if.bind="noEntriesFound">
+            <lable>No entries found.</lable>
+        </div>
+    </div>
+</template>

@@ -1,7 +1,7 @@
 import { Router } from 'aurelia-router';
 import { HttpClient, json } from 'aurelia-fetch-client';
 import { autoinject } from 'aurelia-dependency-injection';
-import { TimeEntry, Constants, EntryFilter, Helper, UserInRole } from '../Models/Models';
+import { TimeEntry, Constants, EntryFilter, Helper, UserInRole, UserListItem } from '../Models/Models';
 
 @autoinject
 export class AdminService {
@@ -85,6 +85,18 @@ export class AdminService {
                 headers: { 'Authorization': Helper.getAuthHeader() }
             })
             .then(resp => resp.json<UserInRole[]>())
+            .then(resp => {
+                return resp;
+            })
+    }
+
+    getUsersList(): Promise<UserListItem[]> {
+        return this.client.fetch(Constants.adminApi + 'GetUsersFilterList',
+            {
+                method: 'get',
+                headers: { 'Authorization': Helper.getAuthHeader() }
+            })
+            .then(resp => resp.json<UserListItem[]>())
             .then(resp => {
                 return resp;
             })

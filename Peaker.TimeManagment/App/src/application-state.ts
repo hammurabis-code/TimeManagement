@@ -119,20 +119,16 @@ export class ApplicationState {
     }
 
     isInRole(roleName: string) {
-        console.log(roleName);
         let role = undefined;
         if (this.currentUser != null) {
-            console.log(this.currentUser.UserRoles);
             role = this.currentUser.UserRoles.find(r => r.RoleName == roleName);
         }
         return role != undefined;
     }
 
     isInRoles(roles: string[]) {
-        console.log(roles);
         let role = undefined;
         if (this.currentUser != null) {
-            console.log(this.currentUser.UserRoles);
             roles.some(targetRole => {
                 role = this.currentUser.UserRoles.find(r => r.RoleName == targetRole);
                 return role != undefined;

@@ -33,7 +33,7 @@ export class App {
       },
       {
         route: 'review',
-        moduleId: './review-entries',
+        moduleId: './views/review-entries',
         nav: true,
         auth: true,
         title: 'Review',
@@ -103,7 +103,7 @@ export class App {
       },
       {
         route: 'adminReview',
-        moduleId: './views/admin-review',
+        moduleId: './views/admin/admin-review',
         nav: false,
         auth: true,
         title: 'Admin Review',

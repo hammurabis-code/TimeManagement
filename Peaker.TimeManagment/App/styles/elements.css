@@ -30,6 +30,22 @@ ul.clean-list li {
 .reviewEntry a {
     width: 100%;
 }
+.reviewEntry .glyphicon {
+    margin: 0px 10px;
+}
+.reviewEntry:hover{
+    cursor: pointer;
+}
 .actions {
     margin: 10px auto;
+}
+.entry-row-left{
+    width:70%;
+}
+.entry-row-right{
+    width:29%;
+    text-align: right;
+}
+delete .btn {
+    width: 70px;
 }

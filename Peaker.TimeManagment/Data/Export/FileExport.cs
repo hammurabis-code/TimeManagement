@@ -101,6 +101,24 @@ namespace Peaker.TimeManagment.Data.Export
             stream.Position = 0;
             return stream;
         }
+
+        public MemoryStream GetExportFileForReview(EntryFilter filter, IPrincipal user, ITimeEntryAccess timeEntryAccess)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("Name,Date Worked, Job Number,Work Code,Hours (Total), Sub");
+            var entries = timeEntryAccess.GetEntriesForPayrollExport(filter, user);
+            foreach (var entry in entries)
+            {
+                sb.AppendLine($"{entry.AccountingName},{entry.EntryDate.ToShortDateString()},{entry.JobNumber},{entry.BaseCode} - {entry.CodeDescription},{entry.Hours}, {entry.Sub}");
+            }
+
+            MemoryStream stream = new MemoryStream();
+            StreamWriter writer = new StreamWriter(stream);
+            writer.Write(sb.ToString());
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
+        }
     }
 
     

@@ -10,7 +10,6 @@ import * as toastr from 'toastr';
 export class PayrollExport {
     @bindable timeEntries: TimeEntry[] = undefined;
     @bindable filterCriteria: EntryFilter = new EntryFilter(null, null, true, null, null, null, null, null, null);
-    @bindable selectedYear: number;
     @bindable total: number;
     exportTypes: ExportType[] = [];
     @bindable exportType: ExportType;

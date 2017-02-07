@@ -41,7 +41,13 @@ namespace Peaker.TimeManagment.Data
             }
             else
             {
-                sb.Append($"WHERE UserDetailId <> -1 ");
+                if (UserAccess.IsUserAdmin(user))
+                {
+                    sb.Append($"WHERE UserDetailId <> -1 ");
+                }
+                else {
+                    sb.Append($"WHERE UserDetailId = {filter.CurrentUserDetailId} ");
+                }
             }
 
             if (filter.EntryId != null)
@@ -93,9 +99,14 @@ namespace Peaker.TimeManagment.Data
         }
 
         public List<PayrollExport> GetEntriesForPayrollExport(EntryFilter filter, IPrincipal user) {
-            var filterParams = new Dictionary<string, object>();
+            var filterParams = new Dictionary<string, object>();           
+            return Retrieve(PayrollExport.PayrollExportFactory, BuildPayrollQuery(filter, filterParams), filterParams, false).ToList();
+        }
+       
+
+        private string BuildPayrollQuery(EntryFilter filter, Dictionary<string, object> filterParams) {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine(@"SELECT U.AccountingName, T.Id AS TimeEntryId, T.UserDetailId, T.EntryDate, W.BaseCode, W.Description, W.sub, Sum(H.Duration) AS Hours
+            sb.AppendLine(@"SELECT U.AccountingName, T.Id AS TimeEntryId, T.UserDetailId, T.EntryDate, W.BaseCode, W.Description, T.JobNumber, W.sub, Sum(H.Duration) AS Hours
                         FROM userdetail U
                         INNER JOIN timeentry T
                             ON U.Id = T.UserDetailId
@@ -103,7 +114,8 @@ namespace Peaker.TimeManagment.Data
                             ON T.WorkCodeId = W.Id
                         INNER JOIN timeentryhours H ON t.Id = H.TimeEntryId
                         WHERE T.ExportedToPayroll = 0 ");
-            if (filter.FilterStartDate != null) {
+            if (filter.FilterStartDate != null)
+            {
                 sb.AppendLine("AND T.EntryDate >= ?p_startDate ");
                 filterParams.Add("?p_startDate", filter.FilterStartDate.Value.Date);
             }
@@ -112,11 +124,41 @@ namespace Peaker.TimeManagment.Data
                 sb.AppendLine("AND T.EntryDate <= ?p_endDate ");
                 filterParams.Add("?p_endDate", filter.FilterEndDate.Value.Date);
             }
+            if (filter.CurrentUserDetailId > 0) {
+                sb.AppendLine("AND U.Id = ?p_userDetailId ");
+                filterParams.Add("?p_userDetailId", filter.CurrentUserDetailId);
+            }
+            else if (filter.UserDetailId != null)
+            {
+                sb.Append($"AND UserDetailId = {filter.UserDetailId} ");
+            }
+            if (filter.ExportedToNavision != null)
+            {
+                if ((bool)filter.ExportedToNavision)
+                {
+                    sb.AppendLine("AND ExportedToNavision = 1 ");
+                }
+                else
+                {
+                    sb.AppendLine("AND ExportedToNavision = 0 ");
+                }
+            }
+            if (filter.ExportedToPayroll != null)
+            {
+                if ((bool)filter.ExportedToPayroll)
+                {
+                    sb.AppendLine("AND ExportedToPayroll = 1 ");
+                }
+                else
+                {
+                    sb.AppendLine("AND ExportedToPayroll = 0 ");
+                }
+            }            
             sb.AppendLine(@"GROUP BY U.AccountingName,TimeEntryId, T.UserDetailId, T.EntryDate, W.BaseCode, W.Description, W.sub;");
 
-
-            return Retrieve(PayrollExport.PayrollExportFactory, sb.ToString(), filterParams, false).ToList();
+            return sb.ToString();
         }
+
 
         private List<TimeEntryView> FillTimeEntryView(List<TimeEntry> entries)
         {
@@ -124,8 +166,9 @@ namespace Peaker.TimeManagment.Data
             var finalEntries = new List<TimeEntryView>();
             foreach (var entry in entries)
             {
+                var accountingName = RetrieveSingleConvertible<string>($@"SELECT AccountingName FROM peakertimemanagement.userdetail WHERE Id = {entry.UserDetailId};", null, false); 
                 entry.Hours = Retrieve(TimeEntryHours.TimeEntryHoursFactory, Constants.GetHoursForTimeEntryProcedure, entry.GetIdParameters()).ToList();
-                var newEntry = new TimeEntryView(entry);
+                var newEntry = new TimeEntryView(entry, accountingName);
                 newEntry.hours = entry.Hours;
                 newEntry.workCode = workCodeAccess.GetWorkCode(entry.WorkCodeId);
                 finalEntries.Add(newEntry);

@@ -252,8 +252,8 @@ C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\bin\Microsoft.
 C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\bin\System.Web.Http.Owin.xml
 C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\obj\Debug\Peaker.TimeManagment.dll
 C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\obj\Debug\Peaker.TimeManagment.pdb
-C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\obj\Debug\Peaker.TimeManagment.csprojResolveAssemblyReference.cache
 C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\bin\Autofac.dll
 C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\bin\Autofac.Integration.WebApi.dll
 C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\bin\Autofac.xml
 C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\bin\Autofac.Integration.WebApi.xml
+C:\Development\Clients\Peaker\TimeManagement\Peaker.TimeManagment\obj\Debug\Peaker.TimeManagment.csprojResolveAssemblyReference.cache

@@ -7,19 +7,20 @@
     <div>
         <div class="form-inline" if.bind="showUserFilter">
             <label class="input-group-addon" id="userExport">User</label>
-            <select id="selectExportType" value.bind="filterCriteria.UserDetailId" aria-describedby="userExport">
-                        <option repeat.for="user of users" model.bind="user.UserDetailId">${Username}</option>
-                    </select>
+            <select id="selectedUser" value.bind="selectedUser" aria-describedby="userExport">
+                <option repeat.for="user of userFilterList" model.bind="user">${user.AccountingName}</option>
+            </select>
         </div>
         <div class="form-inline" if.bind="showExportTypeFilter">
             <div>
-                <label class="input-group-addon" id="exportFor">Export For</label>
-                <select id="selectExportType" value.bind="timeEntry.workCode" aria-describedby="exportFor">
-                    <option repeat.for="exportype of exportTypes">${exportType}</option>
+                <label class="input-group-addon" id="exportFor">Exported</label>
+                <select id="selectExportType" value.bind="exportType" aria-describedby="exportFor">
+                    <option repeat.for="type of exportTypes" model.bind="type">${type.Description}</option>
                 </select>
             </div>
             <div if.bind="exportType">
-                <input type="checkbox" name="exportTypeFlag" value.bind="exportTypeFlag"> Un/exported
+                <input type="checkbox" name="exportTypeFlag" checked.bind="exportTypeFlag" value.bind="exportTypeFlag"> Is
+                Exported?
             </div>
         </div>
         <div class="form-inline">

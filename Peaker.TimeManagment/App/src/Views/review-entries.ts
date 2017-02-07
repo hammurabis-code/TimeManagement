@@ -1,9 +1,10 @@
 import { bindable } from 'aurelia-framework';
 import { Router } from 'aurelia-router';
 import { autoinject } from 'aurelia-dependency-injection';
-import { TimeEntry, EntryFilter } from './Models/Models';
-import { ApplicationState } from './application-state';
-import { TimeEntryService } from './Services/time-entry-service'
+import { TimeEntry, EntryFilter } from '../Models/Models';
+import { ApplicationState } from '../application-state';
+import { FileService, TimeEntryService } from '../Services/Services';
+import * as moment from 'moment';
 
 @autoinject
 export class reviewEntries {
@@ -12,8 +13,9 @@ export class reviewEntries {
     @bindable timeEntries: TimeEntry[] = [];
     @bindable total: number = 0;
     @bindable filterCriteria: EntryFilter;
+    @bindable noEntriesFound: boolean = false;
     returnRoute: string = 'review';
-    constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService, private router: Router) {
+    constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService, private router: Router, private fileService: FileService) {
         this.heading = 'Review Time';
     }
 
@@ -23,7 +25,8 @@ export class reviewEntries {
             this.router.navigate('login');
         }
         if (this.appState.filterCriteria == undefined) {
-            this.filterCriteria = new EntryFilter(this.appState.currentUser.UserDetailId, null, false, null, new Date(+new Date - 12096e5), null, null, null, null);
+            let startDate = new Date(+new Date() - 12096e5);
+            this.filterCriteria = new EntryFilter(this.appState.currentUser.UserDetailId, null, false, null, startDate, null, null, null, null);
         }
         else {
             this.filterCriteria = this.appState.filterCriteria;
@@ -35,6 +38,7 @@ export class reviewEntries {
         if (!entry.exportedToNavision) {
             this.appState.filterCriteria = this.filterCriteria;
             this.appState.editEntry = entry;
+            this.appState.returnRoute = this.returnRoute;
             this.router.navigate('edit');
         }
     }
@@ -53,9 +57,24 @@ export class reviewEntries {
             .then(entries => {
                 this.timeEntries = entries;
                 this.total = 0;
-                for (var count = 0; count < this.timeEntries.length; count++) {
-                    this.total += +this.timeEntries[count].userHours;
+                if (this.timeEntries.length > 0) {
+                    this.noEntriesFound = false;
+                    for (var count = 0; count < this.timeEntries.length; count++) {
+                        this.total += +this.timeEntries[count].userHours;
+                    }
                 }
+                else {
+                    this.noEntriesFound = true;
+                }
+            });
+    }
+    export() {
+        this.fileService.exportEntriesForReview(this.filterCriteria)
+            .then(result => {
+                toastr.success('Entries exported.');
+            })
+            .catch(err => {
+                toastr.error('An error occured during export.');
             });
     }
 }

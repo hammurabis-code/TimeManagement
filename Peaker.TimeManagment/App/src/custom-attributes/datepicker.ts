@@ -15,7 +15,7 @@ export class DatepickerCustomAttribute {
         $(this.element)
             .datepicker(datepickerOptions)
             .on('changeDate', evt => {
-                this.value = evt.date;
+                this.value = new Date(evt.date.toUTCString());
             });
     }
 

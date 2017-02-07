@@ -1,0 +1,16 @@
+<template>
+    <require from="../../custom-elements/delete"></require>
+    <require from="../../custom-attributes/datepicker"></require>
+    <require from="../../custom-attributes/jobnumberinput"></require>
+    <require from="../../value-converters/date"></require>
+    <require from="../../value-converters/hour"></require>
+
+    <div class="entryContainer">
+        <div class='reviewEntry'>
+            <delete msg="Are you sure you want to remove this entry?" action.call="$parent.delete(timeEntry)" if.bind="!timeEntry.exported"></delete>
+            <a click.delegate="editEntry(timeEntry)">
+                <span class="${timeEntry.exported ? 'glyphicon glyphicon-lock' : ''}"></span>
+                <label>${timeEntry.entryDate | date}, ${timeEntry.jobnumber}, ${timeEntry.workCode.BaseCode} ${timeEntry.workCode.Description}</label><span>${timeEntry.userHours} Hours</span></a>
+        </div>
+    </div>
+</template>

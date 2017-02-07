@@ -10,5 +10,7 @@ namespace Peaker.TimeManagment.Models.File
         MemoryStream GetExportFile(EntryFilter filter, IPrincipal user, ITimeEntryAccess timeEntryAccess);
 
         MemoryStream GetExportFileForPayroll(EntryFilter filter, IPrincipal user, ITimeEntryAccess timeEntryAccess);
+
+        MemoryStream GetExportFileForReview(EntryFilter filter, IPrincipal user, ITimeEntryAccess timeEntryAccess);
     }
 }

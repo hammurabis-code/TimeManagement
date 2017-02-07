@@ -87,7 +87,7 @@ namespace Peaker.TimeManagment.Data
 
         public static bool IsUserAdmin(IPrincipal user)
         {
-            return IsUserInRole(user, "Administrator");
+            return IsUserInRole(user, "Admin");
         }
 
         private static bool IsUserInRole(IPrincipal user, string roleName)
@@ -106,6 +106,14 @@ namespace Peaker.TimeManagment.Data
             paramDictionary.Add("p_userId", userId);
             return RetrieveSingle(UserDetail.UserDetailFactory, Constants.GetUserDetailProcedure, paramDictionary);
             
+        }
+
+        public List<UserListItem> GetAllUsers() {
+            string query = @"SELECT U.Email, UD.AccountingName, UD.Id AS UserDetailId
+                            FROM aspnetusers U 
+                            INNER JOIN userdetail UD ON U.Id = UD.UserId 
+                            WHERE UD.Id <> -1;";
+            return Retrieve(UserListItem.UserListItemFactory, query, null, false).ToList();
         }
 
         public void UpdateUserInfo(UserInfoViewModel userInfo)
