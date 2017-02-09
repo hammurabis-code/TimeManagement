@@ -1,6 +1,6 @@
 import { bindable, bindingMode, autoinject } from 'aurelia-framework';
-import { User } from '../models/user';
-import { UserWorkCode } from '../models/userworkcode';
+import { User } from './user';
+import { UserWorkCode } from './userworkcode';
 
 @autoinject
 export class TimeEntry {

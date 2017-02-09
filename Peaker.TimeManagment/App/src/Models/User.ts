@@ -3,6 +3,7 @@ import { JobNumber } from './JobNumber'
 import { UserWorkCode } from './UserWorkCode'
 import { Department } from './Department'
 import { UserRole } from './UserRole'
+
 export class User {
     UserDetailId: number;
     UserId: string;

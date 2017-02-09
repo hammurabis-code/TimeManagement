@@ -359,7 +359,7 @@ System.config({
       "npm:moment@2.17.0.js",
       "npm:moment@2.17.0/moment.js"
     ],
-    "app-build-a091258bf7.js": [
+    "app-build-dc4fd2d2e1.js": [
       "Models/Constants.js",
       "Models/Department.js",
       "Models/EntryFilter.js",
@@ -513,7 +513,7 @@ System.config({
     ],
     "Models/TimeEntry.js": [
       "aurelia-framework",
-      "../models/userworkcode"
+      "./userworkcode"
     ],
     "nav-bar.js": [
       "aurelia-framework",
