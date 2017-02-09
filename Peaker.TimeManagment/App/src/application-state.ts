@@ -69,13 +69,13 @@ export class ApplicationState {
                         this.fillRestrictedJobnumbers()
                             .then(result => {
                                 if (result) {
+                                    console.log('restrictedJobnumbers Filled');
                                     resolve(true);
                                 }
                                 else {
                                     resolve(false);
                                 }
                             });
-                        resolve(true);
                     }
                     else {
                         resolve(false);

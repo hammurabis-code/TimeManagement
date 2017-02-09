@@ -62,7 +62,6 @@ export class AccountService {
                 .then(resp => {
                     resp.json()
                         .then(data => {
-                            console.log(data);
                             let user = new User(data.UserDetailId, data.UserId, data.Username, data.AccountingName, data.IsSecondShift, data.DefaultJobEntries, data.UserDepartments, data.UserWorkCodes, data.UsedJobNumbers, data.UserRoles);
                             resolve(user);
                         })
@@ -93,7 +92,6 @@ export class AccountService {
         });
     }
     updateUserProfile(user: User): Promise<boolean> {
-        console.log(user.AccountingName);
         return this.client.fetch(
             Constants.accountApi + 'UpdateUserProfile',
             {
