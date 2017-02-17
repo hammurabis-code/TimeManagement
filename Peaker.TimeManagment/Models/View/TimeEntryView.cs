@@ -11,7 +11,7 @@ namespace Peaker.TimeManagment.Models.View
         public string userAccountingName { get; set; }
         public DateTime entryDate { get; set; }
         public decimal userHours { get; set; }
-        public WorkCode workCode { get; set; }
+        public WorkCodeView workCode { get; set; }
         public string jobnumber { get; set; }
         public string comments { get;set;}
         public bool hoursError { get; set; }

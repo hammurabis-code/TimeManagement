@@ -26,16 +26,9 @@ export class profile {
         this.subheading = 'Departments';
         this.subheading = 'Work Codes';
         this.currentUser = appState.currentUser;
-        this.currentAccountingName = this.currentUser.AccountingName;
-        this.currentEntryCount = this.currentUser.DefaultJobEntries;
         this.showCodeSelection = true;
-        this.showCodeSelectionText = Constants.codeSelectionTextShow;
         this.codeSelectionIsDirty = false;
         this.profileIsDirty = false;
-        this.originalDepartments = this.currentUser.UserDepartments;
-        this.originalWorkCodes = this.currentUser.UserWorkCodes;
-
-
     }
 
     activate() {
@@ -43,6 +36,11 @@ export class profile {
             this.appState.returnRoute = this.returnRoute;
             this.router.navigate('login');
         }
+        this.currentAccountingName = this.currentUser.AccountingName;
+        this.currentEntryCount = this.currentUser.DefaultJobEntries;
+        this.showCodeSelectionText = Constants.codeSelectionTextShow;
+        this.originalDepartments = this.currentUser.UserDepartments;
+        this.originalWorkCodes = this.currentUser.UserWorkCodes;
     }
 
     get userDepartments(): string {
@@ -78,6 +76,10 @@ export class profile {
         else {
             this.showCodeSelectionText = Constants.codeSelectionTextHide;
         }
+    }
+
+    goToChangePassword() {
+        this.router.navigate('changepassword');
     }
 
     resetCodes() { }

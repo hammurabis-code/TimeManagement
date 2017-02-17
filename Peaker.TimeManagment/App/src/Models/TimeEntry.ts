@@ -41,6 +41,7 @@ export class TimeEntry {
     }
 
     isValid(currentUser: User, invalidJobNumbers: string[]): boolean {
+        this.workCodeId = this.workCode.WorkCodeId;
         if (this.userHours <= 0 || this.userHours > 24) {
             this.hoursError = true;
         }

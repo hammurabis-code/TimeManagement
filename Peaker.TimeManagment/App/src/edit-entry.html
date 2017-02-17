@@ -6,14 +6,13 @@
     <require from="./value-converters/hour"></require>
     <div class="container">
         <h2>${heading}</h2>
-        <div class="timeEntry">
-            <div class="input-group date" datepicker.two-way="entryDate">
-                <input type="text" class="form-control" value.bind="entryDate | date">
-                <div class="input-group-addon">
-                    <span class="glyphicon glyphicon-calendar"></span>
-                </div>
+        <div class="input-group date" datepicker.two-way="entryDate">
+            <input type="text" class="form-control" value.bind="entryDate | date">
+            <div class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
             </div>
-            <div><label value.bind="timeEntry.entryDate"></label> </div>
+        </div>
+        <div repeat.for="timeEntry of timeEntries" class="form-group">
             <div class="timeEntry">
                 <div>
                     <delete msg="Are you sure you want to remove this entry?" action.call="$parent.delete(timeEntry)"></delete>
@@ -33,16 +32,18 @@
                 <div class="input-group">
                     <span class="input-group-addon" id="jobNumber">Job Number - J00</span>
                     <input class="form-control  ${timeEntry.jobNumberError || timeEntry.invalidJobnumber ? 'alert-danger' : ''}" value.two-way="timeEntry.jobnumber"
-                        placeholder="Format: 12345" aria-describedby="jobNumber" job-number-input="job-number.two-way: timeEntry.jobnumber; job-number-error.two-way: timeEntry.jobNumberError">
+                        placeholder="Format: 12345" aria-describedby="jobNumber" job-number-input="job-number.two-way: timeEntry.jobnumber; job-number-error.two-way: timeEntry.jobNumberError"
+                        type="number" step="1">
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon" id="comments">Comments</span>
                     <input class="form-control" placeholder="Comments" aria-describedby="comments" value.two-way="timeEntry.comments" type="text">
                 </div>
             </div>
-            <div class="form-group">
-                <input type="button" value='Submit Changes' class="form-control btn btn-primary" click.delegate='submit()' />
-                <input type="button" value='Cancel' class="form-control btn btn-primary" click.delegate='cancel()' />
-            </div>
         </div>
+        <div class="form-group">
+            <input type="button" value='Submit Changes' class="form-control btn btn-primary" click.delegate='submit()' />
+            <input type="button" value='Cancel' class="form-control btn btn-primary" click.delegate='cancel()' />
+        </div>
+    </div>
 </template>

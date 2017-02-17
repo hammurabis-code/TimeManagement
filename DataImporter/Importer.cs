@@ -14,7 +14,7 @@ namespace DataImporter
     class Importer : DataAccess
     {
         private const string ImportPath = @"C:\Users\bgillmore\Documents\Clients\Peaker\";
-        private const string ImportFileName = "peakerTestData.csv";
+        private const string ImportFileName = "peakerTestData2.csv";
 
         public List<TimeEntryView> ImportCsv()
         {

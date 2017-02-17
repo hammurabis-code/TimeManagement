@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using Peaker.TimeManagment.Models;
 using Peaker.TimeManagment.Models.Data;
+using Peaker.TimeManagment.Models.View;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -30,11 +31,11 @@ namespace Peaker.TimeManagment.Data
             }
         }
 
-        internal WorkCode GetWorkCode(int workCodeId)
+        internal WorkCodeView GetWorkCode(int workCodeId)
         {
             var paramDictionary = new Dictionary<string, object>();
             paramDictionary.Add("p_workCodeId", workCodeId);
-            return RetrieveSingle(WorkCode.WorkCodeFactory, Constants.GetWorkCodeProcedure, paramDictionary);
+            return RetrieveSingle(WorkCodeView.WorkCodeViewFactory, Constants.GetWorkCodeProcedure, paramDictionary);
         }
     }
 }

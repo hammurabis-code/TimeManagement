@@ -1,6 +1,6 @@
 import { autoinject } from 'aurelia-dependency-injection';
 import { HttpClient, json } from 'aurelia-fetch-client';
-import { Constants, Login, User, Helper, UserInfoViewModel, Register } from '../Models/Models';
+import { ChangePassword, Constants, Login, User, Helper, UserInfoViewModel, Register } from '../Models/Models';
 
 @autoinject
 export class AccountService {
@@ -142,6 +142,29 @@ export class AccountService {
         return this.client.fetch(Constants.accountApi + 'Register',
             {
                 body: json(registerModel),
+                headers: {
+                    'Authorization': Helper.getAuthHeader(),
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                },
+                method: 'POST'
+            })
+            .then(resp => {
+                if (resp.status == 200) {
+                    return true;
+                }
+                return false;
+            })
+            .catch(err => {
+                console.log(err);
+                return false;
+            })
+    }
+
+    changePassword(changePasswordModel: ChangePassword): Promise<boolean> {
+        return this.client.fetch(Constants.accountApi + 'ChangePassword',
+            {
+                body: json(changePasswordModel),
                 headers: {
                     'Authorization': Helper.getAuthHeader(),
                     'Content-Type': 'application/json',

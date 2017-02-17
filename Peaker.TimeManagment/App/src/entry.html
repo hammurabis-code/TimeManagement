@@ -32,7 +32,8 @@
                 <div class="input-group">
                     <span class="input-group-addon" id="jobNumber">Job Number - J00</span>
                     <input class="form-control  ${timeEntry.jobNumberError || timeEntry.invalidJobnumber ? 'alert-danger' : ''}" value.two-way="timeEntry.jobnumber"
-                        placeholder="Format: 12345" aria-describedby="jobNumber" job-number-input="job-number.two-way: timeEntry.jobnumber; job-number-error.two-way: timeEntry.jobNumberError">
+                        placeholder="Format: 12345" aria-describedby="jobNumber" job-number-input="job-number.two-way: timeEntry.jobnumber; job-number-error.two-way: timeEntry.jobNumberError"
+                        type="number" step="1">
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon" id="comments">Comments</span>

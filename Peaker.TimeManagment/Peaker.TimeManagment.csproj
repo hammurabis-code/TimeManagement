@@ -224,6 +224,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountBindingModels.cs" />
+    <Compile Include="Models\Account\ChangePasswordBindingModel.cs" />
+    <Compile Include="Models\Account\RegisterBindingModel.cs" />
     <Compile Include="Models\Data\ITimeEntryAccess.cs" />
     <Compile Include="Models\Data\PeakerEvent.cs" />
     <Compile Include="Models\Data\RestrictedJobnumber.cs" />

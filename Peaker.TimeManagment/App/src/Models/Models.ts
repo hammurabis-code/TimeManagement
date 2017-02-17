@@ -1,4 +1,5 @@
 export { Login } from './Login';
+export { ChangePassword } from './ChangePassword';
 export { Constants } from './Constants';
 export { Department } from './Department';
 export { JobNumber } from './JobNumber';

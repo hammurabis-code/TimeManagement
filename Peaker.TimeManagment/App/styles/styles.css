@@ -174,6 +174,9 @@ div.au-stagger {
   }
 }
 
+.entryContainer {
+    overflow: auto;
+}
 
 .entryContainer, .totalContainer {
     border: 1px solid;

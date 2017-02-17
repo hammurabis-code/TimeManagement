@@ -7,7 +7,7 @@ import { TimeEntryService } from './Services/time-entry-service'
 @autoinject
 export class editEntries {
     heading: string;
-    @bindable timeEntry: TimeEntry;
+    @bindable timeEntries: TimeEntry[];
     entryDate: Date;
     total: number = 0;
     workCodes: UserWorkCode[];
@@ -17,6 +17,7 @@ export class editEntries {
     constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService, private router: Router) {
         this.heading = 'Edit Time';
         this.workCodes = new Array<UserWorkCode>();
+        this.timeEntries = new Array<TimeEntry>();
     }
 
     activate(params) {
@@ -30,18 +31,17 @@ export class editEntries {
         this.appState.currentUser.UserWorkCodes.forEach(element => {
             this.workCodes.push(element);
         });
-        this.timeEntry = this.appState.editEntry;
-        this.entryDate = this.timeEntry.entryDate;
+        this.timeEntries.push(this.appState.editEntry);
+        console.log(this.timeEntries[0].workCode);
+        this.workCodes.forEach(element => {
+            if (element === this.timeEntries[0].workCode) {
+                console.log(element);
+            }
+        });
+        this.entryDate = this.timeEntries[0].entryDate;
         this.appState.editEntry = null;
-        this.originalHours = this.timeEntry.userHours;
-        // this.appState.currentUser.UserWorkCodes.forEach(element => {
-        //     this.workCodes.push(element);
-        // });
-        // this.timeEntryService.get(new EntryFilter(null, null, null, params.Id, null, null, null))
-        //     .then(entries => {
-        //         this.timeEntry = entries[0];
-        //         this.entryDate = this.timeEntry.entryDate;
-        //     });
+        this.originalHours = this.timeEntries[0].userHours;
+
     }
 
     validateTotalTimeForDate(): Promise<boolean> {
@@ -51,7 +51,7 @@ export class editEntries {
                 let validationTotal: number = hours;
                 console.log(this.total)
                 validationTotal -= this.originalHours;
-                validationTotal += this.timeEntry.userHours;
+                validationTotal += this.timeEntries[0].userHours;
                 console.log(this.total);
                 console.log()
                 if (validationTotal > 24) {
@@ -63,12 +63,12 @@ export class editEntries {
     }
 
     submit() {
-        this.timeEntry.entryDate = this.entryDate;
+        this.timeEntries[0].entryDate = this.entryDate;
         if (this.entryDate === undefined) {
             toastr.error("You must select an entry date.", "Date Error");
             return;
         }
-        let entryValid = this.timeEntry.isValid(this.appState.currentUser, this.appState.restrictedJobnumbers)
+        let entryValid = this.timeEntries[0].isValid(this.appState.currentUser, this.appState.restrictedJobnumbers)
         if (entryValid) {
             this.validateTotalTimeForDate()
                 .then(result => {
@@ -78,10 +78,10 @@ export class editEntries {
                     }
                     else {
                         if (entryValid) {
-                            this.timeEntryService.saveEntry(this.timeEntry)
+                            this.timeEntryService.saveEntry(this.timeEntries[0])
                                 .then(success => {
                                     if (success) {
-                                        this.timeEntry = null;
+                                        this.timeEntries.length = 0
                                         this.router.navigate(this.appState.returnRoute);
                                     }
                                 });

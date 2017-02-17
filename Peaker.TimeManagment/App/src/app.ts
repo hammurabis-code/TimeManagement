@@ -66,6 +66,15 @@ export class App {
         settings: { roles: ['User'], adminView: false }
       },
       {
+        route: 'changepassword',
+        moduleId: './views/change-password',
+        nav: false,
+        auth: true,
+        title: 'Change Password',
+        name: "Change Password",
+        settings: { roles: ['User'], adminView: false }
+      },
+      {
         route: 'admin',
         moduleId: './views/admin-view',
         nav: true,

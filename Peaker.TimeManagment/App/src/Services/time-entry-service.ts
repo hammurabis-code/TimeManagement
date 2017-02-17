@@ -1,7 +1,7 @@
 import { Router } from 'aurelia-router';
 import { HttpClient, json } from 'aurelia-fetch-client';
 import { autoinject } from 'aurelia-dependency-injection';
-import { TimeEntry, Constants, EntryFilter, Helper } from '../Models/Models';
+import { TimeEntry, Constants, EntryFilter, Helper, UserWorkCode } from '../Models/Models';
 
 @autoinject
 export class TimeEntryService {
@@ -90,7 +90,13 @@ export class TimeEntryService {
                     newEntry.jobnumber = element.jobnumber;
                     newEntry.userHours = element.userHours;
                     newEntry.workCodeId = element.workCodeId;
-                    newEntry.workCode = element.workCode;
+                    console.log('From Server Entry Code');
+                    console.log(element.workCode);
+                    newEntry.workCode = new UserWorkCode(element.workCode.DepartmentId, element.workCode.WorkCodeId, element.workCode.baseCode
+                        , element.workCode.description, element.workCode.area, element.workCode.sub
+                        , element.workCode.IsJobNumberRequired);
+                    console.log('New Entry Code');
+                    console.log(newEntry.workCode);
                     newEntry.userAccountingName = element.userAccountingName;
                     newEntries.push(newEntry);
                     index++;

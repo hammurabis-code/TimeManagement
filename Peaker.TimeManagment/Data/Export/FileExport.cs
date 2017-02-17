@@ -34,7 +34,7 @@ namespace Peaker.TimeManagment.Data.Export
                             hoursSuffix = "DT";
                             break;
                     }
-                    sb.AppendLine($"{entry.workCode.BaseCode}-{hoursSuffix},{entry.entryDate.ToShortDateString()},{hours.Duration}, J00{entry.jobnumber}");
+                    sb.AppendLine($"{entry.workCode.baseCode}-{hoursSuffix},{entry.entryDate.ToShortDateString()},{hours.Duration}, J00{entry.jobnumber}");
                 }
                 timeEntryAccess.SetEntryExportedToNavision(entry);
             }

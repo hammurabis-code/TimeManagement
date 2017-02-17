@@ -359,7 +359,8 @@ System.config({
       "npm:moment@2.17.0.js",
       "npm:moment@2.17.0/moment.js"
     ],
-    "app-build-dc4fd2d2e1.js": [
+    "app-build-ff75d0475a.js": [
+      "Models/ChangePassword.js",
       "Models/Constants.js",
       "Models/Department.js",
       "Models/EntryFilter.js",
@@ -387,6 +388,8 @@ System.config({
       "Views/admin-view.js",
       "Views/admin/admin-review.html!github:systemjs/plugin-text@0.0.8.js",
       "Views/admin/admin-review.js",
+      "Views/change-password.html!github:systemjs/plugin-text@0.0.8.js",
+      "Views/change-password.js",
       "Views/create-user.html!github:systemjs/plugin-text@0.0.8.js",
       "Views/create-user.js",
       "Views/export.html!github:systemjs/plugin-text@0.0.8.js",
@@ -495,6 +498,7 @@ System.config({
     ],
     "Models/Models.js": [
       "./Login",
+      "./ChangePassword",
       "./Constants",
       "./Department",
       "./JobNumber",
@@ -586,6 +590,12 @@ System.config({
       "../../application-state",
       "../../Services/services",
       "moment"
+    ],
+    "Views/change-password.js": [
+      "../models/models",
+      "../Services/services",
+      "aurelia-router",
+      "aurelia-dependency-injection"
     ],
     "Views/create-user.js": [
       "aurelia-router",

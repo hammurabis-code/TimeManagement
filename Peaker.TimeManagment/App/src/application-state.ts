@@ -63,13 +63,16 @@ export class ApplicationState {
             this.getUserInfo()
                 .then(result => {
                     if (result) {
-                        if (this.currentUser.UserRoles.find(r => r.RoleName == 'Admin' != undefined)) {
+                        this.currentUser.UserRoles.forEach(element => {
+                            console.log(element);
+                        });
+                        if (this.currentUser.UserRoles.find(r => r.RoleName == 'Admin') != undefined) {
                             this.isAdmin = true;
                         }
+                        console.log(this.isAdmin);
                         this.fillRestrictedJobnumbers()
                             .then(result => {
                                 if (result) {
-                                    console.log('restrictedJobnumbers Filled');
                                     resolve(true);
                                 }
                                 else {
@@ -109,7 +112,6 @@ export class ApplicationState {
     addPendingTimeEntries(pendingEntries: TimeEntry[], entryDate: Date) {
         for (var count = 0; count < pendingEntries.length; count++) {
             pendingEntries[count].entryDate = entryDate;
-            pendingEntries[count].workCodeId = pendingEntries[count].workCode.WorkCodeId;
             this.currentUser.pendingTimeEntries.push(pendingEntries[count]);
         }
     }

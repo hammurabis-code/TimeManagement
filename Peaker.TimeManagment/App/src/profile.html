@@ -25,6 +25,9 @@
                 <input type="checkbox" checked.bind="currentUser.IsSecondShift" value.one-way="currentUser.IsSecondShift" aria-describedby="isSecondShift"
                 />
             </div>
+            <div class="input-group">
+                <input type="button" value='Change Password' class="form-control btn btn-link" click.delegate='goToChangePassword()' />
+            </div>
             <div class='mt-1'>
                 <div class="form-group">
                     <input type="button" value='Cancel' class="form-control btn btn-primary" click.delegate='resetModel()' />

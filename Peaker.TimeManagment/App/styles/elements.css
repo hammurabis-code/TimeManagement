@@ -48,4 +48,15 @@ ul.clean-list li {
 }
 delete .btn {
     width: 70px;
+    margin-bottom: 5px;
 }
+.workcode-entry .form-inline label {
+    text-align: left;
+}
+.workcode-entry .form-inline input[type="checkbox"]{
+    float: right;
+}
+input[value="Add Job"], input[value="Cancel"] {
+    margin-bottom: 10px;
+}
+
