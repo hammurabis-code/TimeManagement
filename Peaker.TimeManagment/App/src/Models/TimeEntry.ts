@@ -41,7 +41,7 @@ export class TimeEntry {
     }
 
     isValid(currentUser: User, invalidJobNumbers: string[]): boolean {
-        this.workCodeId = this.workCode.WorkCodeId;
+        this.workCodeId = this.workCode.workCodeId;
         if (this.userHours <= 0 || this.userHours > 24) {
             this.hoursError = true;
         }
@@ -56,8 +56,8 @@ export class TimeEntry {
             this.workCodeError = false;
         }
         let targetWorkCode = currentUser.UserWorkCodes.find(w =>
-            w.WorkCodeId === this.workCode.WorkCodeId);
-        if (targetWorkCode.IsJobNumberRequired || this.jobnumber != '') {
+            w.workCodeId === this.workCode.workCodeId);
+        if (targetWorkCode.isJobNumberRequired || this.jobnumber != '') {
             if (this.jobnumber.length != 5) {
                 this.jobNumberError = true;
             }

@@ -113,7 +113,7 @@ namespace Peaker.TimeManagment.Data
                         INNER JOIN workcode W
                             ON T.WorkCodeId = W.Id
                         INNER JOIN timeentryhours H ON t.Id = H.TimeEntryId
-                        WHERE T.ExportedToPayroll = 0 ");
+                        WHERE 1 = 1 ");
             if (filter.FilterStartDate != null)
             {
                 sb.AppendLine("AND T.EntryDate >= ?p_startDate ");
@@ -170,7 +170,9 @@ namespace Peaker.TimeManagment.Data
                 entry.Hours = Retrieve(TimeEntryHours.TimeEntryHoursFactory, Constants.GetHoursForTimeEntryProcedure, entry.GetIdParameters()).ToList();
                 var newEntry = new TimeEntryView(entry, accountingName);
                 newEntry.hours = entry.Hours;
-                newEntry.workCode = workCodeAccess.GetWorkCode(entry.WorkCodeId);
+                var code = workCodeAccess.GetWorkCode(entry.WorkCodeId);
+                code.isSelected = true;
+                newEntry.workCode = code;
                 finalEntries.Add(newEntry);
             }
             return finalEntries;

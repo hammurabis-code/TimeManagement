@@ -9,7 +9,6 @@ export class ApplicationState {
     returnRoute: string;
     defaultRoute: string;
     currentUser: User;
-    activeWorkCodes: WorkCode[];
     loggedIn: boolean;
     isLocal: boolean;
     restrictedJobnumbers: string[];
@@ -22,7 +21,6 @@ export class ApplicationState {
         this.currentUser = null;
         this.returnRoute = '';
         this.defaultRoute = 'entry';
-        this.activeWorkCodes = new Array<WorkCode>();
         this.loggedIn = false;
         this.restrictedJobnumbers = [];
         this.editEntry = null;
@@ -95,12 +93,6 @@ export class ApplicationState {
             this.accountService.getUserInfo()
                 .then(user => {
                     this.currentUser = user;
-                    let codes = new Array<WorkCode>();
-                    codes = this.activeWorkCodes.filter(c =>
-                        this.currentUser.UserWorkCodes.find(uc => uc.baseCode == c.BaseCode))
-                    if (codes.length != 0) {
-                        this.activeWorkCodes = codes;
-                    }
                     resolve(true);
                 });
         })

@@ -17,11 +17,11 @@
 							<div class='reviewEntry' if.bind="!timeEntry.exportedToNavision && !timeEntry.exportedToPayroll">
 								<delete msg="Are you sure you want to remove this entry?" action.call="$parent.delete(timeEntry)"></delete>
 								<a click.delegate="editEntry(timeEntry)">
-									<label>${timeEntry.entryDate | date}, ${timeEntry.jobnumber}, ${timeEntry.workCode.BaseCode} ${timeEntry.workCode.Description}</label><span>${timeEntry.userHours} Hours</span></a>
+									<label>${timeEntry.entryDate | date}, ${timeEntry.jobnumber}, ${timeEntry.workCode.baseCode} ${timeEntry.workCode.description}</label><span>${timeEntry.userHours} Hours</span></a>
 							</div>
 							<div class='reviewEntry' if.bind="timeEntry.exportedToNavision || timeEntry.exportedToPayroll">
 								<span class="${timeEntry.exportedToNavision || timeEntry.exportedToPayroll ? 'glyphicon glyphicon-lock' : ''}"></span>
-								<label>${timeEntry.entryDate | date}, ${timeEntry.jobnumber}, ${timeEntry.workCode.BaseCode} ${timeEntry.workCode.Description}</label><span>${timeEntry.userHours} Hours</span>
+								<label>${timeEntry.entryDate | date}, ${timeEntry.jobnumber}, ${timeEntry.workCode.baseCode} ${timeEntry.workCode.description}</label><span>${timeEntry.userHours} Hours</span>
 							</div>
 						</div>
 					</div>

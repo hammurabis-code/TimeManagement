@@ -73,13 +73,11 @@ namespace Peaker.TimeManagment.Data
             {
                 userInfo.UserWorkCodes.Add(new WorkCodeView()
                 {
-                    WorkCodeId = workcode.Id,
-                    area = workcode.Area,
+                    workCodeId = workcode.Id,
                     baseCode = workcode.BaseCode,
                     description = workcode.Description,
-                    sub = workcode.Sub,
-                    IsJobNumberRequired = workcode.IsJobNumberRequired,
-                    IsSelected = userCodeIds.Any(w => w == workcode.Id)
+                    isJobNumberRequired = workcode.IsJobNumberRequired,
+                    isSelected = userCodeIds.Any(w => w == workcode.Id)
                 });
             }
 
@@ -112,7 +110,8 @@ namespace Peaker.TimeManagment.Data
             string query = @"SELECT U.Email, UD.AccountingName, UD.Id AS UserDetailId
                             FROM aspnetusers U 
                             INNER JOIN userdetail UD ON U.Id = UD.UserId 
-                            WHERE UD.Id <> -1;";
+                            WHERE UD.Id <> -1
+                            ORDER BY UD.AccountingName;";
             return Retrieve(UserListItem.UserListItemFactory, query, null, false).ToList();
         }
 
@@ -128,11 +127,11 @@ namespace Peaker.TimeManagment.Data
                 foreach (var workCode in userInfo.UserWorkCodes)
                 {
                     var workcodeParamDictionary = new Dictionary<string, object>();
-                    workcodeParamDictionary.Add("p_workCodeId", workCode.WorkCodeId);
+                    workcodeParamDictionary.Add("p_workCodeId", workCode.workCodeId);
 
                     var userCodeIds = Retrieve<int>(Constants.GetUserWorkCodeListProcedure, GetSingleParameter("p_userDetailId", userInfo.UserDetailId));
                     var targetWorkCode = RetrieveSingle(WorkCode.WorkCodeFactory, Constants.GetTargetWorkCodeProcedure, workcodeParamDictionary);// context.WorkCodes.FirstOrDefault(d => d.Id == workCode.WorkCodeId);
-                    if (workCode.IsSelected)
+                    if (workCode.isSelected)
                     {
                         if (!userCodeIds.Contains(targetWorkCode.Id))
                         {

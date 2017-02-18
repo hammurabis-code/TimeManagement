@@ -62,7 +62,9 @@ export class AccountService {
                 .then(resp => {
                     resp.json()
                         .then(data => {
-                            let user = new User(data.UserDetailId, data.UserId, data.Username, data.AccountingName, data.IsSecondShift, data.DefaultJobEntries, data.UserDepartments, data.UserWorkCodes, data.UsedJobNumbers, data.UserRoles);
+                            console.log(data.UserWorkCodes);
+                            let user = new User(data.UserDetailId, data.UserId, data.Username, data.AccountingName,
+                                data.IsSecondShift, data.DefaultJobEntries, data.UserDepartments, data.UserWorkCodes, data.UsedJobNumbers, data.UserRoles);
                             resolve(user);
                         })
                 }).catch(err => {

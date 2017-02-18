@@ -59,12 +59,6 @@ export class AdminReview {
                 this.total = 0;
                 if (this.timeEntries.length > 0) {
                     this.noEntriesFound = false;
-                    for (var count = 0; count < this.timeEntries.length; count++) {
-                        this.total += +this.timeEntries[count].userHours;
-                        this.timeEntries[count].workCode.IsSelected =
-                            this.appState.currentUser.UserWorkCodes.find(w =>
-                                w.WorkCodeId == this.timeEntries[count].workCode.WorkCodeId).IsSelected;
-                    }
                 }
                 else {
                     this.noEntriesFound = true;
