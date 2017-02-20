@@ -67,7 +67,6 @@ export class PayrollExport {
         this.timeEntryService.get(this.filterCriteria)
             .then(entries => {
                 this.timeEntries = entries;
-                console.log(this.timeEntries);
                 if (this.timeEntries.length > 0) {
                     this.entriesFound = true;
                 }

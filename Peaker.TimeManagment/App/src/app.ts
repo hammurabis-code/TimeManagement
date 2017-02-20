@@ -149,8 +149,6 @@ export class AuthorizeStep {
         return next.cancel(new Redirect('login'));
       }
       if (routingContext.getAllInstructions().some(i => i.config.settings.roles.indexOf('Admin') !== -1)) {
-        console.log(this.appState.isInRole('Admin'));
-
         var isAdmin = this.appState.isInRole('Admin');
         if (!isAdmin) {
           return next.cancel(new Redirect('entry'));

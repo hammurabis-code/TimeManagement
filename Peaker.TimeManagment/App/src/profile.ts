@@ -54,7 +54,6 @@ export class profile {
     }
 
     departmentCheckChanged(index: number) {
-        console.log(this.currentUser.UserDepartments);
         var department = this.currentUser.UserDepartments[index];
         department.IsSelected = !department.IsSelected;
         this.currentUser.UserDepartments[index] = department;
@@ -85,7 +84,6 @@ export class profile {
     resetCodes() { }
 
     saveProfile() {
-        console.log(this.currentUser.AccountingName);
         this.accountService.updateUserProfile(this.currentUser)
             .then(response => {
                 if (response) {

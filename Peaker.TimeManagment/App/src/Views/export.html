@@ -4,7 +4,7 @@
     <require from="./partials/entry-filter-form"></require>
     <div class="container">
         <h3>Export Jobs</h3>
-        <div>
+        <div if.bind='appState.isLocal'>
             <action-confirm msg="Are you sure? This will remove the exported flag from ALL Navision entries." action.call="clearNavisionExport()"
                 button-class="btn-warning" button-name="Clear Navision Export Flag"></action-confirm>
             <action-confirm msg="Are you sure? This will remove the exported flag from ALL Payroll entries." action.call="clearPayrollExport()"

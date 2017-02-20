@@ -18,6 +18,12 @@ export class editEntries {
         this.heading = 'Edit Time';
         this.workCodes = new Array<UserWorkCode>();
         this.timeEntries = new Array<TimeEntry>();
+        if (this.appState.currentUser !== null &&
+            this.appState.currentUser !== undefined) {
+            this.appState.currentUser.UserWorkCodes.forEach(element => {
+                this.workCodes.push(element);
+            });
+        }
     }
 
     activate(params) {
@@ -28,14 +34,10 @@ export class editEntries {
         if (this.appState.editEntry == null) {
             this.router.navigate('entry');
         }
-        this.appState.currentUser.UserWorkCodes.forEach(element => {
-            this.workCodes.push(element);
-        });
         this.timeEntries.push(this.appState.editEntry);
-        console.log(this.timeEntries[0].workCode);
-        this.workCodes.forEach(element => {
-            if (element === this.timeEntries[0].workCode) {
-                console.log(element);
+        this.workCodes.forEach(code => {
+            if (code.workCodeId === this.timeEntries[0].workCode.workCodeId) {
+                this.timeEntries[0].workCode = code;
             }
         });
         this.entryDate = this.timeEntries[0].entryDate;
@@ -49,15 +51,11 @@ export class editEntries {
         return this.timeEntryService.getTotalHours(new EntryFilter(this.appState.currentUser.UserDetailId, null, null, null, this.entryDate, this.entryDate, null))
             .then(hours => {
                 let validationTotal: number = hours;
-                console.log(this.total)
                 validationTotal -= this.originalHours;
                 validationTotal += this.timeEntries[0].userHours;
-                console.log(this.total);
-                console.log()
                 if (validationTotal > 24) {
                     result = false;
                 }
-                console.log(result);
                 return result;
             });
     }

@@ -61,13 +61,9 @@ export class ApplicationState {
             this.getUserInfo()
                 .then(result => {
                     if (result) {
-                        this.currentUser.UserRoles.forEach(element => {
-                            console.log(element);
-                        });
                         if (this.currentUser.UserRoles.find(r => r.RoleName == 'Admin') != undefined) {
                             this.isAdmin = true;
                         }
-                        console.log(this.isAdmin);
                         this.fillRestrictedJobnumbers()
                             .then(result => {
                                 if (result) {

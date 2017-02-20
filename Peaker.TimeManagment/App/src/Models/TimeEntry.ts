@@ -27,7 +27,7 @@ export class TimeEntry {
         this.userAccountingName = '';
         this.entryDate = entryDate;
         this.userHours = 0;
-        this.workCode = null;
+        this.workCode = new UserWorkCode();
         this.jobnumber = '';
         this.comments = '';
         this.hoursError = false;

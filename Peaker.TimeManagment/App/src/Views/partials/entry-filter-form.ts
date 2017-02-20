@@ -27,7 +27,6 @@ export class EntryFilterForm {
             this.exportTypes.push(new ExportType(1, 'Navision'));
             this.exportTypes.push(new ExportType(2, 'Payroll'))
         }
-        console.log('Filter form: ' + this.showUserFilter);
         if (this.userFilterList.length == 0) {
             this.adminService.getUsersList()
                 .then(list => {
@@ -38,7 +37,6 @@ export class EntryFilterForm {
     }
 
     selectedUserChanged(newvalue: UserListItem) {
-        console.log('Selected user changed');
         if (newvalue != undefined) {
             this.filterCriteria.UserDetailId = newvalue.UserDetailId;
             this.filterCriteria.ShowAllUsers = false;
@@ -50,9 +48,7 @@ export class EntryFilterForm {
     }
 
     getEntries() {
-        console.log(this.exportTypeFlag);
         if (this.exportType != undefined) {
-            console.log('Export type: ' + this.exportType.Description);
             if (this.exportType.Type == 1) {
                 this.filterCriteria.ExportedToNavision = this.exportTypeFlag;
                 this.filterCriteria.ExportedToPayroll = null;

@@ -57,7 +57,6 @@ export class loginForm {
                     if (route === null || route === '') {
                         route = this.appState.defaultRoute;
                     }
-                    console.log('routing');
                     this.router.navigate(route);
                 }
             })
