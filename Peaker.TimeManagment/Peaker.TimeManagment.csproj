@@ -215,6 +215,7 @@
     <Compile Include="Controllers\WorkCodeController.cs" />
     <Compile Include="Data\Constants.cs" />
     <Compile Include="Data\DataAccess.cs" />
+    <Compile Include="Data\EventsAccess.cs" />
     <Compile Include="Data\Export\FileExport.cs" />
     <Compile Include="Data\Export\Navision.cs" />
     <Compile Include="Data\TimeEntryAccess.cs" />

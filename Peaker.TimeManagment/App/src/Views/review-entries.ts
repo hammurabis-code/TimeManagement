@@ -24,19 +24,20 @@ export class reviewEntries {
             this.appState.returnRoute = this.returnRoute;
             this.router.navigate('login');
         }
-        if (this.appState.filterCriteria == undefined) {
+        if (this.appState.reviewFilterCriteria == undefined) {
             let startDate = new Date(+new Date() - 12096e5);
+            console.log(this.appState.currentUser.UserDetailId);
             this.filterCriteria = new EntryFilter(this.appState.currentUser.UserDetailId, null, false, null, startDate, null, null, null, null);
         }
         else {
-            this.filterCriteria = this.appState.filterCriteria;
+            this.filterCriteria = this.appState.reviewFilterCriteria;
         }
         this.getEntries();
     }
 
     editEntry(entry: TimeEntry) {
         if (!entry.exportedToNavision) {
-            this.appState.filterCriteria = this.filterCriteria;
+            this.appState.reviewFilterCriteria = this.filterCriteria;
             this.appState.editEntry = entry;
             this.appState.returnRoute = this.returnRoute;
             this.router.navigate('edit');
@@ -55,11 +56,11 @@ export class reviewEntries {
     getEntries(): Promise<any> {
         return this.timeEntryService.get(this.filterCriteria)
             .then(entries => {
+                this.total = 0;
                 for (var count = 0; count < entries.length; count++) {
                     this.total += +entries[count].userHours;
                 }
                 this.timeEntries = entries;
-                this.total = 0;
                 if (this.timeEntries.length > 0) {
                     this.noEntriesFound = false;
                 }

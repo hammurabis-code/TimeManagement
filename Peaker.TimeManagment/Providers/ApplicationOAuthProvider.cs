@@ -10,6 +10,9 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using Peaker.TimeManagment.Models;
+using Peaker.TimeManagment.Models.Enums;
+using Peaker.TimeManagment.Models.Data;
+using Peaker.TimeManagment.Data;
 
 namespace Peaker.TimeManagment.Providers
 {
@@ -29,25 +32,42 @@ namespace Peaker.TimeManagment.Providers
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
+            try
+            {               
 
-            ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
+                var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
-            if (user == null)
-            {
-                context.SetError("invalid_grant", "The user name or password is incorrect.");
-                return;
+                ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
+
+                if (user == null)
+                {
+                    context.SetError("invalid_grant ", "The user name or password is incorrect.");
+                    return;
+                }
+
+                var peakerEvent = new PeakerEvent()
+                {
+                    TimeStamp = DateTime.Now,
+                    UserId = user.Id,
+                    EventType = EventTypes.Login,
+                    Data = context.UserName,
+                    ObjectId = -1
+                };
+
+                ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
+                   OAuthDefaults.AuthenticationType);
+                ClaimsIdentity cookiesIdentity = await user.GenerateUserIdentityAsync(userManager,
+                    CookieAuthenticationDefaults.AuthenticationType);
+
+                AuthenticationProperties properties = CreateProperties(user.UserName);
+                AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
+                context.Validated(ticket);
+                context.Request.Context.Authentication.SignIn(cookiesIdentity);
             }
-
-            ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
-               OAuthDefaults.AuthenticationType);
-            ClaimsIdentity cookiesIdentity = await user.GenerateUserIdentityAsync(userManager,
-                CookieAuthenticationDefaults.AuthenticationType);
-
-            AuthenticationProperties properties = CreateProperties(user.UserName);
-            AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
-            context.Validated(ticket);
-            context.Request.Context.Authentication.SignIn(cookiesIdentity);
+            catch (Exception ex)
+            {                
+                new EventsAccess().LogException(ex);
+            }
         }
 
         public override Task TokenEndpoint(OAuthTokenEndpointContext context)

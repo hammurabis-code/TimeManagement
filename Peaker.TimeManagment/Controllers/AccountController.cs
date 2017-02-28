@@ -23,7 +23,7 @@ using Peaker.TimeManagment.Models.Account;
 namespace Peaker.TimeManagment.Controllers
 {
     [Authorize]
-    [RoutePrefix("api/Account")]    
+    [RoutePrefix("api/Account")]
     public class AccountController : BaseApiController
     {
         private const string LocalLoginProvider = "Local";
@@ -34,7 +34,7 @@ namespace Peaker.TimeManagment.Controllers
         {
             AccessTokenFormat = accessTokenFormat;
         }
-               
+
         public ISecureDataFormat<AuthenticationTicket> AccessTokenFormat { get; private set; }
 
         //[AllowAnonymous]
@@ -115,7 +115,7 @@ namespace Peaker.TimeManagment.Controllers
 
         // GET api/Account/UserInfo
         //[HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
-       
+
         [Route("UserInfo")]
         public IHttpActionResult GetUserInfo()
         {
@@ -125,13 +125,14 @@ namespace Peaker.TimeManagment.Controllers
                 try
                 {
                     return Ok(new UserAccess().FillUserInfo(user, AppRoleManager));
-                } 
+                }
                 catch (Exception ex)
                 {
-                   return BadRequest("An error occured retrieving this users details.");
+                    new EventsAccess().LogException(ex);
+                    return BadRequest("An error occured retrieving this users details.");
                 }
             }
-            return BadRequest("User not found.");            
+            return BadRequest("User not found.");
         }
 
         [Route("IsInRole")]
@@ -141,11 +142,12 @@ namespace Peaker.TimeManagment.Controllers
             if (User.Identity != null && user != null)
             {
                 try
-                {                    
+                {
                     return Ok(AppUserManager.GetRoles(user.Id).Contains(roleName));
                 }
                 catch (Exception ex)
                 {
+                    new EventsAccess().LogException(ex);
                     return BadRequest("An error occured retrieving this users role info.");
                 }
             }
@@ -165,7 +167,8 @@ namespace Peaker.TimeManagment.Controllers
         }
 
         [HttpGet]
-        public async Task<bool> IsAuthenticated() {
+        public async Task<bool> IsAuthenticated()
+        {
             IdentityUser user = await AppUserManager.FindByIdAsync(User.Identity.GetUserId());
             if (User.Identity != null && user != null)
             {
@@ -233,7 +236,7 @@ namespace Peaker.TimeManagment.Controllers
 
             IdentityResult result = await AppUserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword,
                 model.NewPassword);
-            
+
             if (!result.Succeeded)
             {
                 return GetErrorResult(result);
@@ -366,9 +369,9 @@ namespace Peaker.TimeManagment.Controllers
             if (hasRegistered)
             {
                 Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-                
-                 ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(AppUserManager,
-                    OAuthDefaults.AuthenticationType);
+
+                ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(AppUserManager,
+                   OAuthDefaults.AuthenticationType);
                 ClaimsIdentity cookieIdentity = await user.GenerateUserIdentityAsync(AppUserManager,
                     CookieAuthenticationDefaults.AuthenticationType);
 
@@ -476,7 +479,7 @@ namespace Peaker.TimeManagment.Controllers
             result = await AppUserManager.AddLoginAsync(user.Id, info.Login);
             if (!result.Succeeded)
             {
-                return GetErrorResult(result); 
+                return GetErrorResult(result);
             }
             return Ok();
         }
@@ -485,9 +488,10 @@ namespace Peaker.TimeManagment.Controllers
         {
             if (disposing && AppUserManager != null)
             {
-                AppUserManager.Dispose();               
+                AppUserManager.Dispose();
             }
-            if (disposing && AppRoleManager != null) {
+            if (disposing && AppRoleManager != null)
+            {
                 AppRoleManager.Dispose();
             }
 
@@ -499,7 +503,7 @@ namespace Peaker.TimeManagment.Controllers
         private IAuthenticationManager Authentication
         {
             get { return Request.GetOwinContext().Authentication; }
-        }        
+        }
 
         private class ExternalLoginData
         {

@@ -14,9 +14,6 @@
         </div>
         <div repeat.for="timeEntry of timeEntries" class="form-group">
             <div class="timeEntry">
-                <div>
-                    <delete msg="Are you sure you want to remove this entry?" action.call="$parent.delete(timeEntry)"></delete>
-                </div>
                 <div class="input-group">
                     <span class="input-group-addon" id="entryHours">Hours</span>
                     <input class="form-control ${timeEntry.hoursError ? 'alert-danger' : ''}" placeholder="Hours" aria-describedby="entryHours"

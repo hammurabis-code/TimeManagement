@@ -23,6 +23,7 @@ namespace Peaker.TimeManagment.Models
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
+            System.Data.Entity.Database.SetInitializer<ApplicationDbContext>(null);
         }
         
         public static ApplicationDbContext Create()

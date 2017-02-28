@@ -108,7 +108,7 @@ namespace Peaker.TimeManagment.Data
 
         public List<UserListItem> GetAllUsers() {
             string query = @"SELECT U.Email, UD.AccountingName, UD.Id AS UserDetailId
-                            FROM aspnetusers U 
+                            FROM AspNetUsers U 
                             INNER JOIN userdetail UD ON U.Id = UD.UserId 
                             WHERE UD.Id <> -1
                             ORDER BY UD.AccountingName;";

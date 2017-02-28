@@ -31,7 +31,8 @@ export class AccountService {
                             resolve(loginSuccess);
                         });
                 }).catch(err => {
-                    console.log("Error requesting login: " + err);
+                    console.log("Error requesting login: ");
+                    console.log(err);
                     resolve(false);
                 });
         });

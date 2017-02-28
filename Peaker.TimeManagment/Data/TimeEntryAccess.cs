@@ -94,13 +94,21 @@ namespace Peaker.TimeManagment.Data
             }
             catch (Exception ex)
             {
+                new EventsAccess().LogException(ex);
                 return null;
             }
         }
 
         public List<PayrollExport> GetEntriesForPayrollExport(EntryFilter filter, IPrincipal user) {
-            var filterParams = new Dictionary<string, object>();           
-            return Retrieve(PayrollExport.PayrollExportFactory, BuildPayrollQuery(filter, filterParams), filterParams, false).ToList();
+            var filterParams = new Dictionary<string, object>();
+            try
+            {
+                return Retrieve(PayrollExport.PayrollExportFactory, BuildPayrollQuery(filter, filterParams), filterParams, false).ToList();
+            }
+            catch (Exception ex) {
+                new EventsAccess().LogException(ex);
+                throw;
+            }
         }
        
 
@@ -112,7 +120,7 @@ namespace Peaker.TimeManagment.Data
                             ON U.Id = T.UserDetailId
                         INNER JOIN workcode W
                             ON T.WorkCodeId = W.Id
-                        INNER JOIN timeentryhours H ON t.Id = H.TimeEntryId
+                        INNER JOIN timeentryhours H ON T.Id = H.TimeEntryId
                         WHERE 1 = 1 ");
             if (filter.FilterStartDate != null)
             {
@@ -190,38 +198,40 @@ namespace Peaker.TimeManagment.Data
         }
 
         public void AddUpdateEntry(TimeEntryView entryToSave, string userId)
-        {
-            var eventType = EventTypes.Default;
-            var peakerEvent = new PeakerEvent()
+        {try
             {
-                TimeStamp = DateTime.Now,
-                UserId = userId
-            };
-            if (entryToSave.id <= 0)
-            {
-                eventType = EventTypes.Created;
-                var entryId = RetrieveSingleConvertible<int>(Constants.InsertTimeEntryProcedure, entryToSave.GetInsertParameters());
-                if (entryId != int.MinValue)
+                var eventType = EventTypes.Default;
+                var peakerEvent = new PeakerEvent()
                 {
-                    entryToSave.id = entryId;
+                    TimeStamp = DateTime.Now,
+                    UserId = userId
+                };
+                if (entryToSave.id <= 0)
+                {
+                    eventType = EventTypes.Created;
+                    var entryId = RetrieveSingleConvertible<int>(Constants.InsertTimeEntryProcedure, entryToSave.GetInsertParameters());
+                    if (entryId != int.MinValue)
+                    {
+                        entryToSave.id = entryId;
+                    }
                 }
+                else
+                {
+                    eventType = EventTypes.Updated;
+                    ExecuteNonQuery(Constants.UpdateTimeEntryProcedure, entryToSave.GetUpdateParameters());
+                }
+                peakerEvent.EventType = eventType;
+                peakerEvent.ObjectId = entryToSave.id;
+                peakerEvent.Data = entryToSave;
+                ProcessHours(entryToSave, GetIsShiftWorker(entryToSave.userDetailId));
+                new EventsAccess().SaveEvent(peakerEvent);
             }
-            else
-            {
-                eventType = EventTypes.Updated;
-                ExecuteNonQuery(Constants.UpdateTimeEntryProcedure, entryToSave.GetUpdateParameters());
+            catch (Exception ex) {
+                new EventsAccess().LogException(ex);
+                throw;
             }
-            peakerEvent.EventType = eventType;
-            peakerEvent.ObjectId = entryToSave.id;
-            peakerEvent.Data = entryToSave;
-            ProcessHours(entryToSave, GetIsShiftWorker(entryToSave.userDetailId));
-            SaveEvent(peakerEvent);
         }
-
-        private void SaveEvent(PeakerEvent peakerEvent)
-        {
-            ExecuteNonQuery(Constants.InsertPeakerEventProcedure, peakerEvent.GetInsertParameters());
-        }       
+        
 
         internal List<RestrictedJobnumber> GetRestrictedJobnumbers()
         {

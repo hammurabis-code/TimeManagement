@@ -6,6 +6,7 @@
         Created = 1,
         Updated = 2,
         Deleted = 3,
-        Login = 4
+        Login = 4,
+        Exception = 5
     }
 }

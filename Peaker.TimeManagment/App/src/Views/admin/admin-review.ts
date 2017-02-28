@@ -26,19 +26,19 @@ export class AdminReview {
             this.appState.returnRoute = this.returnRoute;
             this.router.navigate('login');
         }
-        if (this.appState.filterCriteria == undefined) {
+        if (this.appState.adminFilterCriteria == undefined) {
             let startDate = new Date(+new Date() - 12096e5);
             this.filterCriteria = new EntryFilter(null, null, true, null, moment.utc(startDate).toDate(), null, null, null);
         }
         else {
-            this.filterCriteria = this.appState.filterCriteria;
+            this.filterCriteria = this.appState.adminFilterCriteria;
             this.getEntries();
         }
     }
 
     editEntry(entry: TimeEntry) {
         this.appState.editEntry = entry;
-        this.appState.filterCriteria = this.filterCriteria;
+        this.appState.adminFilterCriteria = this.filterCriteria;
         this.appState.returnRoute = this.returnRoute;
         this.router.navigate('edit');
     }

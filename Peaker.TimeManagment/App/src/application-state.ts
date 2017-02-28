@@ -13,8 +13,10 @@ export class ApplicationState {
     isLocal: boolean;
     restrictedJobnumbers: string[];
     editEntry: TimeEntry;
+    editType: string;
     isAdmin: boolean = false;
-    filterCriteria: EntryFilter;
+    reviewFilterCriteria: EntryFilter;
+    adminFilterCriteria: EntryFilter;
 
     constructor(private accountService: AccountService, private timeEntryService: TimeEntryService,
         private config: RouterConfiguration, private router: Router) {
@@ -24,6 +26,7 @@ export class ApplicationState {
         this.loggedIn = false;
         this.restrictedJobnumbers = [];
         this.editEntry = null;
+        this.editType = '';
         var thisDomain = location.hostname.split('.')[1];
         if (thisDomain == 'timemanagement') {
             this.isLocal = true;
