@@ -29,6 +29,7 @@ export class profile {
         this.showCodeSelection = true;
         this.codeSelectionIsDirty = false;
         this.profileIsDirty = false;
+        toastr.options.positionClass = 'toast-bottom-right';
     }
 
     activate() {

@@ -2,6 +2,7 @@ import { ChangePassword } from '../models/models';
 import { AccountService } from '../Services/services';
 import { Router } from 'aurelia-router';
 import { autoinject } from 'aurelia-dependency-injection';
+import * as toastr from 'toastr';
 
 @autoinject
 export class ChangePasswordView {
@@ -13,6 +14,7 @@ export class ChangePasswordView {
 
     constructor(private accountService: AccountService, private router: Router) {
         this.changePasswordModel = new ChangePassword();
+        toastr.options.positionClass = 'toast-bottom-right';
     }
 
     submit() {

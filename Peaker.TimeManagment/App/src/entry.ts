@@ -18,6 +18,7 @@ export class entry {
         this.workCodes = new Array<UserWorkCode>();
         this.timeEntries = new Array<TimeEntry>();
         this.entryDate = new Date();
+        toastr.options.positionClass = 'toast-bottom-right';
     }
 
     activate(params) {

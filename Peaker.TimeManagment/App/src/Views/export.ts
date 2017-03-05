@@ -16,6 +16,7 @@ export class PayrollExport {
     entriesFound: boolean = false;
 
     constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService, private adminService: AdminService, private fileService: FileService, private router: Router) {
+        toastr.options.positionClass = 'toast-bottom-right';
     }
 
     activate() {

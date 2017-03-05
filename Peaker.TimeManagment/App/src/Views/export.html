@@ -7,8 +7,8 @@
         <div if.bind='appState.isLocal'>
             <action-confirm msg="Are you sure? This will remove the exported flag from ALL Navision entries." action.call="clearNavisionExport()"
                 button-class="btn-warning" button-name="Clear Navision Export Flag"></action-confirm>
-            <action-confirm msg="Are you sure? This will remove the exported flag from ALL Payroll entries." action.call="clearPayrollExport()"
-                button-class="btn-warning" button-name="Clear Payroll Export Flag"></action-confirm>
+                <action-confirm msg="Are you sure? This will remove the exported flag from ALL Payroll entries." action.call="clearPayrollExport()"
+                    button-class="btn-warning" button-name="Clear Payroll Export Flag"></action-confirm>
         </div>
         <div class='actions'>
             <div class="form-inline">
@@ -37,7 +37,7 @@
                 <div repeat.for="timeEntry of timeEntries">
                     <div class="entryContainer">
                         <div class='reviewEntry'>
-                            <label>${timeEntry.entryDate | date}, ${timeEntry.jobnumber}, ${timeEntry.workCode.BaseCode} - ${timeEntry.workCode.Description}, ${timeEntry.userAccountingName}</label><span>${timeEntry.userHours} Hours</span>
+                            <label>${timeEntry.entryDate | date}, ${timeEntry.jobnumber}, ${timeEntry.workCode.baseCode} - ${timeEntry.workCode.description}, ${timeEntry.userAccountingName}</label><span>${timeEntry.userHours} Hours</span>
                         </div>
                     </div>
                 </div>

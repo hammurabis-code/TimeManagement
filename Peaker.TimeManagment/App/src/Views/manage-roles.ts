@@ -11,6 +11,7 @@ export class ManageRoles {
 
     constructor(private adminService: AdminService) {
         this.selectedRole = '';
+        toastr.options.positionClass = 'toast-bottom-right';
     }
 
     manageAdmin() {

@@ -3,6 +3,7 @@ import { autoinject, bindable } from 'aurelia-framework';
 import { TimeEntry, UserWorkCode, EntryFilter } from './Models/models';
 import { ApplicationState } from './application-state';
 import { TimeEntryService } from './Services/time-entry-service'
+import * as toastr from 'toastr';
 
 @autoinject
 export class editEntries {
@@ -10,23 +11,26 @@ export class editEntries {
     @bindable timeEntries: TimeEntry[];
     entryDate: Date;
     total: number = 0;
-    workCodes: UserWorkCode[];
+    @bindable workCodes: UserWorkCode[];
     returnRoute: string = 'edit';
     originalHours: number;
+    originalDate: Date;
 
     constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService, private router: Router) {
         this.heading = 'Edit Time';
         this.workCodes = new Array<UserWorkCode>();
         this.timeEntries = new Array<TimeEntry>();
+        toastr.options.positionClass = 'toast-bottom-right';
+
+    }
+
+    activate(params) {
         if (this.appState.currentUser !== null &&
             this.appState.currentUser !== undefined) {
             this.appState.currentUser.UserWorkCodes.forEach(element => {
                 this.workCodes.push(element);
             });
         }
-    }
-
-    activate(params) {
         if (this.appState.currentUser == null) {
             this.appState.returnRoute = this.returnRoute;
             this.router.navigate('login');
@@ -37,10 +41,12 @@ export class editEntries {
         this.timeEntries.push(this.appState.editEntry);
         this.workCodes.forEach(code => {
             if (code.workCodeId === this.timeEntries[0].workCode.workCodeId) {
+                code.isViewable = true;
                 this.timeEntries[0].workCode = code;
             }
         });
         this.entryDate = this.timeEntries[0].entryDate;
+        this.originalDate = this.entryDate;
         this.appState.editEntry = null;
         this.originalHours = this.timeEntries[0].userHours;
 
@@ -51,7 +57,9 @@ export class editEntries {
         return this.timeEntryService.getTotalHours(new EntryFilter(this.appState.currentUser.UserDetailId, null, null, null, this.entryDate, this.entryDate, null))
             .then(hours => {
                 let validationTotal: number = hours;
-                validationTotal -= this.originalHours;
+                if (this.originalDate === this.entryDate) {
+                    validationTotal -= this.originalHours;
+                }
                 validationTotal += this.timeEntries[0].userHours;
                 if (validationTotal > 24) {
                     result = false;

@@ -17,6 +17,7 @@ export class CreateUser {
 
     constructor(private appState: ApplicationState, private accountService: AccountService, private router: Router) {
         this.setupForm();
+        toastr.options.positionClass = 'toast-bottom-right';
     }
 
     create() {

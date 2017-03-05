@@ -4,4 +4,5 @@ export class UserWorkCode {
     description: string;
     isJobNumberRequired: boolean;
     isSelected: boolean;
+    isViewable: boolean;
 }

@@ -18,10 +18,10 @@ export class AdminView {
     returnRoute: string = 'admin';
 
     constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService, private adminService: AdminService, private fileService: FileService, private router: Router) {
-
         this.showExportText = "Export Jobs";
         this.showRolesText = "User Roles";
         this.showCodesText = "Manage Codes";
+        toastr.options.positionClass = 'toast-bottom-right';
     }
 
     activate() {
