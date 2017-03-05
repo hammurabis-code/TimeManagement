@@ -5,6 +5,7 @@ import { TimeEntry, EntryFilter } from '../Models/Models';
 import { ApplicationState } from '../application-state';
 import { FileService, TimeEntryService } from '../Services/Services';
 import * as moment from 'moment';
+import * as toastr from 'toastr';
 
 @autoinject
 export class reviewEntries {
@@ -17,6 +18,7 @@ export class reviewEntries {
     returnRoute: string = 'review';
     constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService, private router: Router, private fileService: FileService) {
         this.heading = 'Review Time';
+        toastr.options.positionClass = 'toast-bottom-right';
     }
 
     activate() {

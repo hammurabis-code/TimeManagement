@@ -29,6 +29,7 @@ export class profile {
         this.showCodeSelection = true;
         this.codeSelectionIsDirty = false;
         this.profileIsDirty = false;
+        toastr.options.positionClass = 'toast-bottom-right';
     }
 
     activate() {
@@ -87,6 +88,7 @@ export class profile {
         this.accountService.updateUserProfile(this.currentUser)
             .then(response => {
                 if (response) {
+                    this.currentUser.sortUserWorkCodes();
                     this.appState.currentUser = this.currentUser;
                     toastr.success("Profile Updated.");
                 }

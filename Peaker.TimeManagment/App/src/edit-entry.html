@@ -1,5 +1,4 @@
 <template>
-    <require from="./custom-elements/delete"></require>
     <require from="./custom-attributes/datepicker"></require>
     <require from="./custom-attributes/jobnumberinput"></require>
     <require from="./value-converters/date"></require>
@@ -23,8 +22,8 @@
                     <span class="input-group-addon" id="workCode">Code</span>
                     <select class="form-control ${timeEntry.workCodeError ? 'alert-danger' : ''}" id="selectWorkCode" value.bind="timeEntry.workCode"
                         aria-describedby="workCode">
-                        <option repeat.for="workcode of workCodes" if.bind='workcode.isSelected' model.bind="workcode" >${workcode.baseCode} - ${workcode.description}</option>
-                    </select>
+                        <option repeat.for="workcode of workCodes" if.bind='workcode.isSelected || workcode.isViewable' model.bind="workcode">${workcode.baseCode} - ${workcode.description}</option>
+                        </select>
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon" id="jobNumber">Job Number - J00</span>
