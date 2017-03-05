@@ -65,6 +65,7 @@ export class AccountService {
                         .then(data => {
                             let user = new User(data.UserDetailId, data.UserId, data.Username, data.AccountingName,
                                 data.IsSecondShift, data.DefaultJobEntries, data.UserDepartments, data.UserWorkCodes, data.UsedJobNumbers, data.UserRoles);
+                            user.sortUserWorkCodes();
                             resolve(user);
                         })
                 }).catch(err => {

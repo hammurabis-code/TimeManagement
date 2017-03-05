@@ -64,7 +64,7 @@
                 <ul class='clean-list'>
                     <li repeat.for="workCode of currentUser.UserWorkCodes">
                         <div class="inline form=content content-right">
-                            <input type="checkbox" checked.bind="workCode.IsSelected" value.one-way="workCode.Id" />
+                            <input type="checkbox" checked.bind="workCode.isSelected" value.one-way="workCode.Id" />
                         </div>
                         <div class="inline content-left">
                             <label>${workCode.baseCode} - ${workCode.description}</label>

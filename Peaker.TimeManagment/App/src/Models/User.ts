@@ -42,4 +42,17 @@ export class User {
         }
         return false;
     }
+
+    sortUserWorkCodes(){
+        this.UserWorkCodes = 
+            this.UserWorkCodes.sort(function(a, b){
+                var nameA=a.baseCode.toLowerCase(), nameB=b.baseCode.toLowerCase();
+                if (nameA < nameB) //sort string ascending
+                return -1;
+                if (nameA > nameB)
+                return 1;
+                return 0; //default return value (no sorting)
+                });
+
+    }
 }

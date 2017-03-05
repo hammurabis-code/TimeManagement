@@ -87,6 +87,7 @@ export class profile {
         this.accountService.updateUserProfile(this.currentUser)
             .then(response => {
                 if (response) {
+                    this.currentUser.sortUserWorkCodes();
                     this.appState.currentUser = this.currentUser;
                     toastr.success("Profile Updated.");
                 }
