@@ -1,9 +1,9 @@
 import { bindable } from 'aurelia-framework';
 
 export class Loading {
-    @bindable isLoading: boolean;
+    @bindable loading: boolean;
 
     constructor() {
-        this.isLoading = false;
+        this.loading = false;
     }
 }
