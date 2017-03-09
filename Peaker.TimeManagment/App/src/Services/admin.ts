@@ -1,11 +1,10 @@
-import { Router } from 'aurelia-router';
 import { HttpClient, json } from 'aurelia-fetch-client';
 import { autoinject } from 'aurelia-dependency-injection';
 import { TimeEntry, Constants, EntryFilter, Helper, UserInRole, UserListItem } from '../Models/Models';
 
 @autoinject
 export class AdminService {
-    constructor(private client: HttpClient, private router: Router) {
+    constructor(private client: HttpClient) {
         client.configure(config => {
             config.useStandardConfiguration();
         });
@@ -64,11 +63,49 @@ export class AdminService {
             })
     }
 
+    clearNavisionFlagByDate(entryFilter: EntryFilter): Promise<boolean> {
+        return this.client.fetch(Constants.adminApi + 'ClearNavisionExportedFlagByDate',
+            {
+                body: JSON.stringify(entryFilter),
+                headers: {
+                    'Authorization': Helper.getAuthHeader(),
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                },
+                method: 'POST'
+            })
+            .then(resp => {
+                if (resp.status == 200) {
+                    return true;
+                }
+                return false;
+            })
+    }
+
     clearPayrollExportFlag(): Promise<boolean> {
         return this.client.fetch(Constants.adminApi + 'ClearPayrollExportedFlag',
             {
                 method: 'get',
                 headers: { 'Authorization': Helper.getAuthHeader() }
+            })
+            .then(resp => {
+                if (resp.status == 200) {
+                    return true;
+                }
+                return false;
+            })
+    }
+
+    clearPayrollExportFlagByDate(entryFilter: EntryFilter): Promise<boolean> {
+        return this.client.fetch(Constants.adminApi + 'ClearPayrollExportedFlagByDate',
+            {
+                body: JSON.stringify(entryFilter),
+                headers: {
+                    'Authorization': Helper.getAuthHeader(),
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                },
+                method: 'POST'
             })
             .then(resp => {
                 if (resp.status == 200) {

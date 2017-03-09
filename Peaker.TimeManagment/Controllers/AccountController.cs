@@ -120,7 +120,7 @@ namespace Peaker.TimeManagment.Controllers
         public IHttpActionResult GetUserInfo()
         {
             var user = AppUserManager.FindById(User.Identity.GetUserId());
-            if (User.Identity != null && user != null)
+            if (user != null && User.Identity != null)
             {
                 try
                 {
@@ -139,7 +139,7 @@ namespace Peaker.TimeManagment.Controllers
         public IHttpActionResult GetUserIsInRole([FromBody] string roleName)
         {
             var user = AppUserManager.FindById(User.Identity.GetUserId());
-            if (User.Identity != null && user != null)
+            if (user != null && User.Identity != null)
             {
                 try
                 {
@@ -158,7 +158,7 @@ namespace Peaker.TimeManagment.Controllers
         public IHttpActionResult UpdateProfile(UserInfoViewModel userInfo)
         {
             var user = AppUserManager.FindById(User.Identity.GetUserId());
-            if (User.Identity != null && user != null)
+            if (user != null && User.Identity != null)
             {
                 new UserAccess().UpdateUserInfo(userInfo);
                 return Ok();
@@ -170,7 +170,7 @@ namespace Peaker.TimeManagment.Controllers
         public async Task<bool> IsAuthenticated()
         {
             IdentityUser user = await AppUserManager.FindByIdAsync(User.Identity.GetUserId());
-            if (User.Identity != null && user != null)
+            if (user != null && User.Identity != null)
             {
                 return true;
             }

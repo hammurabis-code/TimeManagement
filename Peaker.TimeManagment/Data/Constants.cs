@@ -36,7 +36,8 @@
         public const string UpdateWorkCodeProcedure = "updateworkcode";
         public const string UpdateTimeEntryClearNavisionExportProcedure = "UpdateTimeEntryClearNavisionExport";
         public const string UpdateTimeEntryClearPayrollExportProcedure = "UpdateTimeEntryClearPayrollExport";
-
-
+        public const string UpdateTimeentryClearNavisionBetweenDates = "updatetimeentry_clearnavisionbetweendates";
+        public const string UpdateTimeentryClearPayrollBetweenDates = "updatetimeentry_clearpayrollbetweendates";
+       
     }
 }

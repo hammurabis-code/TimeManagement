@@ -20,8 +20,10 @@ export class EntryFilterForm {
     @bindable noEntriesFound: boolean = false;
     @bindable userFilterList: UserListItem[] = [];
     @bindable selectedUser: UserListItem;
+    @bindable showIsExported: boolean = true;
+    @bindable appState: ApplicationState;
 
-    constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService, private adminService: AdminService) {
+    constructor(private timeEntryService: TimeEntryService, private adminService: AdminService) {
         if (this.exportTypes.length == 0) {
             this.exportTypes.push(undefined);
             this.exportTypes.push(new ExportType(1, 'Navision'));
@@ -48,6 +50,7 @@ export class EntryFilterForm {
     }
 
     getEntries() {
+        this.appState.isLoading = true;
         if (this.exportType != undefined) {
             if (this.exportType.Type == 1) {
                 this.filterCriteria.ExportedToNavision = this.exportTypeFlag;
@@ -75,6 +78,9 @@ export class EntryFilterForm {
                 else {
                     this.noEntriesFound = true;
                 }
-            });
+                this.appState.isLoading = false;
+            })
+            .catch(err => { this.appState.isLoading = false; });
+
     }
 }

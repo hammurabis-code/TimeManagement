@@ -45,7 +45,8 @@ namespace Peaker.TimeManagment.Data
                 {
                     sb.Append($"WHERE UserDetailId <> -1 ");
                 }
-                else {
+                else
+                {
                     sb.Append($"WHERE UserDetailId = {filter.CurrentUserDetailId} ");
                 }
             }
@@ -64,15 +65,18 @@ namespace Peaker.TimeManagment.Data
                 var endDate = filter.FilterEndDate.Value.Date;
                 sb.Append($"AND EntryDate <= '{endDate.ToString("yyyy-MM-dd")}' ");
             }
-            if (filter.RequireJobCode != null && (bool)filter.RequireJobCode) {
+            if (filter.RequireJobCode != null && (bool)filter.RequireJobCode)
+            {
                 sb.Append($"AND Jobnumber <> '' ");
             }
-            if (filter.ExportedToNavision != null) {
+            if (filter.ExportedToNavision != null)
+            {
                 if ((bool)filter.ExportedToNavision)
                 {
                     sb.Append("AND ExportedToNavision = 1 ");
                 }
-                else {
+                else
+                {
                     sb.Append("AND ExportedToNavision = 0 ");
                 }
             }
@@ -99,20 +103,23 @@ namespace Peaker.TimeManagment.Data
             }
         }
 
-        public List<PayrollExport> GetEntriesForPayrollExport(EntryFilter filter, IPrincipal user) {
+        public List<PayrollExport> GetEntriesForPayrollExport(EntryFilter filter, IPrincipal user)
+        {
             var filterParams = new Dictionary<string, object>();
             try
             {
                 return Retrieve(PayrollExport.PayrollExportFactory, BuildPayrollQuery(filter, filterParams), filterParams, false).ToList();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 new EventsAccess().LogException(ex);
                 throw;
             }
         }
-       
 
-        private string BuildPayrollQuery(EntryFilter filter, Dictionary<string, object> filterParams) {
+
+        private string BuildPayrollQuery(EntryFilter filter, Dictionary<string, object> filterParams)
+        {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(@"SELECT U.AccountingName, T.Id AS TimeEntryId, T.UserDetailId, T.EntryDate, W.BaseCode, W.Description, T.JobNumber, W.sub, Sum(H.Duration) AS Hours
                         FROM userdetail U
@@ -132,7 +139,8 @@ namespace Peaker.TimeManagment.Data
                 sb.AppendLine("AND T.EntryDate <= ?p_endDate ");
                 filterParams.Add("?p_endDate", filter.FilterEndDate.Value.Date);
             }
-            if (filter.CurrentUserDetailId > 0) {
+            if (filter.CurrentUserDetailId > 0)
+            {
                 sb.AppendLine("AND U.Id = ?p_userDetailId ");
                 filterParams.Add("?p_userDetailId", filter.CurrentUserDetailId);
             }
@@ -161,7 +169,7 @@ namespace Peaker.TimeManagment.Data
                 {
                     sb.AppendLine("AND ExportedToPayroll = 0 ");
                 }
-            }            
+            }
             sb.AppendLine(@"GROUP BY U.AccountingName,TimeEntryId, T.UserDetailId, T.EntryDate, W.BaseCode, W.Description, W.sub;");
 
             return sb.ToString();
@@ -174,7 +182,7 @@ namespace Peaker.TimeManagment.Data
             var finalEntries = new List<TimeEntryView>();
             foreach (var entry in entries)
             {
-                var accountingName = RetrieveSingleConvertible<string>($@"SELECT AccountingName FROM peakertimemanagement.userdetail WHERE Id = {entry.UserDetailId};", null, false); 
+                var accountingName = RetrieveSingleConvertible<string>($@"SELECT AccountingName FROM peakertimemanagement.userdetail WHERE Id = {entry.UserDetailId};", null, false);
                 entry.Hours = Retrieve(TimeEntryHours.TimeEntryHoursFactory, Constants.GetHoursForTimeEntryProcedure, entry.GetIdParameters()).ToList();
                 var newEntry = new TimeEntryView(entry, accountingName);
                 newEntry.hours = entry.Hours;
@@ -185,7 +193,7 @@ namespace Peaker.TimeManagment.Data
             }
             return finalEntries;
         }
-               
+
 
         public void SetEntryExportedToNavision(TimeEntryView entry)
         {
@@ -198,7 +206,8 @@ namespace Peaker.TimeManagment.Data
         }
 
         public void AddUpdateEntry(TimeEntryView entryToSave, string userId)
-        {try
+        {
+            try
             {
                 var eventType = EventTypes.Default;
                 var peakerEvent = new PeakerEvent()
@@ -226,12 +235,13 @@ namespace Peaker.TimeManagment.Data
                 ProcessHours(entryToSave, GetIsShiftWorker(entryToSave.userDetailId));
                 new EventsAccess().SaveEvent(peakerEvent);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 new EventsAccess().LogException(ex);
                 throw;
             }
         }
-        
+
 
         internal List<RestrictedJobnumber> GetRestrictedJobnumbers()
         {
@@ -270,7 +280,7 @@ namespace Peaker.TimeManagment.Data
                 Duration = entryToSave.userHours,
                 HoursType = HourTypes.Regular
             });
-            
+
             var entryDay = entryToSave.entryDate.DayOfWeek;
 
             if (entryDay == DayOfWeek.Sunday)
@@ -288,11 +298,12 @@ namespace Peaker.TimeManagment.Data
             else
             {
                 finalHours = ProcessHoursForDay(hourEntries, threshold, HourTypes.Regular, HourTypes.Overtime);
-            }            
+            }
             UpdateTimeEntryHours(finalHours);
         }
 
-        private List<TimeEntryHours> ProcessHoursForDay(List<TimeEntryHours> hourEntries, decimal threshold, HourTypes underThresholdType, HourTypes overThresholdType) {
+        private List<TimeEntryHours> ProcessHoursForDay(List<TimeEntryHours> hourEntries, decimal threshold, HourTypes underThresholdType, HourTypes overThresholdType)
+        {
             decimal hours = 0;
             var finalHours = new List<TimeEntryHours>();
             foreach (var hourEntry in hourEntries)
@@ -319,13 +330,50 @@ namespace Peaker.TimeManagment.Data
             return finalHours;
         }
 
-        public void ClearNavisionFlag() {
+        public void ClearNavisionFlag()
+        {
             ExecuteNonQuery(Constants.UpdateTimeEntryClearNavisionExportProcedure, null);
         }
 
         public void ClearPayrollExportFlag()
         {
             ExecuteNonQuery(Constants.UpdateTimeEntryClearPayrollExportProcedure, null);
+        }
+
+        public void ClearNavisionFlag(EntryFilter filter, ApplicationUser user)
+        {
+            var paramDictionary = new Dictionary<string, object>
+            {
+                { "p_beginDate", filter.FilterStartDate },
+                { "p_endDate", filter.FilterEndDate }
+            };
+            ExecuteNonQuery(Constants.UpdateTimeentryClearNavisionBetweenDates, paramDictionary);
+            var peakerEvent = new PeakerEvent()
+            {
+                TimeStamp = DateTime.Now,
+                UserId = user.Id,
+                EventType = EventTypes.DataChange,
+                Data = $"{user.UserName} cleared Navision export flag between {filter.FilterStartDate} and {filter.FilterEndDate}."
+            };
+            new EventsAccess().SaveEvent(peakerEvent);
+        }
+
+        public void ClearPayrollExportFlag(EntryFilter filter, ApplicationUser user)
+        {
+            var paramDictionary = new Dictionary<string, object>
+            {
+                { "p_beginDate", filter.FilterStartDate },
+                { "p_endDate", filter.FilterEndDate }
+            };
+            ExecuteNonQuery(Constants.UpdateTimeentryClearPayrollBetweenDates, paramDictionary);
+            var peakerEvent = new PeakerEvent()
+            {
+                TimeStamp = DateTime.Now,
+                UserId = user.Id,
+                EventType = EventTypes.DataChange,
+                Data = $"{user.UserName} cleared Payroll export flag between {filter.FilterStartDate} and {filter.FilterEndDate}."
+            };
+            new EventsAccess().SaveEvent(peakerEvent);
         }
 
         private void UpdateTimeEntryHours(List<TimeEntryHours> finalHours)

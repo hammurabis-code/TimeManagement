@@ -3,6 +3,7 @@ import { AccountService, TimeEntryService } from './Services/services';
 import { EntryFilter, User, TimeEntry, WorkCode } from './Models/Models';
 import { singleton } from 'aurelia-framework'
 import { Router, RouterConfiguration } from 'aurelia-router';
+import { bindable } from 'aurelia-framework';
 
 @autoinject
 export class ApplicationState {
@@ -17,6 +18,7 @@ export class ApplicationState {
     isAdmin: boolean = false;
     reviewFilterCriteria: EntryFilter;
     adminFilterCriteria: EntryFilter;
+    @bindable isLoading: boolean;
 
     constructor(private accountService: AccountService, private timeEntryService: TimeEntryService,
         private config: RouterConfiguration, private router: Router) {
@@ -34,6 +36,7 @@ export class ApplicationState {
         else {
             this.isLocal = false;
         }
+        this.isLoading = false;
     }
 
     get authenticated(): Promise<boolean> {

@@ -1,4 +1,6 @@
 <template>
+	<require from="./Views/partials/loading"></require>
+	<loading is-loading.bind="appState.isLoading"></loading>
 	<div class="container">
 		<h2>${heading}</h2>
 	</div>

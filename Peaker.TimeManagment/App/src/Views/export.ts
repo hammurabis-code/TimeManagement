@@ -47,6 +47,7 @@ export class PayrollExport {
     }
 
     getEntries() {
+        this.appState.isLoading = true;
         if (this.exportType != undefined) {
             if (this.exportType.Type == 1) {
                 this.filterCriteria.FilterStartDate = null;
@@ -54,9 +55,13 @@ export class PayrollExport {
             }
             this.retrieveEntries();
         }
+        else {
+            this.appState.isLoading = false;
+        }
     }
 
     getAllPayrollEntries() {
+        this.appState.isLoading = true;
         this.filterCriteria.ExportedToNavision = null;
         this.filterCriteria.ExportedToPayroll = false;
         this.filterCriteria.FilterStartDate = null;
@@ -74,10 +79,12 @@ export class PayrollExport {
                 else {
                     this.entriesFound = false;
                 }
+                this.appState.isLoading = false;
             });
     }
 
     clearPayrollExport() {
+        this.appState.isLoading = true;
         this.adminService.clearPayrollExportFlag()
             .then(result => {
                 if (result) {
@@ -86,10 +93,13 @@ export class PayrollExport {
                 else {
                     toastr.error('Something went wrong during the requested operation.', 'And error occured.');
                 }
-            });
+                this.appState.isLoading = false;
+            })
+            .catch(err => { this.appState.isLoading = false; });
     }
 
     clearNavisionExport() {
+        this.appState.isLoading = true;
         this.adminService.clearNavisionFlag()
             .then(result => {
                 if (result) {
@@ -98,17 +108,21 @@ export class PayrollExport {
                 else {
                     toastr.error('Something went wrong during the requested operation.', 'And error occured.');
                 }
-            });
+                this.appState.isLoading = false;
+            })
+            .catch(err => { this.appState.isLoading = false; });;
     }
 
 
     exportEntries() {
+        this.appState.isLoading = true;
         if (this.exportType != undefined) {
             if (this.exportType.Type == 1) {
                 this.fileService.exportEntriesForNavision(this.filterCriteria)
                     .then(result => {
                         this.timeEntries.length = 0;
                         this.timeEntries = undefined;
+                        this.appState.isLoading = false;
                     });
             }
             else {
@@ -116,11 +130,13 @@ export class PayrollExport {
                     .then(result => {
                         this.timeEntries.length = 0;
                         this.timeEntries = undefined;
+                        this.appState.isLoading = false;
                     });
             }
         }
         else {
-            toastr.error('Please select an export type.', 'Export Type Error')
+            toastr.error('Please select an export type.', 'Export Type Error');
+            this.appState.isLoading = false;
         }
     }
 

@@ -56,11 +56,11 @@ export class editEntries {
         let result = true;
         return this.timeEntryService.getTotalHours(new EntryFilter(this.appState.currentUser.UserDetailId, null, null, null, this.entryDate, this.entryDate, null))
             .then(hours => {
-                let validationTotal: number = hours;
+                let validationTotal: number = +hours;
                 if (this.originalDate === this.entryDate) {
-                    validationTotal -= this.originalHours;
+                    validationTotal -= +this.originalHours;
                 }
-                validationTotal += this.timeEntries[0].userHours;
+                validationTotal += +this.timeEntries[0].userHours;
                 if (validationTotal > 24) {
                     result = false;
                 }
@@ -69,9 +69,11 @@ export class editEntries {
     }
 
     submit() {
+        this.appState.isLoading = true;
         this.timeEntries[0].entryDate = this.entryDate;
         if (this.entryDate === undefined) {
             toastr.error("You must select an entry date.", "Date Error");
+            this.appState.isLoading = false;
             return;
         }
         let entryValid = this.timeEntries[0].isValid(this.appState.currentUser, this.appState.restrictedJobnumbers)
@@ -87,7 +89,8 @@ export class editEntries {
                             this.timeEntryService.saveEntry(this.timeEntries[0])
                                 .then(success => {
                                     if (success) {
-                                        this.timeEntries.length = 0
+                                        this.timeEntries.length = 0;
+                                        this.appState.isLoading = false;
                                         this.router.navigate(this.appState.returnRoute);
                                     }
                                 });
@@ -95,6 +98,10 @@ export class editEntries {
                     }
                 })
         }
+        else {
+            this.appState.isLoading = false;
+        }
+        this.appState.isLoading = false;
     }
 
     cancel() {

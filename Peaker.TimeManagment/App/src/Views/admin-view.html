@@ -1,6 +1,9 @@
 <template>
     <require from="../value-converters/date"></require>
     <require from="../custom-elements/action-confirm"></require>
+    <require from="../Views/partials/entry-filter-form"></require>
+    <require from="../Views/partials/loading"></require>
+    <loading is-loading.bind="appState.isLoading"></loading>
     <div class="container">
         <div class="panel-body">
             <div class="row actions">
@@ -17,6 +20,16 @@
             </div>
             <div class="row actions">
                 <input type="button" value='Admin Review' class="form-control btn btn-primary" click.delegate='goToAdminReview()' />
+            </div>
+            <div class="row actions">
+                <input type="button" value='Clear Exports' class="form-control btn btn-primary" click.delegate='showClearExports()' />
+            </div>
+        </div>
+        <div if.bind="showClearExport">
+            <div class="panel-body">
+                <entry-filter-form filter-criteria.two-way="filterCriteria" show-exported-filter.bind="false" show-button.bind="false" show-user-filter.bind="false"
+                    show-export-type-filter.bind="true" export-type.two-way="exportType" show-is-exported.bind="false"></entry-filter-form>
+                <input type="button" value='Clear Exported Flags' class="form-control btn btn-primary" click.delegate='clearExports()' />
             </div>
         </div>
     </div>

@@ -21,7 +21,7 @@ export class CreateUser {
     }
 
     create() {
-        this.router.isNavigating = true;
+        this.appState.isLoading = true;
         if (this.validateForm()) {
             this.accountService.createUser(this.userName, this.password, this.confirmPassword)
                 .then(result => {
@@ -32,9 +32,10 @@ export class CreateUser {
                     else {
                         toastr.error('An error occured creating the account.');
                     }
-                });
+                    this.appState.isLoading = false;
+                })
+                .catch(err => { this.appState.isLoading = false; });
         }
-        this.router.isNavigating = false;
     }
 
     validateForm(): boolean {
