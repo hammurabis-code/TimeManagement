@@ -3,6 +3,7 @@ import { AccountService } from '../Services/services';
 import { Router } from 'aurelia-router';
 import { autoinject } from 'aurelia-dependency-injection';
 import * as toastr from 'toastr';
+import { ApplicationState } from '../application-state';
 
 @autoinject
 export class ChangePasswordView {
@@ -12,12 +13,13 @@ export class ChangePasswordView {
     newPasswordConfirmError: boolean = false;
     passwordChangeErrorMessage: string = "";
 
-    constructor(private accountService: AccountService, private router: Router) {
+    constructor(private appState: ApplicationState, private accountService: AccountService, private router: Router) {
         this.changePasswordModel = new ChangePassword();
         toastr.options.positionClass = 'toast-bottom-right';
     }
 
     submit() {
+        this.appState.isLoading = true;
         if (this.validate()) {
             this.accountService.changePassword(this.changePasswordModel)
                 .then(response => {
@@ -29,6 +31,7 @@ export class ChangePasswordView {
                     }
                 })
         }
+        this.router.isNavigating = false;
     }
 
     validate() {

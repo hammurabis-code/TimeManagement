@@ -17,6 +17,7 @@ export class ApplicationState {
     isAdmin: boolean = false;
     reviewFilterCriteria: EntryFilter;
     adminFilterCriteria: EntryFilter;
+    isLoading: boolean;
 
     constructor(private accountService: AccountService, private timeEntryService: TimeEntryService,
         private config: RouterConfiguration, private router: Router) {
@@ -34,6 +35,7 @@ export class ApplicationState {
         else {
             this.isLocal = false;
         }
+        this.isLoading = false;
     }
 
     get authenticated(): Promise<boolean> {

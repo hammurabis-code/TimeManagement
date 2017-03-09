@@ -33,6 +33,7 @@ export class loginForm {
     }
 
     login() {
+        this.router.isNavigating = true;
         if (this.formValid) {
             let login = new Login(this.username, this.password);
             this.accountService.login(login)
@@ -42,10 +43,12 @@ export class loginForm {
                     }
                     else {
                         this.loginFailed = true;
+                        this.router.isNavigating = false;
                         console.log('Login Failed.');
                     }
                 });
         }
+        this.router.isNavigating = false;
     }
 
     fillUser() {
@@ -57,6 +60,7 @@ export class loginForm {
                     if (route === null || route === '') {
                         route = this.appState.defaultRoute;
                     }
+                    this.router.isNavigating = false;
                     this.router.navigate(route);
                 }
             })

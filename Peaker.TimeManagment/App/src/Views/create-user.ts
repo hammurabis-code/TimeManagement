@@ -21,7 +21,7 @@ export class CreateUser {
     }
 
     create() {
-        this.router.isNavigating = true;
+        this.appState.isLoading = true;
         if (this.validateForm()) {
             this.accountService.createUser(this.userName, this.password, this.confirmPassword)
                 .then(result => {
@@ -34,7 +34,7 @@ export class CreateUser {
                     }
                 });
         }
-        this.router.isNavigating = false;
+        this.appState.isLoading = false;
     }
 
     validateForm(): boolean {

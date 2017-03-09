@@ -38,13 +38,16 @@ export class submitTime {
     }
 
     submit() {
+        this.router.isNavigating = true;
         this.timeEntryService.saveEntries(this.timeEntries)
             .then(success => {
                 if (success) {
                     this.appState.clearPendingEntries();
                     this.timeEntries.length = 0;
+                    this.router.isNavigating = false;
                     this.router.navigateToRoute('entry', { 'submitted': true });
                 }
             });
+        this.router.isNavigating = false;
     }
 }

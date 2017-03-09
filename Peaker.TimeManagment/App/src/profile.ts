@@ -85,6 +85,7 @@ export class profile {
     resetCodes() { }
 
     saveProfile() {
+        this.router.isNavigating = true;
         this.accountService.updateUserProfile(this.currentUser)
             .then(response => {
                 if (response) {
@@ -97,6 +98,7 @@ export class profile {
                 toastr.error("An error occured updating your profile.");
                 console.log("Profile update error: " + err);
             });
+        this.router.isNavigating = false;
     }
 
 }

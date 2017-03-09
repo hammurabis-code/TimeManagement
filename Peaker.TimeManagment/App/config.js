@@ -359,7 +359,7 @@ System.config({
       "npm:moment@2.17.0.js",
       "npm:moment@2.17.0/moment.js"
     ],
-    "app-build-631a0d1708.js": [
+    "app-build-1826ba4e27.js": [
       "Models/ChangePassword.js",
       "Models/Constants.js",
       "Models/Department.js",
@@ -400,6 +400,8 @@ System.config({
       "Views/partials/entry-filter-form.js",
       "Views/partials/entry-list.html!github:systemjs/plugin-text@0.0.8.js",
       "Views/partials/entry-list.js",
+      "Views/partials/loading.html!github:systemjs/plugin-text@0.0.8.js",
+      "Views/partials/loading.js",
       "Views/review-entries.html!github:systemjs/plugin-text@0.0.8.js",
       "Views/review-entries.js",
       "Views/work-code-edit.html!github:systemjs/plugin-text@0.0.8.js",
@@ -539,7 +541,6 @@ System.config({
       "../Models/Models"
     ],
     "Services/admin.js": [
-      "aurelia-router",
       "aurelia-fetch-client",
       "aurelia-dependency-injection",
       "../Models/Models"
@@ -557,13 +558,11 @@ System.config({
       "./file"
     ],
     "Services/time-entry-service.js": [
-      "aurelia-router",
       "aurelia-fetch-client",
       "aurelia-dependency-injection",
       "../Models/Models"
     ],
     "Services/work-code-service.js": [
-      "aurelia-router",
       "aurelia-dependency-injection",
       "aurelia-fetch-client",
       "../Models/Models"
@@ -599,7 +598,8 @@ System.config({
       "../Services/services",
       "aurelia-router",
       "aurelia-dependency-injection",
-      "toastr"
+      "toastr",
+      "../application-state"
     ],
     "Views/create-user.js": [
       "aurelia-router",
@@ -620,7 +620,9 @@ System.config({
     "Views/manage-roles.js": [
       "aurelia-framework",
       "../services/services",
-      "toastr"
+      "aurelia-router",
+      "toastr",
+      "../application-state"
     ],
     "Views/partials/entry-filter-form.js": [
       "aurelia-dependency-injection",
@@ -628,6 +630,9 @@ System.config({
       "aurelia-framework",
       "../../Services/services",
       "../../Application-State"
+    ],
+    "Views/partials/loading.js": [
+      "aurelia-framework"
     ],
     "Views/review-entries.js": [
       "aurelia-framework",
@@ -642,7 +647,8 @@ System.config({
       "aurelia-framework",
       "../services/services",
       "aurelia-router",
-      "toastr"
+      "toastr",
+      "../application-state"
     ]
   }
 });

@@ -47,6 +47,7 @@ export class PayrollExport {
     }
 
     getEntries() {
+        this.appState.isLoading = true;
         if (this.exportType != undefined) {
             if (this.exportType.Type == 1) {
                 this.filterCriteria.FilterStartDate = null;
@@ -54,14 +55,17 @@ export class PayrollExport {
             }
             this.retrieveEntries();
         }
+        this.appState.isLoading = false;
     }
 
     getAllPayrollEntries() {
+        this.appState.isLoading = true;
         this.filterCriteria.ExportedToNavision = null;
         this.filterCriteria.ExportedToPayroll = false;
         this.filterCriteria.FilterStartDate = null;
         this.filterCriteria.FilterEndDate = null;
         this.retrieveEntries();
+        this.appState.isLoading = false;
     }
 
     retrieveEntries() {
@@ -78,6 +82,7 @@ export class PayrollExport {
     }
 
     clearPayrollExport() {
+        this.router.isNavigating = true;
         this.adminService.clearPayrollExportFlag()
             .then(result => {
                 if (result) {
@@ -87,9 +92,11 @@ export class PayrollExport {
                     toastr.error('Something went wrong during the requested operation.', 'And error occured.');
                 }
             });
+        this.router.isNavigating = false;
     }
 
     clearNavisionExport() {
+        this.router.isNavigating = true;
         this.adminService.clearNavisionFlag()
             .then(result => {
                 if (result) {
@@ -99,10 +106,12 @@ export class PayrollExport {
                     toastr.error('Something went wrong during the requested operation.', 'And error occured.');
                 }
             });
+        this.router.isNavigating = false;
     }
 
 
     exportEntries() {
+        this.router.isNavigating = true;
         if (this.exportType != undefined) {
             if (this.exportType.Type == 1) {
                 this.fileService.exportEntriesForNavision(this.filterCriteria)
@@ -122,6 +131,7 @@ export class PayrollExport {
         else {
             toastr.error('Please select an export type.', 'Export Type Error')
         }
+        this.router.isNavigating = false;
     }
 
 }

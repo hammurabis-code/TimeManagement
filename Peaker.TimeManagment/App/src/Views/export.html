@@ -2,13 +2,15 @@
     <require from="../value-converters/date"></require>
     <require from="../custom-elements/action-confirm"></require>
     <require from="./partials/entry-filter-form"></require>
+    <require from="../Views/partials/loading"></require>
+    <loading is-loading.bind="appState.isLoading"></loading>
     <div class="container">
         <h3>Export Jobs</h3>
         <div if.bind='appState.isLocal'>
             <action-confirm msg="Are you sure? This will remove the exported flag from ALL Navision entries." action.call="clearNavisionExport()"
                 button-class="btn-warning" button-name="Clear Navision Export Flag"></action-confirm>
-                <action-confirm msg="Are you sure? This will remove the exported flag from ALL Payroll entries." action.call="clearPayrollExport()"
-                    button-class="btn-warning" button-name="Clear Payroll Export Flag"></action-confirm>
+            <action-confirm msg="Are you sure? This will remove the exported flag from ALL Payroll entries." action.call="clearPayrollExport()"
+                button-class="btn-warning" button-name="Clear Payroll Export Flag"></action-confirm>
         </div>
         <div class='actions'>
             <div class="form-inline">

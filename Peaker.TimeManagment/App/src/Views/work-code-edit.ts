@@ -3,6 +3,7 @@ import { WorkCodeService } from '../services/services';
 import { WorkCode } from '../Models/models';
 import { Router } from 'aurelia-router';
 import * as toastr from 'toastr';
+import { ApplicationState } from '../application-state';
 
 @autoinject
 export class WorkCodeEdit {
@@ -11,7 +12,7 @@ export class WorkCodeEdit {
     originalCode: WorkCode;
     isDirty: boolean;
 
-    constructor(private workCodeService: WorkCodeService, private router: Router) {
+    constructor(private appState: ApplicationState, private workCodeService: WorkCodeService, private router: Router) {
         this.selectedWorkCode = null;
         this.isDirty = false;
     }
@@ -34,6 +35,7 @@ export class WorkCodeEdit {
     }
 
     submit() {
+        this.appState.isLoading = true;
         this.workCodeService.addUpdateWorkCode(this.selectedWorkCode)
             .then(success => {
                 if (success) {
@@ -51,6 +53,7 @@ export class WorkCodeEdit {
                 this.isDirty = false;
                 toastr.error('An error occured updating the work code.');
             })
+        this.appState.isLoading = false;
     }
 
     cancel() {

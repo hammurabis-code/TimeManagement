@@ -60,6 +60,7 @@ export class entry {
     }
 
     review() {
+        this.router.isNavigating = true;
         if (this.entryDate === undefined) {
             toastr.error("You must select an entry date.", "Date Error");
             return;
@@ -82,11 +83,13 @@ export class entry {
                         if (entriesValid) {
                             this.appState.addPendingTimeEntries(this.timeEntries, this.entryDate);
                             this.timeEntries.length = 0;
+                            this.router.isNavigating = false;
                             this.router.navigate('submit');
                         }
                     }
                 })
         }
+        this.router.isNavigating = false;
     }
 
     validateTotalTimeForDate(): Promise<boolean> {
