@@ -29,9 +29,11 @@ export class ChangePasswordView {
                     else {
                         toastr.error('A error occured updating your password.')
                     }
+                    this.appState.isLoading = false;
                 })
+                .catch(err => { this.router.isNavigating = false; });
         }
-        this.router.isNavigating = false;
+
     }
 
     validate() {

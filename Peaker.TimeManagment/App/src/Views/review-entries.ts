@@ -83,10 +83,11 @@ export class reviewEntries {
         this.fileService.exportEntriesForReview(this.filterCriteria)
             .then(result => {
                 toastr.success('Entries exported.');
+                this.appState.isLoading = false;
             })
             .catch(err => {
                 toastr.error('An error occured during export.');
+                this.appState.isLoading = false;
             });
-        this.appState.isLoading = false;
     }
 }

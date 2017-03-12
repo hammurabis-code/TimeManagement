@@ -73,6 +73,7 @@ export class editEntries {
         this.timeEntries[0].entryDate = this.entryDate;
         if (this.entryDate === undefined) {
             toastr.error("You must select an entry date.", "Date Error");
+            this.appState.isLoading = false;
             return;
         }
         let entryValid = this.timeEntries[0].isValid(this.appState.currentUser, this.appState.restrictedJobnumbers)
@@ -96,6 +97,9 @@ export class editEntries {
                         }
                     }
                 })
+        }
+        else {
+            this.appState.isLoading = false;
         }
         this.router.isNavigating = false;
     }

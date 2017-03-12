@@ -60,9 +60,10 @@ export class entry {
     }
 
     review() {
-        this.router.isNavigating = true;
+        this.appState.isLoading = false;
         if (this.entryDate === undefined) {
             toastr.error("You must select an entry date.", "Date Error");
+            this.appState.isLoading = false;
             return;
         }
         let entriesValid = true;
@@ -84,10 +85,14 @@ export class entry {
                             this.appState.addPendingTimeEntries(this.timeEntries, this.entryDate);
                             this.timeEntries.length = 0;
                             this.router.isNavigating = false;
+                            this.appState.isLoading = false;
                             this.router.navigate('submit');
                         }
                     }
                 })
+        }
+        else {
+            this.appState.isLoading = false;
         }
         this.router.isNavigating = false;
     }

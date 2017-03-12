@@ -359,7 +359,7 @@ System.config({
       "npm:moment@2.17.0.js",
       "npm:moment@2.17.0/moment.js"
     ],
-    "app-build-7dfecd5a8b.js": [
+    "app-build-8885e37093.js": [
       "Models/ChangePassword.js",
       "Models/Constants.js",
       "Models/Department.js",
@@ -447,7 +447,8 @@ System.config({
     "application-state.js": [
       "aurelia-dependency-injection",
       "./Services/services",
-      "aurelia-router"
+      "aurelia-router",
+      "aurelia-framework"
     ],
     "custom-attributes/datepicker.js": [
       "aurelia-framework",

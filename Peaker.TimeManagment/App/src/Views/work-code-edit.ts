@@ -42,18 +42,20 @@ export class WorkCodeEdit {
                     this.getCodes().then(r => {
                         this.isDirty = false;
                         toastr.success('Work code updated.');
+                        this.appState.isLoading = false;
                     });
                 }
                 else {
                     toastr.error('An error occured updating the work code.');
+                    this.appState.isLoading = false;
                 }
             })
             .catch(err => {
                 this.selectedWorkCode = null;
                 this.isDirty = false;
                 toastr.error('An error occured updating the work code.');
+                this.appState.isLoading = false;
             })
-        this.appState.isLoading = false;
     }
 
     cancel() {

@@ -48,7 +48,6 @@ export class loginForm {
                     }
                 });
         }
-        this.router.isNavigating = false;
     }
 
     fillUser() {
@@ -61,6 +60,7 @@ export class loginForm {
                         route = this.appState.defaultRoute;
                     }
                     this.router.isNavigating = false;
+                    this.appState.isLoading = false;
                     this.router.navigate(route);
                 }
             })

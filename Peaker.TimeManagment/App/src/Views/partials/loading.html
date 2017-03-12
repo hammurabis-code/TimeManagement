@@ -1,9 +1,10 @@
 <template>
-    <div class="center splash" if.bind="loading">
-        <div class="message">Peaker Job Cost</div>
-        <i class="fa fa-spinner fa-spin"></i>
-    </div>
-    <div if.bind="loading">
-        <div class="cover"></div>
+    <div if.bind="isLoading">
+        <div class="center splash">
+            <i class="fa fa-spinner fa-spin"></i>
+        </div>
+        <div>
+            <div class="cover"></div>
+        </div>
     </div>
 </template>

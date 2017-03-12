@@ -2,6 +2,8 @@
     <require from="../../custom-elements/delete"></require>
     <require from="../../value-converters/date"></require>
     <require from="../../Views/partials/entry-filter-form"></require>
+    <require from="../../Views/partials/loading"></require>
+    <loading is-loading.bind="appState.isLoading"></loading>
     <div class="container">
         <h2>${heading}</h2>
         <entry-filter-form filter-criteria.two-way="filterCriteria" time-entries.two-way="timeEntries" total.two-way="total" show-exported-filter.bind="false"

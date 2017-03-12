@@ -33,8 +33,9 @@ export class ManageRoles {
                 this.usersInRole.length = 0;
                 this.usersInRole = results;
                 this.dataFilled = true;
-            });
-        this.appState.isLoading = false;
+                this.router.isNavigating = false;
+            })
+            .catch(err => { this.router.isNavigating = false; });
     }
 
     updateUsersInRole() {
@@ -47,7 +48,8 @@ export class ManageRoles {
                 else {
                     toastr.error('An error occured updating user roles.');
                 }
-            });
-        this.appState.isLoading = false;
+                this.router.isNavigating = false;
+            })
+            .catch(err => { this.router.isNavigating = false; });
     }
 }

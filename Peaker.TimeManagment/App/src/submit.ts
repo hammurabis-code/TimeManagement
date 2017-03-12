@@ -45,9 +45,9 @@ export class submitTime {
                     this.appState.clearPendingEntries();
                     this.timeEntries.length = 0;
                     this.router.isNavigating = false;
+                    this.appState.isLoading = false;
                     this.router.navigateToRoute('entry', { 'submitted': true });
                 }
             });
-        this.router.isNavigating = false;
     }
 }

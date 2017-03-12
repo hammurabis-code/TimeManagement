@@ -32,9 +32,10 @@ export class CreateUser {
                     else {
                         toastr.error('An error occured creating the account.');
                     }
-                });
+                    this.router.isNavigating = false;
+                })
+                .catch(err => { this.router.isNavigating = false; });
         }
-        this.appState.isLoading = false;
     }
 
     validateForm(): boolean {

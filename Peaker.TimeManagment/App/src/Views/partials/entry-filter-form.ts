@@ -48,6 +48,7 @@ export class EntryFilterForm {
     }
 
     getEntries() {
+        this.appState.isLoading = true;
         if (this.exportType != undefined) {
             if (this.exportType.Type == 1) {
                 this.filterCriteria.ExportedToNavision = this.exportTypeFlag;
@@ -75,6 +76,9 @@ export class EntryFilterForm {
                 else {
                     this.noEntriesFound = true;
                 }
-            });
+                this.appState.isLoading = false;
+            })
+            .catch(err => { this.appState.isLoading = false; });
+
     }
 }

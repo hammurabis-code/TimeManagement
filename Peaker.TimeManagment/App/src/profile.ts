@@ -91,14 +91,15 @@ export class profile {
                 if (response) {
                     this.currentUser.sortUserWorkCodes();
                     this.appState.currentUser = this.currentUser;
+                    this.appState.isLoading = false;
                     toastr.success("Profile Updated.");
                 }
             })
             .catch(err => {
                 toastr.error("An error occured updating your profile.");
                 console.log("Profile update error: " + err);
+                this.appState.isLoading = false;
             });
-        this.router.isNavigating = false;
     }
 
 }
