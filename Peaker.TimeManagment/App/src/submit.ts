@@ -38,13 +38,12 @@ export class submitTime {
     }
 
     submit() {
-        this.router.isNavigating = true;
+        this.appState.isLoading = true;
         this.timeEntryService.saveEntries(this.timeEntries)
             .then(success => {
                 if (success) {
                     this.appState.clearPendingEntries();
                     this.timeEntries.length = 0;
-                    this.router.isNavigating = false;
                     this.appState.isLoading = false;
                     this.router.navigateToRoute('entry', { 'submitted': true });
                 }

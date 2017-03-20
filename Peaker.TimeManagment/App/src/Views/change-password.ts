@@ -31,7 +31,7 @@ export class ChangePasswordView {
                     }
                     this.appState.isLoading = false;
                 })
-                .catch(err => { this.router.isNavigating = false; });
+                .catch(err => { this.appState.isLoading = false; });
         }
 
     }

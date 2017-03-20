@@ -20,8 +20,10 @@ export class EntryFilterForm {
     @bindable noEntriesFound: boolean = false;
     @bindable userFilterList: UserListItem[] = [];
     @bindable selectedUser: UserListItem;
+    @bindable showIsExported: boolean = true;
+    @bindable appState: ApplicationState;
 
-    constructor(private appState: ApplicationState, private timeEntryService: TimeEntryService, private adminService: AdminService) {
+    constructor(private timeEntryService: TimeEntryService, private adminService: AdminService) {
         if (this.exportTypes.length == 0) {
             this.exportTypes.push(undefined);
             this.exportTypes.push(new ExportType(1, 'Navision'));

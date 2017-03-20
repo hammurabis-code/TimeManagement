@@ -55,7 +55,7 @@ export class AdminReview {
     }
 
     getEntries(): Promise<any> {
-        this.router.isNavigating = true;
+        this.appState.isLoading = true;
         return this.timeEntryService.get(this.filterCriteria)
             .then(entries => {
                 this.timeEntries = entries;
@@ -66,21 +66,21 @@ export class AdminReview {
                 else {
                     this.noEntriesFound = true;
                 }
-                this.router.isNavigating = false;
+                this.appState.isLoading = false;
             })
-            .catch(err => { this.router.isNavigating = false; });
+            .catch(err => { this.appState.isLoading = false; });
     }
 
     export() {
-        this.router.isNavigating = true;
+        this.appState.isLoading = true;
         this.fileService.exportEntriesForReview(this.filterCriteria)
             .then(result => {
                 toastr.success('Entries exported.');
-                this.router.isNavigating = false;
+                this.appState.isLoading = false;
             })
             .catch(err => {
                 toastr.error('An error occured during export.');
-                this.router.isNavigating = false;
+                this.appState.isLoading = false;
             });
     }
 }

@@ -84,7 +84,6 @@ export class entry {
                         if (entriesValid) {
                             this.appState.addPendingTimeEntries(this.timeEntries, this.entryDate);
                             this.timeEntries.length = 0;
-                            this.router.isNavigating = false;
                             this.appState.isLoading = false;
                             this.router.navigate('submit');
                         }
@@ -94,7 +93,6 @@ export class entry {
         else {
             this.appState.isLoading = false;
         }
-        this.router.isNavigating = false;
     }
 
     validateTotalTimeForDate(): Promise<boolean> {

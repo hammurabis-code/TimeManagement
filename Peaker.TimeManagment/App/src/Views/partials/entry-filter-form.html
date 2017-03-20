@@ -18,7 +18,7 @@
                     <option repeat.for="type of exportTypes" model.bind="type">${type.Description}</option>
                 </select>
             </div>
-            <div if.bind="exportType">
+            <div if.bind="exportType && showIsExported">
                 <input type="checkbox" name="exportTypeFlag" checked.bind="exportTypeFlag" value.bind="exportTypeFlag"> Is
                 Exported?
             </div>

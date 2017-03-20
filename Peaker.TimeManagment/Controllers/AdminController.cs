@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Peaker.TimeManagment.Data;
 using Peaker.TimeManagment.Models;
+using Peaker.TimeManagment.Models.Filters;
 using Peaker.TimeManagment.Models.View;
 using System;
 using System.Collections.Generic;
@@ -20,23 +21,7 @@ namespace Peaker.TimeManagment.Controllers
     [RoutePrefix("api/Admin")]
     public class AdminController : BaseApiController
     {
-        // GET: api/Admin
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET: api/Admin/5
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST: api/Admin
-        public void Post([FromBody]string value)
-        {
-        }
-
+       
         [Route("GetWeekList")]
         public IHttpActionResult GetWeekList(int year)
         {
@@ -71,6 +56,7 @@ namespace Peaker.TimeManagment.Controllers
         }
 
         [Route("GetUsersInRoleList")]
+        [Authorize(Roles = "Admin, Supervisor")]
         public async Task<IHttpActionResult> GetUsersInRoleList(string roleName)
         {
             var role = await AppRoleManager.FindByNameAsync(roleName);
@@ -96,6 +82,7 @@ namespace Peaker.TimeManagment.Controllers
         }
 
         [Route("GetUsersFilterList")]
+        [Authorize(Roles = "Admin, Supervisor")]
         public IHttpActionResult GetUsersFilterList()
         {
             return Ok(new UserAccess().GetAllUsers());
@@ -103,6 +90,7 @@ namespace Peaker.TimeManagment.Controllers
 
         [HttpPost]
         [Route("UpdateUsersInRoles")]
+        [Authorize(Roles = "Admin")]
         public async Task<IHttpActionResult> UpdateUsersInRoles([FromBody]IEnumerable<UserInRoleModel> usersInRole)
         {
             if (usersInRole != null && usersInRole.Count() > 0) {
@@ -135,6 +123,7 @@ namespace Peaker.TimeManagment.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         [Route("ClearNavisionExportedFlag")]
         public IHttpActionResult ClearNavisionExportedFlag() {
             new TimeEntryAccess().ClearNavisionFlag();
@@ -142,6 +131,7 @@ namespace Peaker.TimeManagment.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         [Route("ClearPayrollExportedFlag")]
         public IHttpActionResult ClearPayrollExportedFlag()
         {
@@ -149,57 +139,32 @@ namespace Peaker.TimeManagment.Controllers
             return Ok();
         }
 
-
-        //[HttpPost]
-        //public HttpResponseMessage GenerateMarketStudyResult([FromBody]string id)
-        //{
-        //    if (id == null)
-        //    {
-        //        throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.BadRequest));
-        //    }
-        //    var serviceUrl = ConfigurationManager.AppSettings["serviceUrl"];
-
-        //    var streamContent = new PushStreamContent((outputStream, httpContext, transportContent) =>
-        //    {
-        //        try
-        //        {
-        //            HttpWebRequest webRequest = createWebRequest(serviceUrl + "/" + id.requestId);
-        //            IAsyncResult asyncResult = webRequest.BeginGetResponse(null, null);
-        //            asyncResult.AsyncWaitHandle.WaitOne();
-
-        //            using (WebResponse webResponse = webRequest.EndGetResponse(asyncResult))
-        //            {
-        //                webResponse.GetResponseStream().CopyTo(outputStream);
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine(ex.Message);
-        //        }
-        //        finally
-        //        {
-        //            outputStream.Close();
-        //        }
-        //    });
-        //    streamContent.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        //    streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
-        //    streamContent.Headers.ContentDisposition.FileName = "reports.xlsx";
-
-        //    var result = new HttpResponseMessage(HttpStatusCode.OK)
-        //    {
-        //        Content = streamContent
-        //    };
-        //    return result;
-        //}
-
-        // PUT: api/Admin/5
-        public void Put(int id, [FromBody]string value)
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [Route("ClearNavisionExportedFlagByDate")]
+        public IHttpActionResult ClearExportedForNavisionByDate([FromBody]EntryFilter filter)
         {
+            if (User.Identity != null)
+            {
+                var user = AppUserManager.FindById(User.Identity.GetUserId());
+                new TimeEntryAccess().ClearNavisionFlag(filter, user);
+                return Ok();
+            }
+            else return Unauthorized();
         }
 
-        // DELETE: api/Admin/5
-        public void Delete(int id)
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [Route("ClearPayrollExportedFlagByDate")]
+        public IHttpActionResult ClearExportedForPayrollByDate([FromBody]EntryFilter filter)
         {
+            if (User.Identity != null)
+            {
+                var user = AppUserManager.FindById(User.Identity.GetUserId());
+                new TimeEntryAccess().ClearPayrollExportFlag(filter, user);
+                return Ok();
+            }
+            else return Unauthorized();
         }
     }
 }

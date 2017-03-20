@@ -85,7 +85,7 @@ export class profile {
     resetCodes() { }
 
     saveProfile() {
-        this.router.isNavigating = true;
+        this.appState.isLoading = true;
         this.accountService.updateUserProfile(this.currentUser)
             .then(response => {
                 if (response) {

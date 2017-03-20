@@ -14,7 +14,7 @@ namespace DataImporter
     class Importer : DataAccess
     {
         private const string ImportPath = @"C:\Users\bgillmore\Documents\Clients\Peaker\";
-        private const string ImportFileName = "peakerTestData3.csv";
+        private const string ImportFileName = "Feb2017.csv";
 
         public List<TimeEntryView> ImportCsv()
         {
@@ -73,7 +73,7 @@ namespace DataImporter
                     {
                         view.userDetailId = RetrieveSingleConvertible<int>("getuserdetailidfromusername", GetSingleParameter("p_usernamne", userName));
                     }
-                    catch (ArgumentOutOfRangeException ex)
+                    catch (ArgumentOutOfRangeException)
                     {
                         rowErrors.Add($"Unable to determine userdetail id for username {userName} at row {index}, row skipped.");
                         index++;
@@ -84,7 +84,7 @@ namespace DataImporter
                         view.workCodeId = RetrieveSingleConvertible<int>("getworkcodeidfrombasecode", GetSingleParameter("p_basecode", baseCode));
 
                     }
-                    catch (ArgumentOutOfRangeException ex)
+                    catch (ArgumentOutOfRangeException)
                     {
                         rowErrors.Add($"Unable to determine workcode id for basecode {baseCode} at row {index}, row skipped.");
                         index++;

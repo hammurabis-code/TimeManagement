@@ -63,11 +63,49 @@ export class AdminService {
             })
     }
 
+    clearNavisionFlagByDate(entryFilter: EntryFilter): Promise<boolean> {
+        return this.client.fetch(Constants.adminApi + 'ClearNavisionExportedFlagByDate',
+            {
+                body: JSON.stringify(entryFilter),
+                headers: {
+                    'Authorization': Helper.getAuthHeader(),
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                },
+                method: 'POST'
+            })
+            .then(resp => {
+                if (resp.status == 200) {
+                    return true;
+                }
+                return false;
+            })
+    }
+
     clearPayrollExportFlag(): Promise<boolean> {
         return this.client.fetch(Constants.adminApi + 'ClearPayrollExportedFlag',
             {
                 method: 'get',
                 headers: { 'Authorization': Helper.getAuthHeader() }
+            })
+            .then(resp => {
+                if (resp.status == 200) {
+                    return true;
+                }
+                return false;
+            })
+    }
+
+    clearPayrollExportFlagByDate(entryFilter: EntryFilter): Promise<boolean> {
+        return this.client.fetch(Constants.adminApi + 'ClearPayrollExportedFlagByDate',
+            {
+                body: JSON.stringify(entryFilter),
+                headers: {
+                    'Authorization': Helper.getAuthHeader(),
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*',
+                },
+                method: 'POST'
             })
             .then(resp => {
                 if (resp.status == 200) {

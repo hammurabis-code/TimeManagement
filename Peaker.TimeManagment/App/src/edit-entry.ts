@@ -69,7 +69,7 @@ export class editEntries {
     }
 
     submit() {
-        this.router.isNavigating = true;
+        this.appState.isLoading = true;
         this.timeEntries[0].entryDate = this.entryDate;
         if (this.entryDate === undefined) {
             toastr.error("You must select an entry date.", "Date Error");
@@ -90,7 +90,7 @@ export class editEntries {
                                 .then(success => {
                                     if (success) {
                                         this.timeEntries.length = 0;
-                                        this.router.isNavigating = false;
+                                        this.appState.isLoading = false;
                                         this.router.navigate(this.appState.returnRoute);
                                     }
                                 });
@@ -101,7 +101,7 @@ export class editEntries {
         else {
             this.appState.isLoading = false;
         }
-        this.router.isNavigating = false;
+        this.appState.isLoading = false;
     }
 
     cancel() {
