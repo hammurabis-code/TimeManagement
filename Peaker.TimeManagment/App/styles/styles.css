@@ -22,6 +22,14 @@ body {
   font-size: 72px;
   margin-top: 50px;
 }
+.center.splash {
+    z-index: 6;
+    position: absolute;
+    left: 47%;
+}
+.center.splash .fa.fa-spinner.fa-spin {
+    color: #FFF;
+}
 
 .page-host {
   position: absolute;

@@ -1,11 +1,10 @@
-import { Router } from 'aurelia-router';
 import { HttpClient, json } from 'aurelia-fetch-client';
 import { autoinject } from 'aurelia-dependency-injection';
 import { TimeEntry, Constants, EntryFilter, Helper, UserInRole, UserListItem } from '../Models/Models';
 
 @autoinject
 export class AdminService {
-    constructor(private client: HttpClient, private router: Router) {
+    constructor(private client: HttpClient) {
         client.configure(config => {
             config.useStandardConfiguration();
         });

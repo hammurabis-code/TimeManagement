@@ -69,9 +69,11 @@ export class editEntries {
     }
 
     submit() {
+        this.router.isNavigating = true;
         this.timeEntries[0].entryDate = this.entryDate;
         if (this.entryDate === undefined) {
             toastr.error("You must select an entry date.", "Date Error");
+            this.appState.isLoading = false;
             return;
         }
         let entryValid = this.timeEntries[0].isValid(this.appState.currentUser, this.appState.restrictedJobnumbers)
@@ -87,7 +89,8 @@ export class editEntries {
                             this.timeEntryService.saveEntry(this.timeEntries[0])
                                 .then(success => {
                                     if (success) {
-                                        this.timeEntries.length = 0
+                                        this.timeEntries.length = 0;
+                                        this.router.isNavigating = false;
                                         this.router.navigate(this.appState.returnRoute);
                                     }
                                 });
@@ -95,6 +98,10 @@ export class editEntries {
                     }
                 })
         }
+        else {
+            this.appState.isLoading = false;
+        }
+        this.router.isNavigating = false;
     }
 
     cancel() {

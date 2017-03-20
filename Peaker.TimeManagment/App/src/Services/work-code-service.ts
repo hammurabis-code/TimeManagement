@@ -1,4 +1,3 @@
-import { Router } from 'aurelia-router';
 import { autoinject } from 'aurelia-dependency-injection';
 import { HttpClient } from 'aurelia-fetch-client';
 import { WorkCode, Constants, Helper } from '../Models/Models';
@@ -6,7 +5,7 @@ import { WorkCode, Constants, Helper } from '../Models/Models';
 
 @autoinject
 export class WorkCodeService {
-    constructor(private client: HttpClient, private router: Router) {
+    constructor(private client: HttpClient, ) {
         client.configure(config => {
             config.useStandardConfiguration();
         });
@@ -32,7 +31,6 @@ export class WorkCodeService {
     }
 
     addUpdateWorkCode(code: WorkCode): Promise<boolean> {
-        this.router.isNavigating = true;
         return this.client.fetch(Constants.workCodeServiceApi + 'AddUpdateWorkCode',
             {
                 body: JSON.stringify(code),
@@ -45,13 +43,11 @@ export class WorkCodeService {
             })
             //.then(response => response.json<number>())
             .then(response => {
-                this.router.isNavigating = false;
                 if (response.status == 200) {
                     return true;
                 }
                 return false;
             }).catch(err => {
-                this.router.isNavigating = false;
                 console.log("Error saving work code.");
                 return false;
             });

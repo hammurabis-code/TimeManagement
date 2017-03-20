@@ -1,6 +1,8 @@
 <template>
     <require from="../value-converters/date"></require>
     <require from="../custom-elements/action-confirm"></require>
+    <require from="../Views/partials/loading"></require>
+    <loading is-loading.bind="appState.isLoading"></loading>
     <div class="container">
         <div class="panel-body">
             <div class="row actions">
