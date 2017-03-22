@@ -359,7 +359,7 @@ System.config({
       "npm:moment@2.17.0.js",
       "npm:moment@2.17.0/moment.js"
     ],
-    "app-build-9584c93ebe.js": [
+    "app-build-e556df8ce3.js": [
       "Models/ChangePassword.js",
       "Models/Constants.js",
       "Models/Department.js",
