@@ -56,11 +56,11 @@ export class editEntries {
         let result = true;
         return this.timeEntryService.getTotalHours(new EntryFilter(this.appState.currentUser.UserDetailId, null, null, null, this.entryDate, this.entryDate, null))
             .then(hours => {
-                let validationTotal: number = hours;
+                let validationTotal: number = +hours;
                 if (this.originalDate === this.entryDate) {
-                    validationTotal -= this.originalHours;
+                    validationTotal -= +this.originalHours;
                 }
-                validationTotal += this.timeEntries[0].userHours;
+                validationTotal += +this.timeEntries[0].userHours;
                 if (validationTotal > 24) {
                     result = false;
                 }
